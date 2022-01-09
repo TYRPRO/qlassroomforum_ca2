@@ -1,16 +1,18 @@
 
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import AddLinkIcon from '@mui/icons-material/AddLink';
-import Bold from './wysiwyg_editor/bold'
+
 
 function CreateQn() {
 
 
   const [qnTitle, set_qnTitle] = useState('');
   const [qnBody, set_qnBody] = useState([]);
+  const [selected, set_selected] = useState();
 
 
   return (
@@ -32,20 +34,20 @@ function CreateQn() {
                   Include all the information someone would need to answer your question
                 </div>
                 <div id='wysiwyg_editor'>
-                  
+
                   <div id='editor_toolbar' className=' btn-group'>
-                    <div className='btn btn-outline-secondary' onClick={() => {modifyDesign('bold')}}>
-                    <FormatBoldIcon/>
+                    <div className='btn btn-outline-secondary' onClick={() => { modifyDesign('bold') }}>
+                      <FormatBoldIcon />
                     </div>
-                    <div className='btn btn-outline-secondary' onClick={() => {modifyDesign('italic')}}>
-                    <FormatItalicIcon />
+                    <div className='btn btn-outline-secondary' onClick={() => { modifyDesign('italic') }}>
+                      <FormatItalicIcon />
                     </div>
-                    <div className='btn btn-outline-secondary' onClick={() => {modifyDesign('createLink')}}>
+                    <div className='btn btn-outline-secondary' onClick={() => { modifyDesign('createLink') }}>
                       <AddLinkIcon />
                     </div>
 
                   </div>
-                  <div contentEditable='true' id='qn_body_textarea' className='form-control' style={{overflow: 'scroll',resize:'vertical', wordBreak: 'break-word',minHeight: '12vh'}}>
+                  <div contentEditable='true' id='qn_body_textarea' className='form-control' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
                   </div>
                 </div>
 
@@ -62,8 +64,27 @@ function CreateQn() {
           <h5 >Left</h5>
         </div>
       </div>
+      <div className="modal fade" id="add_url" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">Insert Link</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+            </div>
+            <div className="modal-body">
+              <input id='wysiwyg_link' type='url' className='form-control' placeholder='https://www.qlassroom.ai/'></input>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => clearFormatting(true)}>Clear Formatting</button>
+              <button type="button" id='addLinkBtn' className="btn btn-primary" onClick={addURL}>Add Link</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
   );
+
 
 
   function onlyInEditor() {
@@ -78,30 +99,102 @@ function CreateQn() {
     }
   }
 
-// Don't delete these functions. The current method of changing design is not supported by W3C.
-// Most browsers are phasing out execCommand();
+  function saveSelection() {
+    if (window.getSelection()) {
+      var selection = window.getSelection();
 
-//   function highlightText() {
-// //    if(onlyInEditor()) {
+      if (selection.getRangeAt && selection.rangeCount) {
+        var range = []
+        for (var i = 0; i < selection.rangeCount; i++) {
+          range.push(selection.getRangeAt(i));
+        }
+        return set_selected(range);
+      }
+    } else if (document.selection && document.selection.createRange) {
+      return set_selected(document.selection.createRange());
+    }
+    return null;
+  }
 
-//       var text_area = document.getElementById('qn_body_textarea').innerHTML;
-//       console.log(text_area)
-//       var store_br = [...text_area.matchAll(new RegExp(/<br>/, 'gi'))].map(a => a.index)
-//       console.log(store_br);
 
 
-//       var array_qn_body = document.getElementById('qn_body_textarea').innerHTML.split('');
-//       var selected = window.getSelection().getRangeAt(0);
-//       console.log(array_qn_body)
-//       array_qn_body[selected.startOffset] = '<b>' + array_qn_body[selected.startOffset];
-//       array_qn_body[selected.endOffset] = array_qn_body[selected.endOffset] + '</b>';
-//       console.log(array_qn_body);
-//       var string_output = array_qn_body.join('');
-//       console.log(string_output);
+  function modifyDesign(action) {
 
-//       document.getElementById('qn_body_textarea').innerHTML = string_output;
-//     }
-// //  }
+    if (action === 'createLink') {
+      saveSelection();
+      var link_modal = new Modal(document.getElementById('add_url'), { backdrop: 'static', keyboard: false });
+      document.getElementById('wysiwyg_link').value = '';
+      link_modal.toggle();
+    }
+    else {
+      console.log('seting', action);
+      document.execCommand(action, false);
+    }
+
+  }
+
+  function restoreSelection() {
+    if (selected) {
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      for (var i = 0, len = selected.length; i < len; i++) {
+        selection.addRange(selected[i]);
+      }
+    } else if (document.selection && selected.select) {
+      selected.select();
+    }
+  }
+
+
+  function addURL() {
+
+    var link_url = document.getElementById('wysiwyg_link').value;
+    console.log(link_url);
+
+    var link_modal_element = document.getElementById('add_url');
+    var link_modal = Modal.getInstance(link_modal_element); 
+    link_modal.toggle();
+
+    restoreSelection();
+
+    document.execCommand('createLink', false, link_url);
+
+  }
+
+  function clearFormatting(removeLink) {
+    if(removeLink) {
+      restoreSelection();
+      document.execCommand('unlink', false);
+    }
+
+    console.log('removing format');
+    document.execCommand('removeFormat', false);
+  }
+
+  // Don't delete these functions. The current method of changing design is not supported by W3C.
+  // Most browsers are phasing out execCommand();
+
+  //   function highlightText() {
+  // //    if(onlyInEditor()) {
+
+  //       var text_area = document.getElementById('qn_body_textarea').innerHTML;
+  //       console.log(text_area)
+  //       var store_br = [...text_area.matchAll(new RegExp(/<br>/, 'gi'))].map(a => a.index)
+  //       console.log(store_br);
+
+
+  //       var array_qn_body = document.getElementById('qn_body_textarea').innerHTML.split('');
+  //       var selected = window.getSelection().getRangeAt(0);
+  //       console.log(array_qn_body)
+  //       array_qn_body[selected.startOffset] = '<b>' + array_qn_body[selected.startOffset];
+  //       array_qn_body[selected.endOffset] = array_qn_body[selected.endOffset] + '</b>';
+  //       console.log(array_qn_body);
+  //       var string_output = array_qn_body.join('');
+  //       console.log(string_output);
+
+  //       document.getElementById('qn_body_textarea').innerHTML = string_output;
+  //     }
+  // //  }
 
   // function highlightText() {
   //   var selected = window.getSelection();
@@ -120,7 +213,7 @@ function CreateQn() {
   //   }
   //   // selected.surroundContents(document.createElement('strong'));
   // }
-  
+
   // function highlightText() {
 
   //   console.log(window.getSelection());
@@ -141,26 +234,12 @@ function CreateQn() {
   //   }
   //   var end_split = text_area.innerText.slice(endOffset);
   //   array_split.push(end_split);
-    
+
 
   //   //var selected_split = text_area.innerText.slice(startOffset, endOffset);
   //   console.log(array_split);
   //   text_area.innerHTML = array_split.join('');
   // }
 
-  function modifyDesign(action) {
-    if(onlyInEditor()) {
-
-      if(action === 'createLink') {
-        
-      }
-      else {
-        document.execCommand(action, false, null);
-      }
-
-    }
-
-  }
 }
-
 export default CreateQn;
