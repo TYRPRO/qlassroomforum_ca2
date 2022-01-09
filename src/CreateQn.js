@@ -1,11 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import AddLinkIcon from '@mui/icons-material/AddLink';
-
+import TagDropdown from './createQn/TagDropdown';
 
 function CreateQn() {
 
@@ -14,6 +14,30 @@ function CreateQn() {
   const [qnBody, set_qnBody] = useState([]);
   const [selected, set_selected] = useState();
 
+  const [tags, set_tags] = useState(["Whole Numbers", "Measurement", "Geometry", "Fractions", "Speed"]);
+  const [selected_tags, set_selected_tags] = useState([]);
+  const [shown_tags, set_shown_tags] = useState(["Whole Numbers", "Measurement", "Geometry", "Fractions", "Speed"]);
+
+  // useEffect(() => {
+  //   console.log('editing shown_tags');
+  //   var temp_shown_tag = shown_tags;
+  //   for (var i = 0; i < tags.length; i++) {
+  //     var skip = false;
+  //     for (var x = 0; x < selected_tags.length; x++) {
+
+  //       if (tags[i].name === selected_tags[x]) {
+  //         skip = true;
+  //       }
+  //     }
+
+  //     if (!skip) {
+  //       temp_shown_tag.push(tags[i]);
+  //     }
+
+  //   }
+  //   set_shown_tags(temp_shown_tag);
+  //   console.log(shown_tags);
+  // }, [selected_tags])
 
   return (
     <div className="container">
@@ -34,18 +58,19 @@ function CreateQn() {
                   Include all the information someone would need to answer your question
                 </div>
                 <div id='wysiwyg_editor'>
+                  <div className='border w-100 rounded-top'>
+                    <div id='editor_toolbar' className=' btn-group'>
+                      <div className='btn btn-outline-secondary border-0' onClick={() => { modifyDesign('bold') }}>
+                        <FormatBoldIcon />
+                      </div>
+                      <div className='btn btn-outline-secondary border-0' onClick={() => { modifyDesign('italic') }}>
+                        <FormatItalicIcon />
+                      </div>
+                      <div className='btn btn-outline-secondary border-0' onClick={() => { modifyDesign('createLink') }}>
+                        <AddLinkIcon />
+                      </div>
 
-                  <div id='editor_toolbar' className=' btn-group'>
-                    <div className='btn btn-outline-secondary' onClick={() => { modifyDesign('bold') }}>
-                      <FormatBoldIcon />
                     </div>
-                    <div className='btn btn-outline-secondary' onClick={() => { modifyDesign('italic') }}>
-                      <FormatItalicIcon />
-                    </div>
-                    <div className='btn btn-outline-secondary' onClick={() => { modifyDesign('createLink') }}>
-                      <AddLinkIcon />
-                    </div>
-
                   </div>
                   <div contentEditable='true' id='qn_body_textarea' className='form-control' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
                   </div>
@@ -55,7 +80,8 @@ function CreateQn() {
                 <div className=' form-text mt-0'>
                   Add some tags to help others find your question.
                 </div>
-                <input type='text' name='qn_tags' className='form-control'></input>
+                <div contentEditable='true' className='form-control'></div>
+                <TagDropdown tags={tags} handleSelect={addTagSelect}></TagDropdown>
               </div>
             </form>
           </div>
@@ -86,6 +112,25 @@ function CreateQn() {
   );
 
 
+  function addTagSelect(tag) {
+    var temp_selected_tags = selected_tags;
+    var temp_tags = [];
+    console.log(tags);
+
+    for(var i = 0; i < tags.length; i++) {
+      if(tags[i] == tag) {
+
+      }else {
+        console.log('pushing in');
+        temp_tags.push(tag);
+      }
+    }
+    temp_selected_tags.push(tag);
+
+    set_tags(temp_tags);
+    set_selected_tags(temp_selected_tags);
+    console.log(selected_tags);
+  }
 
   function onlyInEditor() {
     var current_selection_id = window.getSelection().anchorNode.parentElement.id;
@@ -152,7 +197,7 @@ function CreateQn() {
     console.log(link_url);
 
     var link_modal_element = document.getElementById('add_url');
-    var link_modal = Modal.getInstance(link_modal_element); 
+    var link_modal = Modal.getInstance(link_modal_element);
     link_modal.toggle();
 
     restoreSelection();
@@ -162,7 +207,7 @@ function CreateQn() {
   }
 
   function clearFormatting(removeLink) {
-    if(removeLink) {
+    if (removeLink) {
       restoreSelection();
       document.execCommand('unlink', false);
     }

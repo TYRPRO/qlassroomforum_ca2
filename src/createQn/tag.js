@@ -1,7 +1,7 @@
-function bold(props) {
+function tag(props) {
     return (
         <strong>{props.value}</strong>
     )
 }
 
-export default bold;
+export default tag;
