@@ -1,7 +1,11 @@
-function tag(props) {
+import './TagDropdown.css'
+
+function Tag(props) {
     return (
-        <strong>{props.value}</strong>
+        <span contentEditable='false' className=" d-inline-block tag-name px-2 me-2 rounded" >
+            {props.tag}
+        </span>
     )
 }
 
-export default tag;
+export default Tag;

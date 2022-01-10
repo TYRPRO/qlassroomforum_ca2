@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+
 import './TagDropdown.css'
 
 function TagDropdown(props) {
@@ -10,7 +10,7 @@ function TagDropdown(props) {
         <div  className="w-100 position-relative">
             <div className=" rounded position-absolute py-2 px-4 w-100 bg-white shadow border">
                 <div className="row">
-                    {tags.map((shown_tag) => <TagDropdownTag key={shown_tag + "key"} tag={shown_tag} handleSelect={handleSelect}/> /* <TagDropdownTag tag_name={shown_tag} handleSelect={handleSelect} /> */ )}
+                    {tags.map((shown_tag) => <TagDropdownTag tag={shown_tag} handleSelect={handleSelect}/> /* <TagDropdownTag tag_name={shown_tag} handleSelect={handleSelect} /> */ )}
                 </div>
             </div>
         </div>

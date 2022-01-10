@@ -6,6 +6,7 @@ import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import AddLinkIcon from '@mui/icons-material/AddLink';
 import TagDropdown from './createQn/TagDropdown';
+import Tag from './createQn/tag';
 
 function CreateQn() {
 
@@ -80,7 +81,12 @@ function CreateQn() {
                 <div className=' form-text mt-0'>
                   Add some tags to help others find your question.
                 </div>
-                <div contentEditable='true' className='form-control'></div>
+                <div className='form-control d-flex'> 
+
+                  {selected_tags.map((selected_tags) => <Tag tag={selected_tags}></Tag>)}
+                  <p contentEditable='true' className='mb-0 px-3 bg-secondary text-white'></p>
+
+                </div>
                 <TagDropdown tags={tags} handleSelect={addTagSelect}></TagDropdown>
               </div>
             </form>
@@ -115,21 +121,37 @@ function CreateQn() {
   function addTagSelect(tag) {
     var temp_selected_tags = selected_tags;
     var temp_tags = [];
-    console.log(tags);
 
     for(var i = 0; i < tags.length; i++) {
       if(tags[i] == tag) {
 
       }else {
-        console.log('pushing in');
-        temp_tags.push(tag);
+        temp_tags.push(tags[i]);
       }
     }
+
     temp_selected_tags.push(tag);
 
     set_tags(temp_tags);
     set_selected_tags(temp_selected_tags);
-    console.log(selected_tags);
+  }
+
+  function removeTagSelect(tag) {
+    var temp_selected_tags = [];
+    var temp_tags = tags;
+
+    for(var i = 0; i < selected_tags.length; i++) {
+      if(selected_tags[i] == tag) {
+
+      }else {
+        temp_selected_tags.push(selected_tags[i]);
+      }
+    }
+
+    temp_tags.push(tag);
+
+    set_tags(temp_tags);
+    set_selected_tags(temp_selected_tags);
   }
 
   function onlyInEditor() {
