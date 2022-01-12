@@ -1,44 +1,64 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
+
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import AddLinkIcon from '@mui/icons-material/AddLink';
+import FunctionsIcon from '@mui/icons-material/Functions';
+
 import TagDropdown from './createQn/TagDropdown';
 import Tag from './createQn/tag';
+import EquationEditor from './createQn/EquationEditor';
+
+import { MathJax, MathJaxContext } from 'better-react-mathjax'
 
 function CreateQn() {
+  const config = {
+    loader: {load: ['input/asciimath']}
+  }
 
+  // console.log(MathJax);
 
   const [qnTitle, set_qnTitle] = useState('');
   const [qnBody, set_qnBody] = useState([]);
   const [selected, set_selected] = useState();
 
+
+  const [subjects, set_subjects] = useState(["Mathematics", "Physics", "Chemistry"])
+  const [selected_subject, set_selected_subject] = useState("Mathematics");
+
+
+  const [grades, set_grades] = useState(["Placeholder", "Secondary 3 - Express", "Secondary 3 - N(A)", "Secondary 4 - Express", "Secondary 4 - N(A)"]);
+  const [selected_grade, set_selected_grade] = useState('Placeholder');
+
   const [tags, set_tags] = useState(["Whole Numbers", "Measurement", "Geometry", "Fractions", "Speed"]);
   const [selected_tags, set_selected_tags] = useState([]);
-  const [shown_tags, set_shown_tags] = useState(["Whole Numbers", "Measurement", "Geometry", "Fractions", "Speed"]);
 
-  // useEffect(() => {
-  //   console.log('editing shown_tags');
-  //   var temp_shown_tag = shown_tags;
-  //   for (var i = 0; i < tags.length; i++) {
-  //     var skip = false;
-  //     for (var x = 0; x < selected_tags.length; x++) {
+  const [openDropdown, set_openDropdown] = useState(false);
+  const [hideEquationEditor, set_hideEquationEditor] = useState(true);
 
-  //       if (tags[i].name === selected_tags[x]) {
-  //         skip = true;
+
+  const ref_qnBody = useRef(null)
+  const ref_tags = useRef(null);
+  // function loseFocus(ref, callback,) {
+  //   useEffect(() => {
+  //     function handleLosefocus(event) {
+  //       if(ref.current && !ref.current.contains(event.target)) {
+  //         callback();
   //       }
   //     }
 
-  //     if (!skip) {
-  //       temp_shown_tag.push(tags[i]);
+  //     document.addEventListener('mousedown', handleLosefocus);
+  //     return () => {
+  //       document.removeEventListener('mousedown', handleLosefocus);
   //     }
+  //   })
+  // }
 
-  //   }
-  //   set_shown_tags(temp_shown_tag);
-  //   console.log(shown_tags);
-  // }, [selected_tags])
+  const [eqnContainerCount, set_eqnContainerCount] = useState(0);
+
 
   return (
     <div className="container">
@@ -48,7 +68,19 @@ function CreateQn() {
           <div className=' bg-white py-3 px-4 shadow-sm border'>
             <form>
               <div className="form-group">
-                <label htmlFor='qn_title'>Question Title</label>
+
+                <label className='wip'>Subject</label>
+                <div className='form-text mt-0'>
+                  Select the subject of your question.
+                </div>
+                <div>
+                  <select className=' form-select'>
+                    {subjects.map((subject) => <option onClick={() => { set_selected_subject(subject) }}>{subject}</option>)}
+                  </select>
+                </div>
+
+
+                <label htmlFor='qn_title' className='mt-3'>Question Title</label>
                 <div className=' form-text mt-0'>
                   Be specific and imagine you are asking a question to another person.
                 </div>
@@ -70,30 +102,52 @@ function CreateQn() {
                       <div className='btn btn-outline-secondary border-0' onClick={() => { modifyDesign('createLink') }}>
                         <AddLinkIcon />
                       </div>
+                      <div className='btn btn-outline-secondary border-0' onClick={() => { createEqnContainer() }}>
+                        <FunctionsIcon />
+                      </div>
 
                     </div>
                   </div>
-                  <div contentEditable='true' id='qn_body_textarea' className='form-control' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
+                  <div ref={ref_qnBody} contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
                   </div>
                 </div>
+
+                <label className='wip mt-3'>Grade</label>
+                <div className='form-text mt-0'>
+                  Select the grade level that best fits your question.
+                </div>
+                <div>
+                  <select className=' form-select'>
+                    {grades.map((grade) => <option onClick={() => { set_selected_grade(grade) }}>{grade}</option>)}
+                  </select>
+                </div>
+
+
 
                 <label className='wip mt-3'>Tags</label>
                 <div className=' form-text mt-0'>
                   Add some tags to help others find your question.
                 </div>
-                <div className='form-control d-flex'> 
+                <div className='form-control d-flex flex-wrap' tabIndex={0} onClick={() => set_openDropdown(openDropdown ? false : true)}>
 
-                  {selected_tags.map((selected_tags) => <Tag tag={selected_tags}></Tag>)}
+                  {selected_tags.map((selected_tags) => <Tag tag={selected_tags} handleRemove={removeTagSelect}></Tag>)}
                   <p contentEditable='true' className='mb-0 px-3 bg-secondary text-white'></p>
 
                 </div>
-                <TagDropdown tags={tags} handleSelect={addTagSelect}></TagDropdown>
+                {openDropdown ? <TagDropdown tags={tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false) }}></TagDropdown> : null}
               </div>
+
+
+
             </form>
           </div>
+          <button className='btn btn-primary shadow-sm mt-4'>Review your question</button>
         </div>
         <div className='col-lg-4'>
           <h5 >Left</h5>
+          <MathJaxContext config={config}>
+            <MathJax>{"`(10)/(4x) approx 2^(12)`"}</MathJax>
+          </MathJaxContext>
         </div>
       </div>
       <div className="modal fade" id="add_url" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -113,6 +167,7 @@ function CreateQn() {
           </div>
         </div>
       </div>
+      <EquationEditor toAppend={`eqn_container${eqnContainerCount}`} toIncrease={[eqnContainerCount, set_eqnContainerCount]} hide={hideEquationEditor} handleBlur={set_hideEquationEditor}></EquationEditor>
     </div>
 
   );
@@ -122,10 +177,10 @@ function CreateQn() {
     var temp_selected_tags = selected_tags;
     var temp_tags = [];
 
-    for(var i = 0; i < tags.length; i++) {
-      if(tags[i] == tag) {
+    for (var i = 0; i < tags.length; i++) {
+      if (tags[i] == tag) {
 
-      }else {
+      } else {
         temp_tags.push(tags[i]);
       }
     }
@@ -140,10 +195,10 @@ function CreateQn() {
     var temp_selected_tags = [];
     var temp_tags = tags;
 
-    for(var i = 0; i < selected_tags.length; i++) {
-      if(selected_tags[i] == tag) {
+    for (var i = 0; i < selected_tags.length; i++) {
+      if (selected_tags[i] == tag) {
 
-      }else {
+      } else {
         temp_selected_tags.push(selected_tags[i]);
       }
     }
@@ -237,6 +292,16 @@ function CreateQn() {
     console.log('removing format');
     document.execCommand('removeFormat', false);
   }
+
+  
+  function createEqnContainer() {
+    var node = `
+    &zwj;<span class='d-inline' contentEditable='false' id="eqn_container${eqnContainerCount}"></span>&zwj;
+    `
+
+    document.getElementById('qn_body_textarea').innerHTML = document.getElementById('qn_body_textarea').innerHTML + node;
+    set_hideEquationEditor(false);
+  } 
 
   // Don't delete these functions. The current method of changing design is not supported by W3C.
   // Most browsers are phasing out execCommand();

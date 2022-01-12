@@ -6,3 +6,8 @@
     background-color: #e1ecf4;
     color: #39739d;
 }
+
+.btn-tag-del:hover {
+    background-color: #39739d;
+    color: white;
+}

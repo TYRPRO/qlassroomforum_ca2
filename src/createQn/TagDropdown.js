@@ -4,13 +4,13 @@ import './TagDropdown.css'
 function TagDropdown(props) {
     var tags = props.tags;
     var handleSelect = props.handleSelect;
-    console.log("Rendering TagDropdown");
+    var handleDropdown = props.handleDropdown;
 
     return (
         <div  className="w-100 position-relative">
-            <div className=" rounded position-absolute py-2 px-4 w-100 bg-white shadow border">
+            <div tabIndex={0} onBlur={handleDropdown} className=" rounded position-absolute py-2 px-4 w-100 bg-white shadow border">
                 <div className="row">
-                    {tags.map((shown_tag) => <TagDropdownTag tag={shown_tag} handleSelect={handleSelect}/> /* <TagDropdownTag tag_name={shown_tag} handleSelect={handleSelect} /> */ )}
+                    {tags.map((shown_tag) => <TagDropdownTag tag={shown_tag} handleSelect={handleSelect} /> /* <TagDropdownTag tag_name={shown_tag} handleSelect={handleSelect} /> */ )}
                 </div>
             </div>
         </div>
