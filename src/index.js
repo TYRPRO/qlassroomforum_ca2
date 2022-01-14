@@ -10,6 +10,7 @@ import {
   Link
 } from "react-router-dom"
 import CreateQn from './CreateQn.js';
+import ViewQn from './ViewQn.js'
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,13 +19,15 @@ ReactDOM.render(
         <nav>
           <ul>
             <li><Link to="Home">App</Link></li>
-          <li><Link to="CreateQn">Create QN</Link></li>
+            <li><Link to="CreateQn">Create QN</Link></li>
+            <li><Link to="posts/1">Post</Link></li>
           </ul>
         </nav>
       </div>
       <Routes>
         <Route path="/Home" element={<App />}></Route>
         <Route path="/CreateQn" element={<CreateQn />}></Route>
+        <Route path="/posts/:post_id" element={<ViewQn />}></Route>
       </Routes>
     </BrowserRouter>
 

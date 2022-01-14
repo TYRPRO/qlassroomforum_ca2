@@ -13,5 +13,6 @@ code {
 }
 
 .wip {
-  color: red;
+  background-color: chocolate;
+  color: white;
 }

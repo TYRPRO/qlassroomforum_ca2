@@ -13,22 +13,18 @@ import Tag from './createQn/tag';
 import EquationEditor from './createQn/EquationEditor';
 
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
+import DOMPurify from 'dompurify';
+import axios from 'axios';
 
 function CreateQn() {
   const config = {
-    loader: {load: ['input/asciimath']}
+    loader: { load: ['input/asciimath'] }
   }
-
-  // console.log(MathJax);
-
-  const [qnTitle, set_qnTitle] = useState('');
-  const [qnBody, set_qnBody] = useState([]);
-  const [selected, set_selected] = useState();
-
 
   const [subjects, set_subjects] = useState(["Mathematics", "Physics", "Chemistry"])
   const [selected_subject, set_selected_subject] = useState("Mathematics");
 
+  const [qnTitle, set_qnTitle] = useState('');
 
   const [grades, set_grades] = useState(["Placeholder", "Secondary 3 - Express", "Secondary 3 - N(A)", "Secondary 4 - Express", "Secondary 4 - N(A)"]);
   const [selected_grade, set_selected_grade] = useState('Placeholder');
@@ -36,29 +32,22 @@ function CreateQn() {
   const [tags, set_tags] = useState(["Whole Numbers", "Measurement", "Geometry", "Fractions", "Speed"]);
   const [selected_tags, set_selected_tags] = useState([]);
 
+
+  //  Rich Text Editor Stores selected text.
+  const [selected, set_selected] = useState(null);
+
+  // Handles displaying of tag dropdown.
   const [openDropdown, set_openDropdown] = useState(false);
+
+  // Handles displaying of equation editor.
   const [hideEquationEditor, set_hideEquationEditor] = useState(true);
 
 
-  const ref_qnBody = useRef(null)
-  const ref_tags = useRef(null);
-  // function loseFocus(ref, callback,) {
-  //   useEffect(() => {
-  //     function handleLosefocus(event) {
-  //       if(ref.current && !ref.current.contains(event.target)) {
-  //         callback();
-  //       }
-  //     }
-
-  //     document.addEventListener('mousedown', handleLosefocus);
-  //     return () => {
-  //       document.removeEventListener('mousedown', handleLosefocus);
-  //     }
-  //   })
-  // }
-
   const [eqnContainerCount, set_eqnContainerCount] = useState(0);
 
+  function handleChange_qnTitle(event) {
+    set_qnTitle(event.target.value);
+  }
 
   return (
     <div className="container">
@@ -84,7 +73,7 @@ function CreateQn() {
                 <div className=' form-text mt-0'>
                   Be specific and imagine you are asking a question to another person.
                 </div>
-                <input type="text" name='qn_title' className=' form-control' placeholder={'e.g. Find the intercept between y=2x and 12=2y+x. '}></input>
+                <input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={'e.g. Find the intercept between y=2x and 12=2y+x. '}></input>
 
                 <label htmlFor='qn_body' className='mt-2'>Body</label>
                 <div className=' form-text mt-0'>
@@ -108,7 +97,7 @@ function CreateQn() {
 
                     </div>
                   </div>
-                  <div ref={ref_qnBody} contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
+                  <div contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
                   </div>
                 </div>
 
@@ -141,7 +130,7 @@ function CreateQn() {
 
             </form>
           </div>
-          <button className='btn btn-primary shadow-sm mt-4'>Review your question</button>
+          <button onClick={submitPost} className='btn btn-primary shadow-sm mt-4'>Review your question</button>
         </div>
         <div className='col-lg-4'>
           <h5 >Left</h5>
@@ -293,7 +282,7 @@ function CreateQn() {
     document.execCommand('removeFormat', false);
   }
 
-  
+
   function createEqnContainer() {
     var node = `
     &zwj;<span class='d-inline' contentEditable='false' id="eqn_container${eqnContainerCount}"></span>&zwj;
@@ -301,10 +290,35 @@ function CreateQn() {
 
     document.getElementById('qn_body_textarea').innerHTML = document.getElementById('qn_body_textarea').innerHTML + node;
     set_hideEquationEditor(false);
-  } 
+  }
 
-  // Don't delete these functions. The current method of changing design is not supported by W3C.
-  // Most browsers are phasing out execCommand();
+  function submitPost() {
+
+
+    // Sanitizes body input
+    var qnBody = document.getElementById('qn_body_textarea').innerHTML;
+    qnBody = DOMPurify.sanitize(qnBody);
+
+    // Temporary user_id;
+    var user_id = 1;
+
+    // Temporary forum_id;
+    var forum_id = 1
+
+    axios.post('http://localhost:8000/posts', {
+      title: qnTitle,
+      content: qnBody,
+      user_id: user_id,
+      subforum_id: forum_id
+    }).then(function (response) {
+      console.log(response);
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  // don't delete these functions. The current method of changing design is not supported by W3C.
+  // browsers are phasing out execCommand();
 
   //   function highlightText() {
   // //    if(onlyInEditor()) {
