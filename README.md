@@ -23,6 +23,7 @@ text
 Which is basically varchar but with an extrememly long limit (about 1GB's worth)
 
 There's also an additional array datatype for every other datatype. Kinda like how Java has String, and for array it's String[]
+
 Postgresql has text[], boolean[], character varying[], etc.
 
 ### Default Values in Postgresql
