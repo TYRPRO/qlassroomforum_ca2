@@ -91,7 +91,7 @@ Click on the columns tab to add columns to the table. There is a plus sign on th
 After creating a new column, you can edit the column name, its data type, NOT NULL, PRIMARY KEY and default value:
 ![image](https://user-images.githubusercontent.com/87083745/149626571-fcacf5ec-4545-40bf-8403-b79648c5f0e1.png)
 In the image shown above, character varying is equivalent to varchar in mysql, but the size of the varchar is to be declared under the Length/Precision field, next to the data type.
-Do remember that for default values
+Do remember that for default values:
 1. UUID uses
 ```
 uuid_generate_v4()
