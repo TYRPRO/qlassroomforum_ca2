@@ -78,6 +78,19 @@ Right click on Schemas under your database and click on Create > Schema:
 
 Enter a schema name and click save.
 
+## Setting schema as default schema
+When you use ElephantSQL, it might default to the public schema. If you want the sql query to go to the right schema, you have to set it as a default:  
+1. Right click on any table and click on Query Tool:  
+![image](https://user-images.githubusercontent.com/87083745/149628520-61b057ae-4b48-47b4-b43e-5b16622bb7e3.png)
+
+2. Enter this line of query:
+> ALTER ROLE your_role SET search_path = my_schema, "$user", public;
+
+Where your_role is ElephantSQL's database username, my_schema is your schema name, and "$user" is also your database username (replace _user_ and retain the dollar sign as well as the double quotes).  
+3. Execute the query by clicking on the play button:  
+![image](https://user-images.githubusercontent.com/87083745/149628659-3fd6aadc-0848-4262-b272-ef9a0767afd3.png)
+
+
 ## Creating a table within a schema
 Under your newly created schema, right click on Tables, then click Create > Table:  
 ![image](https://user-images.githubusercontent.com/87083745/149625927-763e8c09-2d0a-4ac7-b5dc-c250be0ec702.png)
