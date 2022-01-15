@@ -3,14 +3,11 @@ import { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
 
-import FormatBoldIcon from '@mui/icons-material/FormatBold';
-import FormatItalicIcon from '@mui/icons-material/FormatItalic';
-import AddLinkIcon from '@mui/icons-material/AddLink';
-import FunctionsIcon from '@mui/icons-material/Functions';
+
 
 import TagDropdown from './createQn/TagDropdown';
 import Tag from './createQn/tag';
-import EquationEditor from './createQn/EquationEditor';
+import TextEditor from './Components/Editor';
 
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import DOMPurify from 'dompurify';
@@ -25,6 +22,7 @@ function CreateQn() {
   const [selected_subject, set_selected_subject] = useState("Mathematics");
 
   const [qnTitle, set_qnTitle] = useState('');
+  const [qnBody, set_qnBody] = useState('');
 
   const [grades, set_grades] = useState(["Placeholder", "Secondary 3 - Express", "Secondary 3 - N(A)", "Secondary 4 - Express", "Secondary 4 - N(A)"]);
   const [selected_grade, set_selected_grade] = useState('Placeholder');
@@ -39,11 +37,8 @@ function CreateQn() {
   // Handles displaying of tag dropdown.
   const [openDropdown, set_openDropdown] = useState(false);
 
-  // Handles displaying of equation editor.
-  const [hideEquationEditor, set_hideEquationEditor] = useState(true);
 
 
-  const [eqnContainerCount, set_eqnContainerCount] = useState(0);
 
   function handleChange_qnTitle(event) {
     set_qnTitle(event.target.value);
@@ -79,27 +74,7 @@ function CreateQn() {
                 <div className=' form-text mt-0'>
                   Include all the information someone would need to answer your question
                 </div>
-                <div id='wysiwyg_editor'>
-                  <div className='border w-100 rounded-top'>
-                    <div id='editor_toolbar' className=' btn-group'>
-                      <div className='btn btn-outline-secondary border-0' onClick={() => { modifyDesign('bold') }}>
-                        <FormatBoldIcon />
-                      </div>
-                      <div className='btn btn-outline-secondary border-0' onClick={() => { modifyDesign('italic') }}>
-                        <FormatItalicIcon />
-                      </div>
-                      <div className='btn btn-outline-secondary border-0' onClick={() => { modifyDesign('createLink') }}>
-                        <AddLinkIcon />
-                      </div>
-                      <div className='btn btn-outline-secondary border-0' onClick={() => { createEqnContainer() }}>
-                        <FunctionsIcon />
-                      </div>
-
-                    </div>
-                  </div>
-                  <div contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
-                  </div>
-                </div>
+                <TextEditor storeInput={set_qnBody}/>
 
                 <label className='wip mt-3'>Grade</label>
                 <div className='form-text mt-0'>
@@ -139,24 +114,6 @@ function CreateQn() {
           </MathJaxContext>
         </div>
       </div>
-      <div className="modal fade" id="add_url" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="staticBackdropLabel">Insert Link</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-            </div>
-            <div className="modal-body">
-              <input id='wysiwyg_link' type='url' className='form-control' placeholder='https://www.qlassroom.ai/'></input>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => clearFormatting(true)}>Clear Formatting</button>
-              <button type="button" id='addLinkBtn' className="btn btn-primary" onClick={addURL}>Add Link</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <EquationEditor toAppend={`eqn_container${eqnContainerCount}`} toIncrease={[eqnContainerCount, set_eqnContainerCount]} hide={hideEquationEditor} handleBlur={set_hideEquationEditor}></EquationEditor>
     </div>
 
   );
@@ -227,8 +184,6 @@ function CreateQn() {
     return null;
   }
 
-
-
   function modifyDesign(action) {
 
     if (action === 'createLink') {
@@ -257,20 +212,7 @@ function CreateQn() {
   }
 
 
-  function addURL() {
 
-    var link_url = document.getElementById('wysiwyg_link').value;
-    console.log(link_url);
-
-    var link_modal_element = document.getElementById('add_url');
-    var link_modal = Modal.getInstance(link_modal_element);
-    link_modal.toggle();
-
-    restoreSelection();
-
-    document.execCommand('createLink', false, link_url);
-
-  }
 
   function clearFormatting(removeLink) {
     if (removeLink) {
@@ -283,14 +225,6 @@ function CreateQn() {
   }
 
 
-  function createEqnContainer() {
-    var node = `
-    &zwj;<span class='d-inline' contentEditable='false' id="eqn_container${eqnContainerCount}"></span>&zwj;
-    `
-
-    document.getElementById('qn_body_textarea').innerHTML = document.getElementById('qn_body_textarea').innerHTML + node;
-    set_hideEquationEditor(false);
-  }
 
   function submitPost() {
 
@@ -317,75 +251,6 @@ function CreateQn() {
     });
   }
 
-  // don't delete these functions. The current method of changing design is not supported by W3C.
-  // browsers are phasing out execCommand();
-
-  //   function highlightText() {
-  // //    if(onlyInEditor()) {
-
-  //       var text_area = document.getElementById('qn_body_textarea').innerHTML;
-  //       console.log(text_area)
-  //       var store_br = [...text_area.matchAll(new RegExp(/<br>/, 'gi'))].map(a => a.index)
-  //       console.log(store_br);
-
-
-  //       var array_qn_body = document.getElementById('qn_body_textarea').innerHTML.split('');
-  //       var selected = window.getSelection().getRangeAt(0);
-  //       console.log(array_qn_body)
-  //       array_qn_body[selected.startOffset] = '<b>' + array_qn_body[selected.startOffset];
-  //       array_qn_body[selected.endOffset] = array_qn_body[selected.endOffset] + '</b>';
-  //       console.log(array_qn_body);
-  //       var string_output = array_qn_body.join('');
-  //       console.log(string_output);
-
-  //       document.getElementById('qn_body_textarea').innerHTML = string_output;
-  //     }
-  // //  }
-
-  // function highlightText() {
-  //   var selected = window.getSelection();
-  //   var selected_range = selected.getRangeAt(0);
-  //   var text_area = document.getElementById('qn_body_textarea');
-
-
-  //   var startOffset = selected_range.startOffset;
-  //   var endOffset = selected_range.endOffset;
-  //   for(var i = startOffset; i < endOffset; i++ ) {
-  //     var range = document.createRange();
-  //     range.setStart(text_area, i);
-  //     range.setEnd(text_area, i);
-  //     range.surroundContents(document.createElement('b'));
-
-  //   }
-  //   // selected.surroundContents(document.createElement('strong'));
-  // }
-
-  // function highlightText() {
-
-  //   console.log(window.getSelection());
-  //   console.log(window.getSelection().getRangeAt(0));
-  //   var selected_range = window.getSelection().getRangeAt(0);
-  //   var startOffset = selected_range.startOffset;
-  //   var endOffset = selected_range.endOffset;
-  //   var text_area = document.getElementById('qn_body_textarea');
-
-
-  //   var array_split = []
-  //   var start_split = text_area.innerText.slice(0, startOffset);
-  //   array_split.push(start_split);
-
-  //   for(var i = startOffset; i < endOffset; i++ ) {
-  //     var selected_split = text_area.innerText.slice(i, i+1);
-  //     array_split.push('<b>' + selected_split + '</b>');
-  //   }
-  //   var end_split = text_area.innerText.slice(endOffset);
-  //   array_split.push(end_split);
-
-
-  //   //var selected_split = text_area.innerText.slice(startOffset, endOffset);
-  //   console.log(array_split);
-  //   text_area.innerHTML = array_split.join('');
-  // }
 
 }
 export default CreateQn;

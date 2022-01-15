@@ -65,7 +65,7 @@ function EquationEditor(props) {
         ReactDOM.render(<EqnOutput/>, document.getElementById(append_ref));
         console.log(props.toIncrease)
         props.toIncrease[1](props.toIncrease[0] + 1);
-
+        props.handleChange();
     }
 
 
