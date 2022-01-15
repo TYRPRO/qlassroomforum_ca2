@@ -43,52 +43,52 @@ Head over to [Pgadmin 4's Windows download page](https://www.postgresql.org/ftp/
 Run the installer and then open the application (can be found in the start menu)
 
 ## Connecting to ElephantSQL Online Database
-Upon startup, you should see this:
+Upon startup, you should see this:  
 ![image](https://user-images.githubusercontent.com/87083745/149625483-576d187b-01dd-492b-b5e5-1b226489e1a3.png)
 
 DO NOT SKIP THIS STEP! If you do skip this step, you will not be able to connect to a database. Although you are given the option to click cancel please don't, and make a master password.
 
-Once you key in your master password, click on "Add new server":
+Once you key in your master password, click on "Add new server":  
 ![image](https://user-images.githubusercontent.com/87083745/149625560-0d5e23a6-6f8e-47ed-8a28-fcc09d20bda8.png)
 
-You'll be promted to fill in the following:
-Server Name (Can be anything)
+You'll be promted to fill in the following:  
+Server Name (Can be anything)  
 ![image](https://user-images.githubusercontent.com/87083745/149625580-97eb8ce6-f2a8-4f99-a600-63ed08ee3229.png)
 
-Server connection details:
+Server connection details:  
 ![image](https://user-images.githubusercontent.com/87083745/149625618-3238fce1-96c0-413c-9420-40d43c78f11e.png)
 
 **Please get your connection details from whoever set up the database.**
 
-Fill in the Hostname, Maintenance Database, Username and Password. In elephantSQL's case, Maintenance Database and Username are the same:
+Fill in the Hostname, Maintenance Database, Username and Password. In elephantSQL's case, Maintenance Database and Username are the same:  
 ![image](https://user-images.githubusercontent.com/87083745/149625716-66cedab8-162f-4d16-8122-3ca6a7f3533a.png)
 
 Click on save and you are done!
 
 ## Accessing Database
-Access your database on the left side panel:
+Access your database on the left side panel:  
 ![image](https://user-images.githubusercontent.com/87083745/149625782-ac488b14-22a0-4a9b-aaea-d26e55d5c6af.png)
 
-Keep scrolling down until you see your database:
+Keep scrolling down until you see your database:  
 ![image](https://user-images.githubusercontent.com/87083745/149625808-87c9a090-6d6c-4040-a294-e78061ebe9b6.png)
 
 ## Create a new schema:
-Right click on Schemas under your database and click on Create > Schema:
+Right click on Schemas under your database and click on Create > Schema:  
 ![image](https://user-images.githubusercontent.com/87083745/149625866-c7f9ef6c-bb4a-4cc1-b70e-c45bd87246bd.png)
 
 Enter a schema name and click save.
 
 ## Creating a table within a schema
-Under your newly created schema, right click on Tables, then click Create > Table:
+Under your newly created schema, right click on Tables, then click Create > Table:  
 ![image](https://user-images.githubusercontent.com/87083745/149625927-763e8c09-2d0a-4ac7-b5dc-c250be0ec702.png)
 
-Enter your table name:
+Enter your table name:  
 ![image](https://user-images.githubusercontent.com/87083745/149625939-e81a3745-499c-47f9-b02f-7390a2b145a4.png)
 
-Click on the columns tab to add columns to the table. There is a plus sign on the right to create a new column.
+Click on the columns tab to add columns to the table. There is a plus sign on the right to create a new column.  
 ![image](https://user-images.githubusercontent.com/87083745/149625973-7f905944-c860-4969-8189-7fc41e9f2429.png)
 
-After creating a new column, you can edit the column name, its data type, NOT NULL, PRIMARY KEY and default value:
+After creating a new column, you can edit the column name, its data type, NOT NULL, PRIMARY KEY and default value:  
 ![image](https://user-images.githubusercontent.com/87083745/149626571-fcacf5ec-4545-40bf-8403-b79648c5f0e1.png)
 In the image shown above, character varying is equivalent to varchar in mysql, but the size of the varchar is to be declared under the Length/Precision field, next to the data type.
 Do remember that for default values:
@@ -103,30 +103,29 @@ CURRENT_TIMESTAMP
 3. Any string default values use single quotes to enclose the string, like 'male', 'admin', etc.
 
 ## Foreign Keys
-Under the Contraints tab, go to the Foreign Keys sub-tab. You should see a plus button on the right to add a new contraint:
+Under the Contraints tab, go to the Foreign Keys sub-tab. You should see a plus button on the right to add a new contraint:  
 ![image](https://user-images.githubusercontent.com/87083745/149626131-4ad432f0-52dd-4d1a-8d66-a901252a86ad.png)
 
 Steps to add a Foreign Key Contraint:
 1. Click on the + button
 2. Enter the name of the contraint (Can be anything, but make sure it is meaningful.)
-3. Click on the pencil on the same row to the left, next to the bin:
+3. Click on the pencil on the same row to the left, next to the bin:  
 ![image](https://user-images.githubusercontent.com/87083745/149626196-d41aa9fc-24d2-4594-b4a3-d9d935e776a8.png)
-4. Click on the Columns tab and select the foreign key in the table, followed by the table it references, followed by the column of said reference table. Then click on Add:
+4. Click on the Columns tab and select the foreign key in the table, followed by the table it references, followed by the column of said reference table. Then click on Add:  
 ![image](https://user-images.githubusercontent.com/87083745/149626242-9aae1e54-3d33-4882-9d86-29d58b0cb56d.png)
-5. Then go to the actions tab under the edit panel and set the actions for ON UPDATE and ON DELETE:
+5. Then go to the actions tab under the edit panel and set the actions for ON UPDATE and ON DELETE:  
 ![image](https://user-images.githubusercontent.com/87083745/149626286-a5e8b943-79d7-4d86-9816-f9b599d6b4ff.png)
 
-**NOTES
-1: Once you add a Contraint and you save the Table changes, you _CANNOT_ edit ON UPDATE and ON DELETE actions anymore. If you wish to edit them, delete the existing Contraint for that column and then make a new Contraint
-2: If you are trying to do a self-referencing Constraint, create the table first, then edit the table to have a self-referencing Constraint. Not doing so will result in Pgadmin not showing the table you are trying to self-reference as Pgadmin doesn't see it as an existing table.
-**
+**NOTES**  
+**1: Once you add a Contraint and you save the Table changes, you _CANNOT_ edit ON UPDATE and ON DELETE actions anymore. If you wish to edit them, delete the existing Contraint for that column and then make a new Contraint**  
+**2: If you are trying to do a self-referencing Constraint, create the table first, then edit the table to have a self-referencing Constraint. Not doing so will result in Pgadmin not showing the table you are trying to self-reference as Pgadmin doesn't see it as an existing table.**
 
 ## Editing a table's properties (columns, contraints, etc)
-Right click on the table and click Properties:
+Right click on the table and click Properties:  
 ![image](https://user-images.githubusercontent.com/87083745/149626492-34a25168-b0a3-462a-9588-6c509b0ce270.png)
 
 ## Editing a table's values:
-Right click on the table and click View/Edit Data, followed by the number of rows you want:
+Right click on the table and click View/Edit Data, followed by the number of rows you want:  
 ![image](https://user-images.githubusercontent.com/87083745/149626516-06a01b18-2941-4ef7-96d1-83a66b768b2e.png)
 
 
