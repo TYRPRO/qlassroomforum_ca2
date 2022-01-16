@@ -1,3 +1,4 @@
+
 # Guide to postgresql
 
 Hello there, we are now using Postgresql instead of MySQL! There are a few notable changes:
@@ -145,15 +146,3 @@ Right click on the table and click View/Edit Data, followed by the number of row
 
 ## End
 If you have any questions, feel free to ask Adam.
-
-
-
-
-
-
-
-
-
-
-
-
