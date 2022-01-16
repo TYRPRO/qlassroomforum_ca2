@@ -20,7 +20,7 @@ if (process.env.PORT != null){
 }
 else{
     const hostname="localhost";
-    const port=3000;
+    const port=8000;
     app.listen(port,hostname,function(){
     console.log(`Server hosted at http://${hostname}:${port}`);
 });
