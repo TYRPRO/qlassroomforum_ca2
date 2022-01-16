@@ -131,7 +131,7 @@ Steps to add a Foreign Key Contraint:
 
 **NOTES**  
 **1: Once you add a Contraint and you save the Table changes, you _CANNOT_ edit ON UPDATE and ON DELETE actions anymore. If you wish to edit them, delete the existing Contraint for that column and then make a new Contraint**  
-**2: If you are trying to do a self-referencing Constraint, create the table first, then edit the table to have a self-referencing Constraint. Not doing so will result in pgAdmin not showing the table you are trying to self-reference as Pgadmin doesn't see it as an existing table.**
+**2: If you are trying to do a self-referencing Constraint, create the table first, then edit the table to have a self-referencing Constraint. Not doing so will result in pgAdmin not showing the table you are trying to self-reference as Pgadmin doesn't see it as an existing table.**  
 **3: pgAdmin will not allow you to add multiple Contraints that are from different tables at one go. E.g A column references the User table and another column references the Subforum table. If you add a Contraint with an FK referencing the User table, you need to save the table, go back to the table properties and then re-add another FK Contraint referencing the Subforum table.**
 
 ## Editing a table's properties (columns, contraints, etc)
