@@ -20,6 +20,8 @@ function ViewQn() {
     const [answer_input, set_answer_input] = useState('');
     const [refreshAnswers, set_refreshAnswers] = useState(false);
 
+
+    // Somne comment
     useEffect(() => {
         axios.get(`http://localhost:8000/posts/${post_id}`)
             .then(function (response) {
