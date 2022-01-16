@@ -5,6 +5,8 @@ import './viewQn/viewQn.css'
 
 import parseTime from './helperFunctions/parseTime';
 import Answer from './viewQn/Answer.js';
+import Editor from './Components/Editor.js';
+import DOMPurify from 'dompurify';
 
 function ViewQn() {
 
@@ -13,6 +15,10 @@ function ViewQn() {
     const [post_title, set_post_title] = useState('');
     const [post_content, set_post_content] = useState('');
     const [post_created_at, set_post_created_at] = useState('');
+    const [answers, set_answers] = useState([]);
+
+    const [answer_input, set_answer_input] = useState('');
+    const [refreshAnswers, set_refreshAnswers] = useState(false);
 
     useEffect(() => {
         axios.get(`http://localhost:8000/posts/${post_id}`)
@@ -22,7 +28,7 @@ function ViewQn() {
                 set_post_title(data.post_title);
                 set_post_content(data.post_content);
 
-                var parsedTime = parseTime(data.created_at);
+                var parsedTime = parseTime(data.post_created_at);
                 set_post_created_at(parsedTime);
 
             }).catch(function (error) {
@@ -30,7 +36,17 @@ function ViewQn() {
             })
     }, [])
 
-    const [answers, set_answers] = useState(["I think this question sucks", "True", "Yeah I don't know"]);
+    useEffect(() => {
+        axios.get(`http://localhost:8000/answers/posts/${post_id}`)
+            .then(function (response) {
+                var data = response.data
+                set_answers(data);
+            }).catch(function (error) {
+                console.log(error);
+            })
+    }, [refreshAnswers])
+
+
 
     return (
         <div className="container-fluid">
@@ -100,9 +116,14 @@ function ViewQn() {
                                     </div>
                                 </div>
                                 <div className='mt-1'>
-                                    <h5 className='mb-3'>9 Answers</h5>
+                                    <h5 className='mb-3'>{answers.length} Answers</h5>
                                     <div>
                                         {answers.map((answer, index) => <Answer key={index} answer={answer} />)}
+                                    </div>
+                                    <div>
+                                        <h5>Your Answer</h5>
+                                        <Editor storeInput={set_answer_input}></Editor>
+                                        <button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
                                     </div>
                                 </div>
 
@@ -123,6 +144,28 @@ function ViewQn() {
 
         </div>
     )
+
+
+    function submitAnswer() {
+        
+        // Temp User ID
+        var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
+        var post_id = "c059519c-6793-4ef8-9026-14869d61f28a"
+        var answer_content = DOMPurify.sanitize(answer_input);
+
+
+        axios.post("http://localhost:8000/answers", {
+            user_id: user_id,
+            post_id: post_id,
+            answer: answer_content
+        }).then(function (response) {
+            console.log(response);
+            set_refreshAnswers(!refreshAnswers);
+        }).catch(function (error) {
+            console.log(error);
+        })
+
+    }
 }
 
 export default ViewQn;

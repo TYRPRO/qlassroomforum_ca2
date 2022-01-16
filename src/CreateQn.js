@@ -234,10 +234,10 @@ function CreateQn() {
     qnBody = DOMPurify.sanitize(qnBody);
 
     // Temporary user_id;
-    var user_id = 1;
+    var user_id = '16f59363-c0a4-406a-ae65-b662c6b070cd';
 
     // Temporary forum_id;
-    var forum_id = 1
+    var forum_id = "8a9e9024-8216-4a73-a5bc-3a3a55c8a23e"
 
     axios.post('http://localhost:8000/posts', {
       title: qnTitle,

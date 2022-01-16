@@ -21,7 +21,7 @@ ReactDOM.render(
           <ul>
             <li><Link to="Home">App</Link></li>
             <li><Link to="CreateQn">Create QN</Link></li>
-            <li><Link to="posts/1">Post</Link></li>
+            <li><Link to="posts/c059519c-6793-4ef8-9026-14869d61f28a">Post</Link></li>
           </ul>
         </nav>
       </div>

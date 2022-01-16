@@ -2,9 +2,11 @@ import './viewQn.css'
 import { useState } from 'react';
 function Answer(props) {
 
+    console.log(props)
 
     const [addComment, setAddComment] = useState(false);
-    //props.comments
+    var answer_info = props.answer;
+
     var AnswerComments = ["something cool", 'another comment']
     return (
         <div className="qn-answer">
@@ -15,7 +17,7 @@ function Answer(props) {
                     <a className="text-center d-block py-1 post-downvote" id="post_downvote"><i className="fas fa-arrow-down text-dark" /></a>
                 </div>
                 <div className="col-10">
-                    <p className='qn-content'>{props.answer}</p>
+                    <p className='qn-content' dangerouslySetInnerHTML={{__html: answer_info.answer}}></p>
                     <div className="row">
                         <div className="col-7"></div>
                         <div className='col-5'>
@@ -28,8 +30,9 @@ function Answer(props) {
                                         </div>
                                     </div>
                                     <div className='col-9'>
-                                        <p className='mb-0'>Name</p>
-                                        <p className='mb-0'>Points ###</p>
+                                        <small className='mb-0'>{answer_info.User.first_name} {answer_info.User.last_name}</small>
+                                        <br></br>
+                                        <small className='mb-0 text-secondary'>Points ###</small>
                                     </div>
                                 </div>
                             </div>
@@ -37,14 +40,14 @@ function Answer(props) {
 
                     </div>
                     {AnswerComments.length > 0 ? <hr className='mb-1'></hr> : null}
-                    {AnswerComments.map((comment) => <AnswerComment comment={comment} />)}
+                    {AnswerComments.map((comment,index) => <AnswerComment key={index} comment={comment} />)}
                     {addComment ?
                         <div className=' input-group'>
                             <input className='form-control' placeholder='Comment on this answer?'></input>
                             <button className='btn btn-outline-secondary'>Submit</button>
                         </div>
                         :
-                        <button onClick={() => setAddComment(true)}>Add Comment</button>
+                        <button className='btn btn-light text-primary' onClick={() => setAddComment(true)}>Add Comment</button>
                     }
 
 
