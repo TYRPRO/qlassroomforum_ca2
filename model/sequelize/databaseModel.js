@@ -5,7 +5,7 @@ const { Sequelize, Model, DataTypes, BOOLEAN } = require("sequelize");
 const database = "ijlipomt";
 const user = "ijlipomt";
 const password = "e_rRJlw0RbrjeYODCGlFzBk4zcFPC8H8";
-const host = "john.db.elephantsql.comm";
+const host = "john.db.elephantsql.com";
 
 const sequelize = new Sequelize("postgres://ijlipomt:e_rRJlw0RbrjeYODCGlFzBk4zcFPC8H8@john.db.elephantsql.com:5432/ijlipomt", {
   pool: {
