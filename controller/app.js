@@ -6,7 +6,12 @@
 
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
+
+const bodyParser = require('body-parser');
+
+const post = require('./post');
+const answer = require('./answer');
+
 
 //-----------------------------------
 // Middleware functions
@@ -39,7 +44,12 @@ app.get("/", (req, res) => {
 	res.end();
 });
 
+
 app.use("/subforum", subforum);
+app.use('/posts', post)
+app.use('/answers', answer)
+
+
 
 //-----------------------------------
 // exports

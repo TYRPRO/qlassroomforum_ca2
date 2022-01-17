@@ -18,10 +18,11 @@ if (process.env.PORT != null) {
 		console.log(`Server hosted on heroku!`);
 	});
 }
-else {
-	const hostname = "localhost";
-	const port = 3000;
-	app.listen(port, hostname, function () {
-		console.log(`Server hosted at http://${hostname}:${port}`);
-	});
+
+else{
+    const hostname="localhost";
+    const port=8000;
+    app.listen(port,hostname,function(){
+    console.log(`Server hosted at http://${hostname}:${port}`);
+});
 }
