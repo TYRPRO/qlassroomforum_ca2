@@ -10,6 +10,8 @@ const bodyParser = require('body-parser');
 
 const post = require('./post');
 const answer = require('./answer');
+const grade = require('./grade');
+const subforum = require('./subforum');
 
 //-----------------------------------
 // Middleware functions
@@ -18,6 +20,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 const printDebugInfo = require('./middleware/printDebugInfo');
 var jsonParser = bodyParser.json();
 var cors = require('cors');
+
 
 //-----------------------------------
 // MF configurations
@@ -45,6 +48,8 @@ app.get('/', (req, res) => {
 
 app.use('/posts', post)
 app.use('/answers', answer)
+app.use('/grade', grade)
+app.use('/subforum', subforum)
 
 
 //-----------------------------------

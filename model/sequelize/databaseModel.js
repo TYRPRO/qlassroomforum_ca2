@@ -7,19 +7,22 @@ const user = "ijlipomt";
 const password = "e_rRJlw0RbrjeYODCGlFzBk4zcFPC8H8";
 const host = "john.db.elephantsql.com";
 
-const sequelize = new Sequelize("postgres://ijlipomt:e_rRJlw0RbrjeYODCGlFzBk4zcFPC8H8@john.db.elephantsql.com:5432/ijlipomt", {
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 1000,
-  },
-  define: {
-    freezeTableName: true,
-    createdAt: false,
-    updatedAt: false,
-  },
-});
+const sequelize = new Sequelize(
+  "postgres://ijlipomt:e_rRJlw0RbrjeYODCGlFzBk4zcFPC8H8@john.db.elephantsql.com:5432/ijlipomt",
+  {
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 1000,
+    },
+    define: {
+      freezeTableName: true,
+      createdAt: false,
+      updatedAt: false,
+    },
+  }
+);
 
 // Checks Connection to Database
 async function checkConnection() {
@@ -85,7 +88,7 @@ const Post = sequelize.define("Post", {
   post_id: {
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
-    allowNull:true,
+    allowNull: true,
     primaryKey: true,
   },
   fk_subforum_id: {
@@ -115,14 +118,14 @@ const Post = sequelize.define("Post", {
   post_is_answered: {
     type: DataTypes.BOOLEAN,
     allowNull: true,
-  }
+  },
 });
 
 const Answer = sequelize.define("Answer", {
   answer_id: {
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
-    allowNull:true,
+    allowNull: true,
     primaryKey: true,
   },
   fk_post_id: {
@@ -140,19 +143,50 @@ const Answer = sequelize.define("Answer", {
   answer_created_at: {
     type: DataTypes.DATE,
     allowNull: true,
-  }
+  },
 });
 
-Answer.belongsTo(Post, { foreignKey: 'fk_post_id' });
-Post.hasMany(Answer, { foreignKey: 'fk_post_id' });
+const Grade = sequelize.define("Grade", {
+  grade_id: {
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    allowNull: true,
+    primaryKey: true,
+  },
+  grade_name: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+  },
+});
 
-Answer.belongsTo(User, { foreignKey: 'fk_user_id' });
-User.hasMany(Answer, { foreignKey: 'fk_user_id' });
+const Subforum = sequelize.define("Subforum", {
+	subforum_id: {
+	  type: DataTypes.UUID,
+	  defaultValue: Sequelize.UUIDV4,
+	  allowNull: true,
+	  primaryKey: true,
+	},
+	subforum_name: {
+	  type: DataTypes.STRING(255),
+	  allowNull: false,
+	},
+  });
 
-Post.belongsTo(User, { foreignKey: 'fk_user_id' });
-User.hasMany(Post, { foreignKey: 'fk_user_id' });
 
+Answer.belongsTo(Post, { foreignKey: "fk_post_id" });
+Post.hasMany(Answer, { foreignKey: "fk_post_id" });
 
+Answer.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasMany(Answer, { foreignKey: "fk_user_id" });
+
+Post.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasMany(Post, { foreignKey: "fk_user_id" });
+
+Post.belongsTo(Grade, { foreignKey: "fk_grade_id" });
+Grade.hasMany(Post, { foreignKey: "fk_grade_id" });
+
+Subforum.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasMany(Subforum, { foreignKey: "fk_user_id" });
 
 async function syncing() {
   await User.sync();
