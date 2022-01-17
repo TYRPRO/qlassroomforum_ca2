@@ -54,9 +54,14 @@ function ViewQn() {
 		axios.post("http://localhost:8000/posts/filter/home",
 			ChannelFilterData)
 			.then(res => {
-				console.log(res.data);
+				var data = res.data[0];
+				set_post_title(data.post_title);
+				set_post_content(data.post_content);
+
+				var parsedTime = parseTime(data.post_created_at);
+				set_post_created_at(parsedTime);
 			}).catch(function (error) {
-				console.log(error);
+				set_post_title("DLL");
 				console.log(error.response);
 			});
 	};
