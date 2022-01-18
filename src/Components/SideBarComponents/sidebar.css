@@ -1,0 +1,38 @@
+#layer1 {
+    width: 50px;
+    height: 100vh;
+    z-index: 2;
+}
+
+#layer2 {
+    position: absolute;
+    width: 160px;
+    height: 100vh;
+    z-index: -1;
+    left: -120px;
+    transition: left 0.5s ease-in-out;
+}
+
+#layer1:focus-within~#layer2 {
+    left: 50px;
+    z-index: 1;
+}
+
+#layer2:hover {
+    width: 200px;
+}
+
+#home, #help {
+    width: 35px;
+    height: 35px;
+}
+
+#forum, #chat, #blog {
+    width: 130px;
+    height: 35px;
+}
+
+/* .rotated {
+    transform: rotate(deg);
+    background-color: pink;
+} */
