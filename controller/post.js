@@ -79,9 +79,6 @@ router.post("/upload_image", upload.single("image"), printDebugInfo, (req, res) 
 				res.status(201).send(result);
 				//result: { success: true, media_url: media_url, content_type: content_type }
 			}
-			else if (!result.success){
-				res.status(500).send(result);
-			}
 			else {
 				res.status(500).send(err);
 				//result: { success: false, message: message }
