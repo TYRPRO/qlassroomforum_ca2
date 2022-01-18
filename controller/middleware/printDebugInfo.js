@@ -1,4 +1,3 @@
-//Qlassroom Forum
 function printDebugInfo(req, res, next) {
 	try {
 		console.log();
@@ -23,4 +22,5 @@ function printDebugInfo(req, res, next) {
 		next();
 	}
 }
+
 module.exports = printDebugInfo;

@@ -3,7 +3,6 @@ const router = express.Router();
 const subforum = require("../model/subforum");
 const printDebugInfo = require("./middleware/printDebugInfo");
 
-
 router.post("/create", printDebugInfo, (req, res) => {
 	let { fk_user_id, subforum_name, subforum_description } = req.body;
 	let emptyErrMsg = ["", " cannot be empty! "];
@@ -62,6 +61,18 @@ router.post("/create", printDebugInfo, (req, res) => {
 	} catch {
 		res.status(400).send({ Error: "Bad Request Received." });
 	}
+});
+
+router.get("/:subforum_id/user/:fk_user_id", printDebugInfo, (req, res) => {
+	let { fk_user_id, subforum_id } = req.params;
+
+	subforum.checkIsOwner(fk_user_id, subforum_id, function (err, result) {
+		if (result) {
+			res.status(200).send({ Message: "Is Owner" });
+		} else {
+			res.status(500).send({ Error: "Is Not Owner" });
+		}
+	});
 });
 
 router.get("/", printDebugInfo, (req, res) => {

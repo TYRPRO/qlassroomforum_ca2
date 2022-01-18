@@ -2,10 +2,10 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
 // ElephantSQL Credentials
-const database = "ijlipomt";
-const user = "ijlipomt";
-const password = "e_rRJlw0RbrjeYODCGlFzBk4zcFPC8H8";
-const host = "john.db.elephantsql.com";
+// const database = "ijlipomt";
+// const user = "ijlipomt";
+// const password = "e_rRJlw0RbrjeYODCGlFzBk4zcFPC8H8";
+// const host = "john.db.elephantsql.com";
 
 
 const sequelize = new Sequelize("postgres://ijlipomt:e_rRJlw0RbrjeYODCGlFzBk4zcFPC8H8@john.db.elephantsql.com:5432/ijlipomt", {
@@ -116,7 +116,7 @@ const Post = sequelize.define("Post", {
 	post_id: {
 		type: DataTypes.UUID,
 		defaultValue: Sequelize.UUIDV4,
-		allowNull:true,
+		allowNull: true,
 		primaryKey: true,
 	},
 	fk_subforum_id: {
@@ -146,7 +146,24 @@ const Post = sequelize.define("Post", {
 	post_is_answered: {
 		type: DataTypes.BOOLEAN,
 		allowNull: true,
+	},
+	fk_grade_id: {
+		type: DataTypes.UUID,
+		allowNull: false,
+	},
+	post_rating: {
+		type: DataTypes.INTEGER,
+		allowNull: true,
+	},
+	post_answers_count: {
+		type: DataTypes.INTEGER,
+		allowNull: true,
+	},
+	fk_answer_id: {
+		type: DataTypes.UUID,
+		allowNull: true,
 	}
+
 });
 
 const Answer = sequelize.define("Answer", {
@@ -220,6 +237,7 @@ User.hasMany(Subforum, { foreignKey: "fk_user_id" });
 
 async function syncing() {
 	await User.sync();
+	await Subforum.sync();
 	console.log("Test synchronized successfully.");
 }
 syncing();

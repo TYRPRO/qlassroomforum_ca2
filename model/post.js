@@ -1,4 +1,57 @@
 var sequelize = require("./sequelize/databaseModel");
+<<<<<<< HEAD
+const { Post, User } = sequelize.models;
+
+var post = {
+	createPost: function (user_id, subforum_id, title, content, callback) {
+		Post.create({
+			post_title: title,
+			post_content: content,
+			fk_user_id: user_id,
+			fk_subforum_id: subforum_id,
+		}).then(function (result) {
+			return callback(null, result);
+		}).catch(function (err) {
+			return callback(err, null);
+		});
+	},
+	getPost: function (post_id, callback) {
+		Post.findOne({
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			where: { post_id: post_id },
+			include: [{
+				model: User,
+				required: true,
+				attributes: [["first_name", "first_name"]],
+			}]
+
+			// add include once user and subforums are made
+		}).then(function (result) {
+			return callback(null, result);
+		}).catch(function (err) {
+			return callback(err, null);
+		});
+	},
+	getAllSubforumPosts: function (fk_subforum_id, callback) {
+		Post.findAll({
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			where: { fk_subforum_id },
+			include: [{
+				model: User,
+				required: true,
+				attributes: [["first_name", "first_name"]],
+			}]
+
+			// add include once user and subforums are made
+		}).then(function (result) {
+			return callback(null, result);
+		}).catch(function (err) {
+			return callback(err, null);
+		});
+	}
+};
+
+=======
 const { Post } = sequelize.models;
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -121,5 +174,6 @@ var post = {
 		}
 	}
 };
+>>>>>>> e311f55d4a1de88325c4f0e55b01f0410a0ec5d4
 
 module.exports = post;

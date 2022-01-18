@@ -28,6 +28,18 @@ const subforum = {
 			}
 		});
 	},
+<<<<<<< HEAD
+	checkIsOwner: function (fk_user_id, subforum_id, callback){
+		Subforum.findOne({ where: { subforum_id, fk_user_id } }).then(function (result) {
+			if (result != null) {
+				result = true;
+				return callback(null, result);
+			} else {
+				return callback("duplicate", null);
+			}
+		});
+	},
+=======
 
 	// Function to get Subjects/Subforum for landing page Channel
 	getSubjects: function (callback) {
@@ -39,6 +51,7 @@ const subforum = {
 			return callback(err, null);
 		});
 	}
+>>>>>>> e311f55d4a1de88325c4f0e55b01f0410a0ec5d4
 };
 
 module.exports = subforum;
