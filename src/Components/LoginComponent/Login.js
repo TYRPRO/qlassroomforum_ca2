@@ -14,7 +14,7 @@ const Login = () => {
 	const baseUrl = [process.env.REACT_APP_BASEURL1, process.env.REACT_APP_BASEURL2];
   
 	function login() {
-		const url = `http://localhost:8000/api/login`;
+		const url = `http://localhost:8000/user/api/login`;
 		let email = document.getElementById("email").value;
 		let pwd = document.getElementById("pwd").value;
 

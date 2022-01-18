@@ -35,9 +35,12 @@ const store = createStore(allReducers, applyMiddleware(thunk));
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Header></Header>
+      {window.location.pathname !== "/login" && window.location.pathname !== "/signup" ? (
+        <Header />
+      ) : null}
       <BrowserRouter>
         <Routes>
+          <Route path="/Home" element={<App/>}></Route>
           <Route path="/CreateQn" element={<CreateQn />}></Route>
           <Route path="/posts/:post_id" element={<ViewQn />}></Route>
           <Route path="/myactivity" element={<MyActivity />} />
