@@ -73,7 +73,18 @@ router.get("/:subforum_id/user/:fk_user_id", printDebugInfo, (req, res) => {
 			res.status(500).send({ Error: "Is Not Owner" });
 		}
 	});
+});
 
+router.get("/", printDebugInfo, (req, res) => {
+	subforum.getSubjects((err, result) => {
+		if (err) {
+			console.log(err);
+			res.status(500).send(err);
+		}
+		else {
+			res.status(200).send(result);
+		}
+	});
 });
 
 module.exports = router;

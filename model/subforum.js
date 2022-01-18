@@ -28,6 +28,7 @@ const subforum = {
 			}
 		});
 	},
+<<<<<<< HEAD
 	checkIsOwner: function (fk_user_id, subforum_id, callback){
 		Subforum.findOne({ where: { subforum_id, fk_user_id } }).then(function (result) {
 			if (result != null) {
@@ -38,6 +39,19 @@ const subforum = {
 			}
 		});
 	},
+=======
+
+	// Function to get Subjects/Subforum for landing page Channel
+	getSubjects: function (callback) {
+		Subforum.findAll({
+			attributes: ["subforum_id", "subforum_name"],
+		}).then(function (result) {
+			return callback(null, result);
+		}).catch(function (err) {
+			return callback(err, null);
+		});
+	}
+>>>>>>> e311f55d4a1de88325c4f0e55b01f0410a0ec5d4
 };
 
 module.exports = subforum;
