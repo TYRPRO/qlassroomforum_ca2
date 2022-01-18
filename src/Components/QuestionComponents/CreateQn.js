@@ -7,7 +7,7 @@ import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
 
 import TagDropdown from './createQn/TagDropdown';
 import Tag from './createQn/tag';
-import TextEditor from './Components/Editor';
+import TextEditor from './Editor';
 
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import DOMPurify from 'dompurify';

@@ -1,0 +1,117 @@
+/* Tabs Styling */
+
+#tabs>li {
+    width: 19%;
+}
+
+#tabs>li.active {
+    border-bottom: solid 3px black;
+}
+
+button {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    color: lightskyblue;
+}
+
+#tabs>li>button {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+#tabs>li.active>button {
+    color: black;
+}
+
+/* Tabs Animation */
+
+#tabs>li:not(.active):after {
+    display: block;
+    content: '';
+    border-bottom: 3px solid lightskyblue;
+    transform: scaleX(0);
+    transition: transform 250ms ease-in-out;
+}
+
+#tabs>li:not(.active):hover:after {
+    transform: scaleX(1);
+}
+
+/* Tab Content Styling */
+
+.post:hover {
+    border: 1px solid #5a97cd;
+}
+
+.comment {
+    border: 1px solid #6a5acd35;
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+    background-color: #f8f9fa;
+}
+
+/* Pagination Styling */
+
+#pagination {
+    border-top: 2px solid lightgrey;
+    border-bottom: 2px solid lightgrey;
+}
+
+/* Voting Styling */
+
+.post-upvote:hover {
+    background-color: #6a5acd35;
+}
+
+.post-downvote:hover {
+    background-color: #6a5acd35;
+}
+
+.upvoted {
+    background-color: #734f96;
+}
+
+.upvoted i {
+    color: white !important;
+}
+
+.upvoted:hover {
+    background-color: #6a5acd35;
+    color: black !important;
+}
+
+.upvoted:hover i {
+    color: black !important;
+}
+
+.downvoted {
+    background-color: #734f96 !important;
+}
+
+.downvoted i {
+    color: white !important;
+}
+
+.downvoted:hover {
+    background-color: #6a5acd35 !important;
+    color: black !important;
+}
+
+.downvoted:hover i {
+    color: black !important;
+}
+
+/* Saved Questions Buttons Styling */
+
+.hoverable:hover {
+    background-color: #6a5acd35;
+}
+
+/* Link Styling */
+
+.clickable-link:hover {
+    text-decoration: underline;
+}
