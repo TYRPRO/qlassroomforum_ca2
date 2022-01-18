@@ -4,6 +4,20 @@ const router = express.Router();
 const post = require("../model/post");
 const printDebugInfo = require("./middleware/printDebugInfo");
 
+//Imports required for media upload
+const path = require("path");
+const multer = require("multer");
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, "./mediaUploadTemp/");
+	},
+	filename: function (req, file, cb) {
+		cb(null, Date.now() + path.extname(file.originalname)); //Appending extension
+	}
+});
+const upload = multer({ dest: "./mediaUploadTemp", storage: storage });
+const mediaUpload = require("./mediaUpload");
+
 router.post("/", printDebugInfo, (req, res) => {
 	var title = req.body.title;
 	var content = req.body.content;
@@ -70,7 +84,22 @@ router.get('/save/user/:user_id', printDebugInfo, (req, res) => {
     })
 =======
 	post.getPost(post_id, (err, result) => {
-		if(err) {
+		if (err) {
+			res.status(500).send(err);
+			console.log(err);
+		}
+		else {
+			res.status(200).send(result);
+		}
+	});
+
+});
+
+router.get("/getAllFromSubforum/:fk_subforum_id", printDebugInfo, (req, res) => {
+	var fk_subforum_id = req.params.fk_subforum_id;
+
+	post.getAllSubforumPosts(fk_subforum_id, (err, result) => {
+		if (err) {
 			res.status(500).send(err);
 			console.log(err);
 		}
@@ -80,6 +109,25 @@ router.get('/save/user/:user_id', printDebugInfo, (req, res) => {
 	});
 >>>>>>> e311f55d4a1de88325c4f0e55b01f0410a0ec5d4
 
+
+});
+
+router.post("/upload_image", upload.single("image"), printDebugInfo, (req, res) => {
+
+	var file = req.file;
+	if (file != null) {
+
+		mediaUpload(file, function (err, result) {
+			if (result) {
+				res.status(201).send(result);
+				//result: { success: true, media_url: media_url, content_type: content_type }
+			}
+			else {
+				res.status(500).send(err);
+				//result: { success: false, message: message }
+			}
+		});
+	}
 });
 
 router.post("/filter/home", printDebugInfo, (req, res) => {

@@ -128,7 +128,16 @@ const Post = sequelize.define("Post", {
 		type: DataTypes.INTEGER,
 		defaultValue: 0,
 		allowNull: true,
+	},
+	post_answers_count: {
+		type: DataTypes.INTEGER,
+		allowNull: true,
+	},
+	fk_answer_id: {
+		type: DataTypes.UUID,
+		allowNull: true,
 	}
+
 });
 
 const PostVote = sequelize.define("PostVote", {
@@ -304,6 +313,7 @@ User.hasMany(Subforum, { foreignKey: "fk_user_id" });
 
 async function syncing() {
 	await User.sync();
+	await Subforum.sync();
 	console.log("Test synchronized successfully.");
 }
 syncing();
