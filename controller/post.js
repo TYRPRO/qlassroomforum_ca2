@@ -28,7 +28,7 @@ router.get("/:post_id", printDebugInfo, (req, res) => {
 	var post_id = req.params.post_id;
 
 	post.getPost(post_id, (err, result) => {
-		if (err) {
+		if(err) {
 			res.status(500).send(err);
 			console.log(err);
 		}

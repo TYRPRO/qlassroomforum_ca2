@@ -3,6 +3,7 @@ const router = express.Router();
 const subforum = require("../model/subforum");
 const printDebugInfo = require("./middleware/printDebugInfo");
 
+
 router.post("/create", printDebugInfo, (req, res) => {
 	let { fk_user_id, subforum_name, subforum_description } = req.body;
 	let emptyErrMsg = ["", " cannot be empty! "];

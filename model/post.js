@@ -20,7 +20,6 @@ var post = {
 		Post.findOne({
 			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at"],
 			where: { post_id: post_id },
-
 			// add include once user and subforums are made
 		}).then(function (result) {
 			return callback(null, result);

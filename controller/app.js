@@ -8,6 +8,7 @@ const express = require("express");
 const app = express();
 
 const bodyParser = require("body-parser");
+const verify = require("./middleware/verify.js");
 const post = require("./post");
 const answer = require("./answer");
 const grade = require("./grade");
@@ -20,6 +21,7 @@ const subforum = require("./subforum");
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var jsonParser = bodyParser.json();
 var cors = require("cors");
+
 //-----------------------------------
 // MF configurations
 //-----------------------------------
@@ -36,7 +38,6 @@ app.use(cors());
 //default endpoint
 app.get("/", (req, res) => {
 	console.log("GET > " / " > Qlassroom Active");
-
 	res.status(200).send({
 		"Result": "GET > " / " > Qlassroom Active"
 	});
@@ -48,8 +49,6 @@ app.use("/answers", answer);
 app.use("/grade", grade);
 app.use("/subforum", subforum);
 app.use("/user", user);
-
-
 
 //-----------------------------------
 // exports

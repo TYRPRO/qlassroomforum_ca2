@@ -116,7 +116,7 @@ const Post = sequelize.define("Post", {
 	post_id: {
 		type: DataTypes.UUID,
 		defaultValue: Sequelize.UUIDV4,
-		allowNull: true,
+		allowNull:true,
 		primaryKey: true,
 	},
 	fk_subforum_id: {
@@ -217,7 +217,6 @@ Grade.hasMany(Post, { foreignKey: "fk_grade_id" });
 
 Subforum.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Subforum, { foreignKey: "fk_user_id" });
-
 
 async function syncing() {
 	await User.sync();
