@@ -28,6 +28,16 @@ const subforum = {
 			}
 		});
 	},
+	checkIsOwner: function (fk_user_id, subforum_id, callback){
+		Subforum.findOne({ where: { subforum_id, fk_user_id } }).then(function (result) {
+			if (result != null) {
+				result = true;
+				return callback(null, result);
+			} else {
+				return callback("duplicate", null);
+			}
+		});
+	},
 };
 
 module.exports = subforum;
