@@ -5,7 +5,7 @@ import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 //File Imports (CSS/Images)
-import "../../css/activity.css";
+import "./activity.css";
 
 //Child Imports
 import Question from "./MyActivityQuestions";
@@ -44,6 +44,13 @@ const Profile = () => {
     const [savedQuestionTotalPages, setSavedQuestionTotalPages] = useState(0);
     const [savedQuestionCurrentPage, setSavedQuestionCurrentPage] = useState(0);
 
+    //login info
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
+    const [user_id, setUserID] = useState(0);
+    const [role, setRole] = useState("");
+    const [acquireData, setAcquireData] = useState(false);
+
     function getUpdatesReceived() { }
 
     function getAnswersPosted() { }
@@ -51,6 +58,41 @@ const Profile = () => {
     function getAnswersAccepted() { }
 
     function getUpvotesGiven() { }
+
+    // login functions
+    function acquireUserData() {
+        var token = findCookie("token");
+
+        axios.get("http://localhost:8000/userData",
+            {
+                headers: { "Authorization": "Bearer " + token }
+            })
+            .then(response => {
+                var data = response.data;
+                setFirstname(data.first_name);
+                setLastname(data.last_name);
+                setUserID(data.user_id);
+                console.log("User ID is: " + data.user_id);
+                setRole(data.roles[0]);
+
+                setAcquireData(true);
+            })
+            .catch((err) => {
+                toast.error(err.response.data.message);
+                console.log(err.response.data.message);
+                window.location.assign('/login');
+            });
+    }
+
+    function findCookie(name) {
+        var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+        if (match) {
+            return (match[2]);
+        }
+        else {
+            return ("error");
+        }
+    }
 
     // Retrieve Tab Content Functions
 
@@ -74,9 +116,11 @@ const Profile = () => {
     }
 
     function getQuestions() {
+        if (!acquireData) {
+            return;
+        }
         toast.info("Retrieving Questions...");
-
-        axios.get(`${baseUrl[0]}/post/user/1`)
+        axios.get(`${baseUrl[0]}/post/user/${user_id}`)
             .then((data) => {
                 console.log(data.data);
                 var questions = data.data;
@@ -143,9 +187,12 @@ const Profile = () => {
     }
 
     function getAnswers() {
+        if (!acquireData) {
+            return;
+        }
         toast.info("Retrieving Answers...");
 
-        axios.get(`${baseUrl[0]}/comment/user/1`)
+        axios.get(`${baseUrl[0]}/comment/user/${user_id}`)
             .then((data) => {
                 console.log(data.data);
                 var answers = data.data;
@@ -189,9 +236,12 @@ const Profile = () => {
     }
 
     function getSavedQuestions() {
+        if (!acquireData) {
+            return;
+        }
         toast.info("Retrieving Saved Questions...");
 
-        axios.get(`${baseUrl[0]}/save/posts?user_id=1`)
+        axios.get(`${baseUrl[0]}/save/posts?user_id=${user_id}`)
             .then((data) => {
                 console.log(data.data);
                 var savedQuestions = data.data;
@@ -333,12 +383,15 @@ const Profile = () => {
 
     // Retrieves Page Content
 
+    useEffect(() => acquireUserData(), []);
+
     useEffect(() => {
         getQuestions();
         getAnswers();
         getSavedQuestions();
         console.log(baseUrl[0]);
-    }, []);
+
+    }, [acquireData]);
 
     // Changes Content Based on Tab Selected And Page Number
 

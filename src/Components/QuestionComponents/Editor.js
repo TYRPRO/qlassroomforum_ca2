@@ -4,7 +4,7 @@ import AddLinkIcon from '@mui/icons-material/AddLink';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import { useState, useRef} from 'react';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
-import EquationEditor from '../createQn/EquationEditor';
+import EquationEditor from './createQn/EquationEditor';
 
 
 function TextEditor(props) {
