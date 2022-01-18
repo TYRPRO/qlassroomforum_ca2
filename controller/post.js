@@ -28,7 +28,38 @@ router.get('/:post_id', printDebugInfo, (req, res) => {
     var post_id = req.params.post_id;
 
     post.getPost(post_id, (err, result) => {
-        if(err) {
+        if (err) {
+            res.status(500).send(err);
+            console.log(err);
+        }
+        else {
+            res.status(200).send(result)
+        }
+    })
+
+})
+
+router.get('/user/:user_id', printDebugInfo, (req, res) => {
+    var user_id = req.params.user_id;
+    console.log(user_id);
+
+    post.getAllPostByUser(user_id, (err, result) => {
+        if (err) {
+            res.status(500).send(err);
+            console.log(err);
+        }
+        else {
+            res.status(200).send(result)
+        }
+    })
+
+})
+
+router.get('/save/user/:user_id', printDebugInfo, (req, res) => {
+    var user_id = req.params.user_id;
+
+    post.getAllSavedPostByUser(user_id, (err, result) => {
+        if (err) {
             res.status(500).send(err);
             console.log(err);
         }
