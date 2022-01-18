@@ -75,7 +75,7 @@ router.post("/upload_image", upload.single("image"), printDebugInfo, (req, res) 
 	if (file != null) {
 
 		mediaUpload(file, function (err, result) {
-			if (result.success) {
+			if (result) {
 				res.status(201).send(result);
 				//result: { success: true, media_url: media_url, content_type: content_type }
 			}
