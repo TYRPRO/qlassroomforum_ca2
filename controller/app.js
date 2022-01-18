@@ -11,7 +11,7 @@ const bodyParser = require("body-parser");
 const verify = require("./middleware/verify.js");
 const post = require("./post");
 const answer = require("./answer");
-const grade = require("./grade");
+const subforum = require("./subforum");
 const user = require("./user.js");
 
 //-----------------------------------
@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
 
 app.use("/posts", post);
 app.use("/answers", answer);
-app.use("/grade", grade);
+app.use("/subforum", subforum);
 app.use("/user", user);
 
 //-----------------------------------
