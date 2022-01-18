@@ -110,7 +110,7 @@ const Channel = (props) => {
 			const FilterResult = {
 				subforum_id: SelectedSubject,
 				grade_id: SelectedGrade,
-				isanswered : selectUnanswered
+				isanswered: selectUnanswered
 			};
 			// Passing it to parent file
 			props.onFilterPost(FilterResult);
@@ -122,7 +122,7 @@ const Channel = (props) => {
 			const FilterResult = {
 				subforum_id: SelectedSubject,
 				grade_id: SelectedGrade,
-				isanswered : selectUnanswered
+				isanswered: selectUnanswered
 			};
 			// Passing it to parent file
 			props.onFilterPost(FilterResult);
@@ -133,9 +133,9 @@ const Channel = (props) => {
 
 	useEffect(() => {
 		//To minimize request spikes in database, added a temporary timeout
-		setTimeout(() => {
-			GetSubjects();
-		}, 500), GetGrades();
+
+		GetSubjects();
+		GetGrades();
 	}, []);
 
 	return (
@@ -155,7 +155,7 @@ const Channel = (props) => {
 					<br />
 					<label>Grade</label>
 					<div>
-						<select className="SelectGrade" id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event)=>GradeChange(event)}>
+						<select className="SelectGrade" id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event) => GradeChange(event)}>
 							<option value="default">Select All Grades</option>
 							{Grades.map((data) => (
 								<option key={data.grade_id} value={data.grade_id} >{data.grade_name}</option>
