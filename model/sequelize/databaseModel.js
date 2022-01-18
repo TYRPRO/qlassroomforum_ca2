@@ -153,7 +153,7 @@ const Answer = sequelize.define("Answer", {
 	answer_id: {
 		type: DataTypes.UUID,
 		defaultValue: Sequelize.UUIDV4,
-		allowNull:true,
+		allowNull: true,
 		primaryKey: true,
 	},
 	fk_post_id: {
@@ -172,6 +172,19 @@ const Answer = sequelize.define("Answer", {
 		type: DataTypes.DATE,
 		allowNull: true,
 	}
+});
+
+const Grade = sequelize.define("Grade", {
+	grade_id: {
+		type: DataTypes.UUID,
+		defaultValue: Sequelize.UUIDV4,
+		allowNull: true,
+		primaryKey: true,
+	},
+	grade_name: {
+		type: DataTypes.STRING(255),
+		allowNull: false,
+	},
 });
 
 const Authenticate = sequelize.define("Authenticate", {
@@ -196,9 +209,14 @@ User.hasMany(Answer, { foreignKey: "fk_user_id" });
 Post.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Post, { foreignKey: "fk_user_id" });
 
-Authenticate.belongsTo(User, { foreignKey : "fk_user_id" });
+Authenticate.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasOne(Authenticate, { foreignKey: "fk_user_id" });
 
+Post.belongsTo(Grade, { foreignKey: "fk_grade_id" });
+Grade.hasMany(Post, { foreignKey: "fk_grade_id" });
+
+Subforum.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasMany(Subforum, { foreignKey: "fk_user_id" });
 
 async function syncing() {
 	await User.sync();

@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const subforum = require("../model/subforum");
-const printDebugInfo = require("./printDebugInfo");
+const printDebugInfo = require("./middleware/printDebugInfo");
+
 
 router.post("/create", printDebugInfo, (req, res) => {
 	let { fk_user_id, subforum_name, subforum_description } = req.body;
@@ -61,6 +62,18 @@ router.post("/create", printDebugInfo, (req, res) => {
 	} catch {
 		res.status(400).send({ Error: "Bad Request Received." });
 	}
+});
+
+router.get("/", printDebugInfo, (req, res) => {
+	subforum.getSubjects((err, result) => {
+		if (err) {
+			console.log(err);
+			res.status(500).send(err);
+		}
+		else {
+			res.status(200).send(result);
+		}
+	});
 });
 
 module.exports = router;

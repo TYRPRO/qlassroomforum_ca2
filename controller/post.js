@@ -39,4 +39,27 @@ router.get("/:post_id", printDebugInfo, (req, res) => {
 
 });
 
+router.post("/filter/home", printDebugInfo, (req, res) => {
+	var subforum_id = req.body.subforum_id;
+	var grade_id = req.body.grade_id;
+	var isanswered = req.body.isanswered;
+	if (grade_id == undefined) {
+		grade_id = null;
+	}
+	if (isanswered == undefined) {
+		isanswered = null;
+	}
+	if (subforum_id == undefined) {
+		subforum_id = null;
+	}
+	post.getFilteredPost(subforum_id, grade_id, isanswered, (err, result) => {
+		if (err) {
+			res.status(500).send(err);
+			console.log(err);
+		} else {
+			res.status(200).send(result);
+		}
+	});
+});
+
 module.exports = router;
