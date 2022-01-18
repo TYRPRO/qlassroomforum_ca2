@@ -41,3 +41,5 @@ router.post("/api/login", printDebugInfo, function (req, res) {
 
 	});
 });
+
+module.exports = router;
