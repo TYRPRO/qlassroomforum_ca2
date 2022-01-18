@@ -13,7 +13,6 @@ const post = require("./post");
 const answer = require("./answer");
 const grade = require("./grade");
 const user = require("./user.js");
-const subforum = require("./subforum");
 
 //-----------------------------------
 // Middleware functions
@@ -47,7 +46,6 @@ app.get("/", (req, res) => {
 app.use("/posts", post);
 app.use("/answers", answer);
 app.use("/grade", grade);
-app.use("/subforum", subforum);
 app.use("/user", user);
 
 //-----------------------------------
