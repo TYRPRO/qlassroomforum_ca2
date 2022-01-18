@@ -10,29 +10,35 @@ import "./search.css";
 
 //Component Creation
 const Search = () => {
-	const [username, editUsername] = useState("");
-	const [user_id, editUserID] = useState(0);
-	const [fk_user_type_id, editUserType] = useState(0);
 	const [switched, editSwitched] = useState(false);
+	//login info
+	const [firstname, setFirstname] = useState("");
+	const [lastname, setLastname] = useState("");
+	const [user_id, setUserID] = useState(0);
+	const [role, setRole] = useState("");
+	const [acquireData, setAcquireData] = useState(false);
 
+	// login functions
 	function acquireUserData() {
 		var token = findCookie("token");
 
-		axios.get(`http://localhost:3000/userData`,
+		axios.get("http://localhost:8000/user/userData",
 			{
 				headers: { "Authorization": "Bearer " + token }
 			})
 			.then(response => {
 				var data = response.data;
-				editUsername(data.username);
-				editUserID(data.user_id);
-				editUserType(data.fk_user_type_id);
+				setFirstname(data.first_name);
+				setLastname(data.last_name);
+				setUserID(data.user_id);
+				setRole(data.roles);
 
+				setAcquireData(true);
 			})
 			.catch((err) => {
 				toast.error(err.response.data.message);
 				console.log(err.response.data.message);
-				window.location.assign('/login');
+				window.location.assign("/login");
 			});
 	}
 
@@ -237,8 +243,10 @@ const Search = () => {
 			});
 	}
 
-	useEffect(() => acquireUserData(), []);
-	useEffect(() => searchSubreaddits(), []);
+	useEffect(() => {
+		acquireUserData();
+		searchSubreaddits();
+	}, []);
 	return (
 		<React.Fragment>
 			<div className="container-xxl my-md-4">
