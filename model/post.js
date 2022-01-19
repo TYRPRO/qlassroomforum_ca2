@@ -51,6 +51,26 @@ var post = {
 			return callback(err, null);
 		});
 	},
+	getAllPosts: function (callback) {
+		// find multiple entries
+		Post.findAll({
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			include: [
+				{
+					model: User,
+					attributes: ["first_name", "last_name"]
+				},
+				{
+					model: Subforum,
+					attributes: ["subforum_name"]
+				}
+			],
+		}).then(function (result) {
+			return callback(null, result);
+		}).catch(function (err) {
+			return callback(err, null);
+		});
+	},
 	getAllPostByUser: function (user_id, callback) {
 		Post.findAll({
 			include: [
@@ -84,9 +104,10 @@ var post = {
 
 			// add include once user and subforums are made
 		}).then(function (result) {
-			return callback(null, result);
+			callback(result, null);
 		}).catch(function (err) {
-			return callback(err, null);
+			console.log(err);
+			callback(null, err);
 		});
 	},
 	getFilteredPost: function (subforum_id, grade_id, isanswered, callback) {
@@ -180,8 +201,29 @@ var post = {
 			});
 			break;
 		}
-	}
+	},
+	searchPost: function (title, callback) {
+		Post.findAll({
+			where: { post_title: { [Op.like]: "%" + title + "%" } },
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			include: [
+				{
+					model: User,
+					attributes: ["first_name", "last_name"]
+				},
+				{
+					model: Subforum,
+					attributes: ["subforum_name"]
+				}
+			],
+		}).then(function (result) {
+			console.log(result);
+			callback(null, result);
+		}).catch(function (err) {
+			console.log(err);
+			callback(err, null);
+		});
+	},
 };
-
 
 module.exports = post;
