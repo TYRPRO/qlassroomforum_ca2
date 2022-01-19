@@ -151,6 +151,36 @@ router.get("/:post_id", printDebugInfo, (req, res) => {
 
 });
 
+router.get("/user/:user_id", printDebugInfo, (req, res) => {
+	var user_id = req.params.user_id;
+	console.log(user_id);
+
+	post.getAllPostByUser(user_id, (err, result) => {
+		if (err) {
+			res.status(500).send(err);
+			console.log(err);
+		}
+		else {
+			res.status(200).send(result);
+		}
+	});
+
+});
+
+router.get("/save/user/:user_id", printDebugInfo, (req, res) => {
+	var user_id = req.params.user_id;
+
+	post.getAllSavedPostByUser(user_id, (err, result) => {
+		if (err) {
+			res.status(500).send(err);
+			console.log(err);
+		}
+		else {
+			res.status(200).send(result);
+		}
+	});
+});
+
 router.get("/getAllFromSubforum/:fk_subforum_id", printDebugInfo, (req, res) => {
 	var fk_subforum_id = req.params.fk_subforum_id;
 
@@ -163,7 +193,6 @@ router.get("/getAllFromSubforum/:fk_subforum_id", printDebugInfo, (req, res) => 
 			res.status(200).send(result);
 		}
 	});
-
 
 });
 

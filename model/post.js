@@ -1,6 +1,8 @@
 var sequelize = require("./sequelize/databaseModel");
-const { Post, User, Subforum } = sequelize.models;
-const { Op } = require("sequelize");
+
+const { Post, Subforum, SavedPost, User } = sequelize.models;
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 var post = {
 	createPost: function (user_id, subforum_id, title, content, callback) {
@@ -64,6 +66,44 @@ var post = {
 				}
 			],
 		}).then(function (result) {
+			return callback(null, result);
+		}).catch(function (err) {
+			return callback(err, null);
+		});
+	},
+	getAllPostByUser: function (user_id, callback) {
+		Post.findAll({
+			include: [
+				{
+					model: User,
+					attributes: ["user_id", "first_name", "last_name"],
+					where: { user_id: user_id },
+				},
+				{
+					model: Subforum,
+					attributes: ["subforum_id", "subforum_name"],
+				}
+			]
+
+			// add include once user and subforums are made
+		}).then(function (result) {
+			return callback(null, result);
+		}).catch(function (err) {
+			return callback(err, null);
+		});
+	},
+	getAllSavedPostByUser: function (user_id, callback) {
+		SavedPost.findAll({
+			include: [
+				{
+					model: User,
+					attributes: ["user_id", "first_name", "last_name"],
+					where: { user_id: user_id }
+				}
+			]
+
+			// add include once user and subforums are made
+		}).then(function (result) {
 			callback(result, null);
 		}).catch(function (err) {
 			console.log(err);
@@ -85,7 +125,7 @@ var post = {
 				return callback(null, result);
 			}).catch(function (err) {
 				return callback(err, null);
-			})
+			});
 			break;
 			// If user unselects subject, give all post results --  N Subforum, grades, unanswered 
 		case subforum_id == null && isanswered == null:
