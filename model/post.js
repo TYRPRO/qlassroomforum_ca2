@@ -1,6 +1,8 @@
 var sequelize = require("./sequelize/databaseModel");
-<<<<<<< HEAD
-const { Post, User } = sequelize.models;
+
+const { Post, Subforum, SavedPost, User } = sequelize.models;
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 var post = {
 	createPost: function (user_id, subforum_id, title, content, callback) {
@@ -48,31 +50,21 @@ var post = {
 		}).catch(function (err) {
 			return callback(err, null);
 		});
-	}
-};
-
-=======
-const { Post } = sequelize.models;
-const Sequelize = require("sequelize");
-const Op = Sequelize.Op;
-
-var post = {
-	createPost: function (user_id, subforum_id, title, content, callback) {
-		Post.create({
-			post_title: title,
-			post_content: content,
-			fk_user_id: user_id,
-			fk_subforum_id: subforum_id,
-		}).then(function (result) {
-			return callback(null, result);
-		}).catch(function (err) {
-			return callback(err, null);
-		});
 	},
-	getPost: function (post_id, callback) {
-		Post.findOne({
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at"],
-			where: { post_id: post_id },
+	getAllPostByUser: function (user_id, callback) {
+		Post.findAll({
+			include: [
+				{
+					model: User,
+					attributes: ["user_id", "first_name", "last_name"],
+					where: { user_id: user_id },
+				},
+				{
+					model: Subforum,
+					attributes: ["subforum_id", "subforum_name"],
+				}
+			]
+
 			// add include once user and subforums are made
 		}).then(function (result) {
 			return callback(null, result);
@@ -80,7 +72,23 @@ var post = {
 			return callback(err, null);
 		});
 	},
+	getAllSavedPostByUser: function (user_id, callback) {
+		SavedPost.findAll({
+			include: [
+				{
+					model: User,
+					attributes: ["user_id", "first_name", "last_name"],
+					where: { user_id: user_id }
+				}
+			]
 
+			// add include once user and subforums are made
+		}).then(function (result) {
+			return callback(null, result);
+		}).catch(function (err) {
+			return callback(err, null);
+		});
+	},
 	getFilteredPost: function (subforum_id, grade_id, isanswered, callback) {
 		switch (true) {
 		// If user only selects unanswered questions  -- N Subforum, grades | Y unanswered 
@@ -96,7 +104,7 @@ var post = {
 				return callback(null, result);
 			}).catch(function (err) {
 				return callback(err, null);
-			})
+			});
 			break;
 			// If user unselects subject, give all post results --  N Subforum, grades, unanswered 
 		case subforum_id == null && isanswered == null:
@@ -174,6 +182,6 @@ var post = {
 		}
 	}
 };
->>>>>>> e311f55d4a1de88325c4f0e55b01f0410a0ec5d4
+
 
 module.exports = post;

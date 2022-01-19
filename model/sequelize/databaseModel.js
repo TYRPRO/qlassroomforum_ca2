@@ -82,36 +82,6 @@ const User = sequelize.define("User", {
 	},
 });
 
-const Subforum = sequelize.define("Subforum", {
-	subforum_id: {
-		type: DataTypes.UUID,
-		allowNull: true,
-		primaryKey: true,
-		defaultValue: Sequelize.UUIDV4,
-		unique: true,
-	},
-	subforum_name: {
-		type: DataTypes.STRING(45),
-		allowNull: false,
-	},
-	fk_user_id: {
-		type: DataTypes.UUID,
-		allowNull: false,
-	},
-	subforum_description: {
-		type: DataTypes.STRING(100),
-		allowNull: false,
-	},
-	subforum_created_at: {
-		type: DataTypes.TIME,
-		allowNull: true,
-	},
-	subforum_followers_count: {
-		type: DataTypes.INTEGER,
-		allowNull: true,
-	},
-});
-
 const Post = sequelize.define("Post", {
 	post_id: {
 		type: DataTypes.UUID,
@@ -137,14 +107,17 @@ const Post = sequelize.define("Post", {
 	},
 	post_is_pinned: {
 		type: DataTypes.BOOLEAN,
+		defaultValue: false,
 		allowNull: true,
 	},
 	post_created_at: {
 		type: DataTypes.DATE,
+		defaultValue: Sequelize.CurrentTimestamp,
 		allowNull: true,
 	},
 	post_is_answered: {
 		type: DataTypes.BOOLEAN,
+		defaultValue: false,
 		allowNull: true,
 	},
 	fk_grade_id: {
@@ -153,6 +126,7 @@ const Post = sequelize.define("Post", {
 	},
 	post_rating: {
 		type: DataTypes.INTEGER,
+		defaultValue: 0,
 		allowNull: true,
 	},
 	post_answers_count: {
@@ -166,8 +140,29 @@ const Post = sequelize.define("Post", {
 
 });
 
-const Answer = sequelize.define("Answer", {
-	answer_id: {
+const PostVote = sequelize.define("PostVote", {
+	post_vote_id: {
+		type: DataTypes.UUID,
+		defaultValue: Sequelize.UUIDV4,
+		allowNull: true,
+		primaryKey: true,
+	},
+	vote_type: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false,
+	},
+	fk_user_id: {
+		type: DataTypes.UUID,
+		allowNull: false,
+	},
+	fk_post_id: {
+		type: DataTypes.UUID,
+		allowNull: false,
+	}
+});
+
+const SavedPost = sequelize.define("SavedPost", {
+	saved_post_id: {
 		type: DataTypes.UUID,
 		defaultValue: Sequelize.UUIDV4,
 		allowNull: true,
@@ -180,15 +175,68 @@ const Answer = sequelize.define("Answer", {
 	fk_user_id: {
 		type: DataTypes.UUID,
 		allowNull: false,
+	}
+});
+
+const Answer = sequelize.define("Answer", {
+	answer_id: {
+		type: DataTypes.UUID,
+		defaultValue: Sequelize.UUIDV4,
+		allowNull: true,
+		primaryKey: true,
 	},
 	answer: {
 		type: DataTypes.TEXT,
 		allowNull: false,
 	},
+	parent_answer_id: {
+		type: DataTypes.UUID,
+		allowNull: true,
+	},
+	fk_post_id: {
+		type: DataTypes.UUID,
+		allowNull: false,
+	},
+	fk_user_id: {
+		type: DataTypes.UUID,
+		allowNull: false,
+	},
 	answer_created_at: {
 		type: DataTypes.DATE,
+		defaultValue: Sequelize.CurrentTimestamp,
 		allowNull: true,
 	}
+});
+
+const Subforum = sequelize.define("Subforum", {
+	subforum_id: {
+		type: DataTypes.UUID,
+		defaultValue: Sequelize.UUIDV4,
+		allowNull: true,
+		primaryKey: true,
+	},
+	subforum_name: {
+		type: DataTypes.STRING(45),
+		allowNull: false,
+	},
+	fk_user_id: {
+		type: DataTypes.UUID,
+		allowNull: false,
+	},
+	subforum_description: {
+		type: DataTypes.STRING(100),
+		allowNull: false,
+	},
+	subforum_created_at: {
+		type: DataTypes.DATE,
+		defaultValue: Sequelize.CurrentTimestamp,
+		allowNull: true,
+	},
+	subforum_followers_count: {
+		type: DataTypes.INTEGER,
+		defaultValue: 0,
+		allowNull: false,
+	},
 });
 
 const Grade = sequelize.define("Grade", {
@@ -217,21 +265,49 @@ const Authenticate = sequelize.define("Authenticate", {
 
 });
 
+// Answer Table
+Answer.belongsTo(Post, { foreignKey: "fk_post_id" });
+Post.hasMany(Answer, { foreignKey: "fk_post_id" });
+
 Answer.belongsTo(Post, { foreignKey: "fk_post_id" });
 Post.hasMany(Answer, { foreignKey: "fk_post_id" });
 
 Answer.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Answer, { foreignKey: "fk_user_id" });
 
+
+// Post Table
 Post.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Post, { foreignKey: "fk_user_id" });
 
-Authenticate.belongsTo(User, { foreignKey: "fk_user_id" });
-User.hasOne(Authenticate, { foreignKey: "fk_user_id" });
+Post.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasMany(Post, { foreignKey: "fk_user_id" });
+
+Post.belongsTo(Subforum, {foreignKey: "fk_subforum_id"});
+Subforum.hasMany(Post, {foreignKey: "fk_subforum_id"});
 
 Post.belongsTo(Grade, { foreignKey: "fk_grade_id" });
 Grade.hasMany(Post, { foreignKey: "fk_grade_id" });
 
+// PostVote Table
+PostVote.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasMany(PostVote, { foreignKey: "fk_user_id" });
+
+PostVote.belongsTo(Post, { foreignKey: "fk_post_id" });
+Post.hasMany(PostVote, { foreignKey: "fk_post_id" });
+
+// SavedPost Table
+SavedPost.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasMany(SavedPost, { foreignKey: "fk_user_id" });
+
+SavedPost.belongsTo(Post, { foreignKey: "fk_post_id" });
+Post.hasMany(SavedPost, { foreignKey: "fk_post_id" });
+
+// Authenticate Table
+Authenticate.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasOne(Authenticate, { foreignKey: "fk_user_id" });
+
+// Subforum Table
 Subforum.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Subforum, { foreignKey: "fk_user_id" });
 
