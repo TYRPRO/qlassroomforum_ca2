@@ -18,6 +18,104 @@ const storage = multer.diskStorage({
 const upload = multer({ dest: "./mediaUploadTemp", storage: storage });
 const mediaUpload = require("./mediaUpload");
 
+//similarity
+function similarity(string, string2) {
+	var arr = string.split(" ");
+	var arr2 = string2.split(" ");
+	var checklst = [];
+	//loop for number of words in input string2
+	for (var count = 0; count < arr.length; count++) {
+		//loop for number of words in database string
+		for (var i = 0; i < arr2.length; i++) {
+			var longer = arr[count];
+			var shorter = arr2[i];
+			if (arr[count].length < arr2[i].length) {
+				longer = arr2[i];
+				shorter = arr[count];
+			}
+			var longerLength = longer.length;
+			var num = (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+			if (num > 0.4) {
+				checklst.push(num);
+			}
+		}
+		//run one check with the whole string intact
+		longer = arr[count];
+		shorter = string2;
+		if (arr[count].length < string2.length) {
+			longer = string2;
+			shorter = string;
+		}
+		var longerLength = longer.length;
+
+		var num = (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+		if (num > 0.4) {
+			checklst.push(num);
+		}
+	}
+	//run one check with the whole string2 intact
+	for (var i = 0; i < arr2.length; i++) {
+		var longer = string;
+		var shorter = arr2[i];
+		if (string.length < arr2[i].length) {
+			longer = arr2[i];
+			shorter = string;
+		}
+		var longerLength = longer.length;
+		var num = (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+		if (num > 0.4) {
+			checklst.push(num);
+		}
+	}
+	longer = string;
+	shorter = string2;
+	if (string.length < string2.length) {
+		longer = string2;
+		shorter = string;
+	}
+	var longerLength = longer.length;
+
+	var num = (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+	if (num > 0.4) {
+		checklst.push(num);
+	}
+
+	var result = 0;
+	for (var i = 0; i < checklst.length; i++) {
+		result += checklst[i];
+	}
+
+	return (result / checklst.length);
+}
+
+//Levenshtein Distance
+function editDistance(string, string2) {
+	string = string.toLowerCase();
+	string2 = string2.toLowerCase();
+
+	var costs = new Array();
+	for (var i = 0; i <= string.length; i++) {
+		var lastValue = i;
+		for (var j = 0; j <= string2.length; j++) {
+			if (i == 0)
+				costs[j] = j;
+			else {
+				if (j > 0) {
+					var newValue = costs[j - 1];
+					if (string.charAt(i - 1) != string2.charAt(j - 1))
+						newValue = Math.min(Math.min(newValue, lastValue),
+							costs[j]) + 1;
+					costs[j - 1] = lastValue;
+					lastValue = newValue;
+				}
+			}
+		}
+		if (i > 0)
+			costs[string2.length] = lastValue;
+	}
+	return costs[string2.length];
+}
+
 router.post("/", printDebugInfo, (req, res) => {
 	var title = req.body.title;
 	var content = req.body.content;
@@ -106,6 +204,40 @@ router.post("/filter/home", printDebugInfo, (req, res) => {
 			console.log(err);
 		} else {
 			res.status(200).send(result);
+		}
+	});
+});
+
+//get post searches
+router.get("/search/:word", printDebugInfo, function (req, res) {
+	var word = req.params.word;
+
+	post.searchPost(word, function (err, result) {
+		if (!err) {
+			res.status(200).send({ "Result": result });
+		} else {
+			res.status(500).send({ "message": "Error while searching for post" });
+		}
+	});
+
+});
+
+//smart search posts
+router.get("/SimilarSearch/:word", function (req, res) {
+	var word = req.params.word;
+
+	post.getAllPosts(function (result, err) {
+		if (!err) {
+			var newarr = [];
+			for (var i = 0; i < result.length; i++) {
+				if (similarity(word, result[i].post_title) > 0.4) {
+					result[i].similar = parseFloat(similarity(word, result[i].post_title));
+					newarr.push(result[i]);
+				}
+			}
+			res.status(200).send(newarr);
+		} else {
+			res.status(500).send({ "message": "Error in retrieving similar posts." });
 		}
 	});
 });

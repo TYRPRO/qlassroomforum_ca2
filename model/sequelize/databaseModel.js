@@ -235,6 +235,9 @@ Grade.hasMany(Post, { foreignKey: "fk_grade_id" });
 Subforum.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Subforum, { foreignKey: "fk_user_id" });
 
+Post.belongsTo(Subforum, { foreignKey: "fk_subforum_id" });
+Subforum.hasMany(Post, { foreignKey: "fk_subforum_id" });
+
 async function syncing() {
 	await User.sync();
 	await Subforum.sync();

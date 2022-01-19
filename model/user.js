@@ -1,11 +1,3 @@
-//ADES CA1 Play2Win
-console.log("---------------------------------");
-console.log(" ADES > CA1 > Qlassroom > model > user.js");
-console.log("---------------------------------");
-
-//-----------------------------------
-// imports
-//-----------------------------------
 var config = require("../config.js");
 var jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");

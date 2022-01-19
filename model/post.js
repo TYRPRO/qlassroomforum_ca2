@@ -1,6 +1,6 @@
 var sequelize = require("./sequelize/databaseModel");
-<<<<<<< HEAD
-const { Post, User } = sequelize.models;
+const { Post, User, Subforum } = sequelize.models;
+const { Op } = require("sequelize");
 
 var post = {
 	createPost: function (user_id, subforum_id, title, content, callback) {
@@ -48,39 +48,28 @@ var post = {
 		}).catch(function (err) {
 			return callback(err, null);
 		});
-	}
-};
-
-=======
-const { Post } = sequelize.models;
-const Sequelize = require("sequelize");
-const Op = Sequelize.Op;
-
-var post = {
-	createPost: function (user_id, subforum_id, title, content, callback) {
-		Post.create({
-			post_title: title,
-			post_content: content,
-			fk_user_id: user_id,
-			fk_subforum_id: subforum_id,
+	},
+	getAllPosts: function (callback) {
+		// find multiple entries
+		Post.findAll({
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			include: [
+				{
+					model: User,
+					attributes: ["first_name", "last_name"]
+				},
+				{
+					model: Subforum,
+					attributes: ["subforum_name"]
+				}
+			],
 		}).then(function (result) {
-			return callback(null, result);
+			callback(result, null);
 		}).catch(function (err) {
-			return callback(err, null);
+			console.log(err);
+			callback(null, err);
 		});
 	},
-	getPost: function (post_id, callback) {
-		Post.findOne({
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at"],
-			where: { post_id: post_id },
-			// add include once user and subforums are made
-		}).then(function (result) {
-			return callback(null, result);
-		}).catch(function (err) {
-			return callback(err, null);
-		});
-	},
-
 	getFilteredPost: function (subforum_id, grade_id, isanswered, callback) {
 		switch (true) {
 		// If user only selects unanswered questions  -- N Subforum, grades | Y unanswered 
@@ -172,8 +161,29 @@ var post = {
 			});
 			break;
 		}
-	}
+	},
+	searchPost: function (title, callback) {
+		Post.findAll({
+			where: { post_title: { [Op.like]: "%" + title + "%" } },
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			include: [
+				{
+					model: User,
+					attributes: ["first_name", "last_name"]
+				},
+				{
+					model: Subforum,
+					attributes: ["subforum_name"]
+				}
+			],
+		}).then(function (result) {
+			console.log(result);
+			callback(null, result);
+		}).catch(function (err) {
+			console.log(err);
+			callback(err, null);
+		});
+	},
 };
->>>>>>> e311f55d4a1de88325c4f0e55b01f0410a0ec5d4
 
 module.exports = post;
