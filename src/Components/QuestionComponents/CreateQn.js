@@ -8,6 +8,7 @@ import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
 import TagDropdown from './createQn/TagDropdown';
 import Tag from './createQn/tag';
 import TextEditor from './Editor';
+import QlassroomEditor from './EditorQuill_FORUM/EditorQuill';
 
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import DOMPurify from 'dompurify';
@@ -43,39 +44,39 @@ function CreateQn() {
 
 
 	useEffect(() => {
-		axios.get('https://testapi.qlassroom.ai/subject_grade')
-			.then(function (response) {
-				var subjects = response.data.subjectGrade;
-				var subject_keys = Object.keys(subjects);
+		// axios.get('https://testapi.qlassroom.ai/subject_grade')
+		// 	.then(function (response) {
+		// 		var subjects = response.data.subjectGrade;
+		// 		var subject_keys = Object.keys(subjects);
 
-				var tempSubjects = [];
-				var tempGrades = [];
-				var tempSubjectIds = [];
+		// 		var tempSubjects = [];
+		// 		var tempGrades = [];
+		// 		var tempSubjectIds = [];
 
-				for (let i = 0; i < subject_keys.length; i++) {
-					tempSubjects.push(Object.values(subjects)[i].subject_name)
-					tempGrades.push(Object.values(subjects)[i].grades)
-					tempSubjectIds.push(Object.values(subjects)[i].subject_id)
+		// 		for (let i = 0; i < subject_keys.length; i++) {
+		// 			tempSubjects.push(Object.values(subjects)[i].subject_name)
+		// 			tempGrades.push(Object.values(subjects)[i].grades)
+		// 			tempSubjectIds.push(Object.values(subjects)[i].subject_id)
 
-				}
+		// 		}
 
-				var tempShownGrades = [];
-				for (let i = 0; i < tempGrades[0].length; i++) {
-					tempShownGrades.push(tempGrades[0][i].grade_name)
-				}
+		// 		var tempShownGrades = [];
+		// 		for (let i = 0; i < tempGrades[0].length; i++) {
+		// 			tempShownGrades.push(tempGrades[0][i].grade_name)
+		// 		}
 
-				set_subjects(tempSubjects);
-				set_selected_subject(tempSubjects[0]);
-				set_subject_ids(tempSubjectIds);
+		// 		set_subjects(tempSubjects);
+		// 		set_selected_subject(tempSubjects[0]);
+		// 		set_subject_ids(tempSubjectIds);
 
-				set_grades(tempGrades);
-				set_shown_grades(tempShownGrades);
-			})
-			.catch(function (error) {
-				console.log(error);
+		// 		set_grades(tempGrades);
+		// 		set_shown_grades(tempShownGrades);
+		// 	})
+		// 	.catch(function (error) {
+		// 		console.log(error);
 
-			})
-		axios.get()
+		// 	})
+		// axios.get()
 	}, []);
 
 
@@ -141,6 +142,14 @@ function CreateQn() {
 
 	}, [selected_subject, selected_grade]);
 
+
+	function handleChangeEditor(html) {
+		set_qnBody({editorHtml: html});
+	}
+
+	const qn_body_textarea = useRef("");
+
+
 	return (
 		<div className="container">
 			<div className='row'>
@@ -182,7 +191,10 @@ function CreateQn() {
 								<div className=' form-text mt-0'>
 									Include all the information someone would need to answer your question
 								</div>
-								<TextEditor storeInput={set_qnBody} />
+								<QlassroomEditor customToolbarId={'testing'} handleContentChange={set_qnBody} contentHTML={qnBody}></QlassroomEditor>
+								{/* <TextEditor storeInput={set_qnBody} /> */}
+								{/* <div value={qnBody} ref={qn_body_textarea} contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
+								</div> */}
 
 
 

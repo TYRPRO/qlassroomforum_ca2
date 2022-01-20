@@ -1,0 +1,18 @@
+.forum-modal {
+	/* margin-left: 400px !important; */
+	margin : 32vh 18vw !important;
+	width: 64vw !important;
+	height: fit-content !important;
+	display: block !important;
+}
+
+.ql-editor {
+	height: 12vh;
+	overflow-y: scroll;
+	resize: vertical;
+}
+
+.ql-editing {
+	transform: translateX(150px) !important;
+	z-index: 10001;
+}
