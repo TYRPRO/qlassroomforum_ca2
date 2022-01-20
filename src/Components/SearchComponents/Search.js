@@ -1,22 +1,29 @@
+/* eslint-disable no-unused-vars */
 // Module Imports
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import { ToastContainer, toast, Slide } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 //File Imports (CSS/Images)
 import "./search.css";
+import Post from "./SearchPost";
 
 //Component Creation
 const Search = () => {
-	const [switched, editSwitched] = useState(false);
 	//login info
 	const [firstname, setFirstname] = useState("");
 	const [lastname, setLastname] = useState("");
 	const [user_id, setUserID] = useState(0);
 	const [role, setRole] = useState("");
 	const [acquireData, setAcquireData] = useState(false);
+
+	const [postlst, setPostLst] = useState([]);
+	const [similarsLst, setSimilars] = useState([]);
+
+	const [isLoadedPosts, setIsLoadedPosts] = useState(false);
+	const [isLoadedSimilars, setIsLoadedSimilars] = useState(false);
 
 	// login functions
 	function acquireUserData() {
@@ -28,6 +35,7 @@ const Search = () => {
 			})
 			.then(response => {
 				var data = response.data;
+				console.log(data);
 				setFirstname(data.first_name);
 				setLastname(data.last_name);
 				setUserID(data.user_id);
@@ -52,146 +60,12 @@ const Search = () => {
 		}
 	}
 
-	function addClass(tabName) {
-		if ((switched == true && tabName == "Posts") || (switched == false && tabName == "Subreaddits")) {
-			return "active";
-		}
-		else {
-			return ""
-		}
-	}
-
-	function addStyle(tabName) {
-		if ((switched == true && tabName == "Posts") || (switched == false && tabName == "Subreaddits")) {
-			return { backgroundColor: "#6997d6", display: "block" };
-		}
-		else {
-			return { color: "#6997d6", display: "block" }
-		}
-	}
-
-	function switchTab() {
-		if (switched == true) {
-			editSwitched(false);
-		}
-		else if (switched == false) {
-			editSwitched(true);
-		}
-	}
-
 	function getParams() {
 		var queryParams = new URLSearchParams(window.location.search);
 
 		var input = queryParams.get("query");
 
 		return input;
-	}
-
-	//search for subreaddits
-	function searchSubreaddits() {
-		var queryParams = new URLSearchParams(window.location.search);
-		var input = queryParams.get("query");
-		//basic subreaddit search
-		axios.get("http://localhost:3000/r/search/query" + window.location.search,
-			{
-				contentType: "application/json; charset=utf-8"
-			})
-			.then(response => {
-				var subreaddits = response.data.Result;
-
-				if (subreaddits.length == 0) {
-					document.getElementById("subreaddit_content").append("No results found");
-				}
-				else {
-					let appendString = document.createDocumentFragment();
-
-					for (var i = 0; i < subreaddits.length; i++) {
-						var subreadditContainer = document.createElement("div");
-						var round = ""
-						if (i == 0) {
-							round = "rounded-top";
-						}
-						if (i == subreaddits.length - 1) {
-							round = "rounded-bottom";
-						}
-						subreadditContainer.innerHTML = `
-                                    <div class="post rounded">
-                                        <div class="row g-0 ">
-                                            <div class="col-12 bg-white py-2 px-3 ${round} subreaddit" id="subreaddit_${subreaddits[i].subreaddit_name}">
-                                                <div class="d-flex flex-row align-items-baseline">
-                                                    <a href="/r/${subreaddits[i].subreaddit_name}" class="text-dark text-decoration-none"><h6 class="d-inline fw-bold clickable-link">r/${subreaddits[i].subreaddit_name}</h6></a>
-                                                </div>
-        
-                                                <h5 class="smaller text-secondary">${subreaddits[i].subreaddit_description}</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    `;
-						appendString.append(subreadditContainer);
-					}
-
-					document.getElementById("subreaddit_content").append(appendString);
-				}
-
-				//similar search
-				axios.get("http://localhost:3000/r/SimilarSearch/" + input,
-					{
-						contentType: "application/json; charset=utf-8"
-					})
-					.then(response => {
-						console.log(response.data);
-						var similars = arrangeSimilars(response.data);
-						if (similars.length == 0) {
-							document.getElementById("subreaddit_similar").append("No similar results available");
-						}
-						else {
-							//removes duplicate values
-							let appendString = document.createDocumentFragment();
-							for (var i = 0; i < similars.length; i++) {
-								var duplicate = false;
-								for (var count = 0; count < subreaddits.length; count++) {
-									if (similars[i].subreaddit_id == subreaddits[count].subreaddit_id) {
-										duplicate = true;
-									}
-								}
-								if (duplicate == false) {
-									var round = "";
-									if (i == 0) {
-										round = "rounded-top";
-									}
-									if (i == subreaddits.length - 1) {
-										round = "rounded-bottom";
-									}
-									subreadditContainer.innerHTML = `
-                                                <div class="post rounded">
-                                                    <div class="row g-0 ">
-                                                        <div class="col-12 bg-white py-2 px-3 ${round} subreaddit" id="subreaddit_${similars[i].subreaddit_name}">
-                                                            <div class="d-flex flex-row align-items-baseline">
-                                                                <a href="/r/${similars[i].subreaddit_name}" class="text-dark text-decoration-none"><h6 class="d-inline fw-bold clickable-link">r/${similars[i].subreaddit_name}</h6></a>
-                                                            </div>
-                    
-                                                            <h5 class="smaller text-secondary">${similars[i].subreaddit_description}</h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                `;
-									appendString.append(subreadditContainer);
-								}
-
-							}
-							document.getElementById("subreaddit_similar").append(appendString);
-						}
-					})
-					.catch((err) => {
-						toast.error(err.response.data.message);
-						console.log(err.response.data.message);
-					});
-
-			})
-			.catch((err) => {
-				toast.error(err.response.data.message);
-				console.log(err.response.data.message);
-			});
 	}
 
 	//arrange all similar results by similarity descending
@@ -214,22 +88,27 @@ const Search = () => {
 	//search for subreaddits
 	function searchPosts() {
 		var queryParams = new URLSearchParams(window.location.search);
-		var input = queryParams.get("query");
+
 		//basic subreaddit search
-		axios.get(`http://localhost:3000/post/search` + window.location.search,
+		axios.get(`http://localhost:8000/posts/search?` + queryParams,
 			{
 				contentType: "application/json; charset=utf-8"
 			})
 			.then(response => {
-				var posts = response;
-				console.log(posts);
+				var posts = response.data.Result;
+				setPostLst(posts);
+				setIsLoadedPosts(true);
+
 				//similar search
-				axios.get(`http://localhost:3000/post/SimilarSearch/` + input,
+				axios.get(`http://localhost:8000/posts/SimilarSearch?` + queryParams,
 					{
 						contentType: "application/json; charset=utf-8"
 					})
 					.then(response => {
-						console.log(response.data);
+						var similars = arrangeSimilars(response.data);
+						setSimilars(similars);
+
+						setIsLoadedSimilars(true);
 					})
 					.catch((err) => {
 						toast.error(err.response.data.message);
@@ -245,7 +124,7 @@ const Search = () => {
 
 	useEffect(() => {
 		acquireUserData();
-		searchSubreaddits();
+		searchPosts();
 	}, []);
 	return (
 		<React.Fragment>
@@ -253,33 +132,69 @@ const Search = () => {
 				<div className="row">
 					<div className="col-lg-1"></div>
 					<div className="col-lg-10">
-						<div>
-							<ul className="nav nav-pills">
-								<li className="nav-item rounded-pill">
-									<button onClick={() => switchTab()} style={addStyle("Subreaddits")} id="SubreadditsTab" className={"nav-link tablink " + addClass("Subreaddits")} href="#">Subreaddits</button >
-								</li>
-								<li className="nav-item rounded-pill">
-									<button onClick={() => switchTab()} style={addStyle("Posts")} id="PostsTab" className={"nav-link tablink " + addClass("Posts")} href="#">Posts</button >
-								</li>
-							</ul>
+						<div id="resultheader">
+							<h5 className="mb-2 headers"> Displaying Search Results for {getParams()} </h5>
 						</div>
 						<hr></hr>
-						<div id="resultheader">
-							<h5 className="mb-2"> Displaying Search Results for {getParams()} </h5>
-						</div>
-						<div id="subreaddits" className="w3-container w3-border tab">
-							<div id="subreaddit_content"></div>
-							<h5 className="mt-3" id="similar_header">Similar results</h5>
-							<div id="subreaddit_similar">
-
-							</div>
-						</div>
 
 						<div id="posts" className="w3-container w3-border tab">
-							<div id="posts_content"></div>
-							<h5 className="mt-3" id="similar_header">Similar results</h5>
-							<div id="posts_similar">
+							<div id="posts_content">
+								{
+									isLoadedPosts == true ? (
 
+										postlst.length > 0 ? (
+											postlst.map((data) => (
+												<Post
+													key={data.post_id}
+													post_id={data.post_id}
+													post_title={data.post_title}
+													post_content={data.post_content}
+													post_is_answered={data.post_is_answered}
+													post_created_at={data.post_created_at}
+													post_rating={data.post_rating}
+													first_name={data.User.first_name}
+													last_name={data.User.last_name}
+													subforum_name={data.Subforum.subforum_name}
+												/>
+											))
+										) : (
+											<div >No Questions found</div>
+										)
+
+									) : (
+										<div className="text-center">Loading...</div>
+									)
+								}
+							</div>
+							<h5 className="mt-3 headers" id="similar_header">Similar results</h5>
+							<hr></hr>
+							<div id="posts_similar">
+								{
+									isLoadedSimilars == true ? (
+
+										similarsLst.length > 0 ? (
+											similarsLst.map((data) => (
+												<Post
+													key={data.post_id}
+													post_id={data.post_id}
+													post_title={data.post_title}
+													post_content={data.post_content}
+													post_is_answered={data.post_is_answered}
+													post_created_at={data.post_created_at}
+													post_rating={data.post_rating}
+													first_name={data.User.first_name}
+													last_name={data.User.last_name}
+													subforum_name={data.Subforum.subforum_name}
+												/>
+											))
+										) : (
+											<div >No Similar Questions found</div>
+										)
+
+									) : (
+										<div className="text-center">Loading...</div>
+									)
+								}
 							</div>
 						</div>
 					</div>
