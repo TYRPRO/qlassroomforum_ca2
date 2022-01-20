@@ -19,7 +19,7 @@ var post = {
 	},
 	getPost: function (post_id, callback) {
 		Post.findOne({
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
 			where: { post_id: post_id },
 			include: [{
 				model: User,
@@ -36,7 +36,7 @@ var post = {
 	},
 	getAllSubforumPosts: function (fk_subforum_id, callback) {
 		Post.findAll({
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
 			where: { fk_subforum_id },
 			include: [{
 				model: User,
@@ -54,7 +54,7 @@ var post = {
 	getAllPosts: function (callback) {
 		// find multiple entries
 		Post.findAll({
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
 			include: [
 				{
 					model: User,
@@ -62,13 +62,13 @@ var post = {
 				},
 				{
 					model: Subforum,
-					attributes: ["subforum_name"]
+					attributes: ["subforum_name"] 
 				}
 			],
 		}).then(function (result) {
-			return callback(null, result);
+			return callback(result, null);
 		}).catch(function (err) {
-			return callback(err, null);
+			return callback(null, err);
 		});
 	},
 	getAllPostByUser: function (user_id, callback) {
@@ -205,19 +205,18 @@ var post = {
 	searchPost: function (title, callback) {
 		Post.findAll({
 			where: { post_title: { [Op.like]: "%" + title + "%" } },
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+            attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
 			include: [
 				{
 					model: User,
-					attributes: ["first_name", "last_name"]
+					attributes: ["first_name","last_name"]
 				},
 				{
 					model: Subforum,
 					attributes: ["subforum_name"]
-				}
+				},
 			],
 		}).then(function (result) {
-			console.log(result);
 			callback(null, result);
 		}).catch(function (err) {
 			console.log(err);
