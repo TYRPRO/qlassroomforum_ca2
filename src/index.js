@@ -22,12 +22,13 @@ import thunk from "redux-thunk";
 import CreateQn from "./Components/QuestionComponents/CreateQn.js";
 import ViewQn from "./Components/QuestionComponents/ViewQn.js";
 import MyActivity from "./Components/MyActivityComponents/MyActivity";
-import Login from "./Components/LoginComponent/Login";
+import Login from "./Components/LoginComponents/Login";
 import Header from "./Components/HeaderComponents/Header";
 import CreateUser from "./Components/CreateAccountComponent/CreateUser";
 import Search from "./Components/SearchComponents/Search";
 import Subforum from "./Components/SubForumComponents/Subforum";
 import CreateSubforum from "./Components/SubForumComponents/CreateSubforum";
+import Home from "./Components/HomeComponents/Home";
 
 const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
 
@@ -41,7 +42,7 @@ ReactDOM.render(
 			) : null}
 			<BrowserRouter>
 				<Routes>
-					<Route path="/Home" element={<App/>}></Route>
+					<Route path="/Home" element={<Home />}></Route>
 					<Route path="/CreateQn" element={<CreateQn />}></Route>
 					<Route path="/posts/:post_id" element={<ViewQn />}></Route>
 					<Route path="/myactivity" element={<MyActivity />} />
