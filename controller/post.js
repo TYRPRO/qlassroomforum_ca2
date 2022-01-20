@@ -116,6 +116,18 @@ function editDistance(string, string2) {
 	return costs[string2.length];
 }
 
+// Get All Posts
+router.get("/", printDebugInfo, (req, res) => {
+	post.getAllPosts((err, result) => {
+		if (err) {
+			res.status(500).send(err);
+			console.log(err);
+		} else {
+			res.status(200).send(result);
+		}
+	});
+});
+
 router.post("/", printDebugInfo, (req, res) => {
 	var title = req.body.title;
 	var content = req.body.content;
