@@ -140,32 +140,37 @@ const Channel = (props) => {
 
 	return (
 		<div className="col-lg-3">
-			<div className="bg-white body-borders p-2 rounded">
-				<h5>Channel</h5>
-				<form>
-					<label>Subject</label>
-					<div>
-						<select className="SelectSubject" id="SelectSubject" onChange={SubjectChange}>
-							<option value="default">Select All Subjects</option>
-							{Subjects.map((data) => (
-								<option key={data.subforum_id} value={data.subforum_id}>{data.subforum_name}</option>
-							))}
-						</select>
-					</div>
-					<br />
-					<label>Grade</label>
-					<div>
-						<select className="SelectGrade" id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event)=>GradeChange(event)}>
-							<option value="default">Select All Grades</option>
-							{Grades.map((data) => (
-								<option key={data.grade_id} value={data.grade_id} >{data.grade_name}</option>
-							))}
-						</select>
-					</div>
-					<br />
-					<input type="checkbox" id="Unanswered" value="unanswered" onClick={UnansweredChange}></input>
-					<label>Unanswered</label>
-				</form>
+			<div className="bg-white body-borders rounded">
+				<div className="form p-2">
+					<h5>Channel</h5>
+					<form>
+						<div className="form-padding">
+							<label>Subject</label>
+							<div>
+								<select className="SelectSubject" id="SelectSubject" onChange={SubjectChange}>
+									<option value="default">Select All Subjects</option>
+									{Subjects.map((data) => (
+										<option key={data.subforum_id} value={data.subforum_id}>{data.subforum_name}</option>
+									))}
+								</select>
+							</div>
+							<br />
+							<label>Grade</label>
+							<div>
+								<select className="SelectGrade" id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event)=>GradeChange(event)}>
+									<option value="default" selected={HasSubject == false ? true : false}>Select All Grades</option>
+									{Grades.map((data) => (
+										<option key={data.grade_id} value={data.grade_id} >{data.grade_name}</option>
+									))}
+								</select>
+							</div>
+							<p>{HasSubject == false ? "Select a subject" : ""} </p>
+							<br />
+							<input type="checkbox" id="Unanswered" value="unanswered" onClick={UnansweredChange}></input>
+							<label>Unanswered</label>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 

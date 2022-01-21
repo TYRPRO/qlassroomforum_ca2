@@ -71,14 +71,14 @@ const Home = () => {
 				<div className='row'>
 					<Channel onFilterPost={ChannelDataHandler} />
 					<div className="col-lg-9">
-						<div>
+						<div className="post-margin">
 							<label>{CurrentPage == 1 ? CurrentPage : (CurrentPage - 1) * 4}-{PostsData.length > CurrentPage * 4 ? CurrentPage * 4 : PostsData.length} of {PostsData.length} Questions</label>
 							<Post Posts={CurrentPost} />
 						</div>
-						<div className="d-flex justify-content-center">
-							<i className="fa fa-caret-left fa-2x left-arrow" onClick={PrevPage}></i>
-							<p className=""><b>{CurrentPage}</b></p>
-							<i className="fa fa-caret-right fa-2x right-arrow" onClick={NextPage}></i>
+						<div className="d-flex justify-content-between">
+							<div onClick={PrevPage} style={{cursor:"pointer"}}><i className="fa fa-caret-left"></i><b className="PrevPage">Prev Page</b></div>
+							<p className="">{CurrentPage} out of {MaxPage}</p>
+							<div onClick={NextPage} style={{cursor:"pointer"}}><b className="NextPage">Next Page</b><i className="fa fa-caret-right"></i></div>
 						</div>
 					</div>
 				</div>
