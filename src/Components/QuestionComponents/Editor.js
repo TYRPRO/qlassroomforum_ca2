@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/Components/Editor.js
 /* eslint-disable react/prop-types */
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
@@ -6,6 +7,15 @@ import FunctionsIcon from "@mui/icons-material/Functions";
 import React, { useState, useRef } from "react";
 import { Modal } from "bootstrap/dist/js/bootstrap.bundle.js";
 import EquationEditor from "../createQn/EquationEditor";
+=======
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import FormatItalicIcon from '@mui/icons-material/FormatItalic';
+import AddLinkIcon from '@mui/icons-material/AddLink';
+import FunctionsIcon from '@mui/icons-material/Functions';
+import { useState, useRef} from 'react';
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
+import EquationEditor from './createQn/EquationEditor';
+>>>>>>> 516b9402cd8b51fecee5f997290465cf6cc3ac41:src/Components/QuestionComponents/Editor.js
 
 
 function TextEditor(props) {

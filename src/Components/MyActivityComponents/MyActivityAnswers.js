@@ -11,7 +11,6 @@ const Answer = (props) => {
 					) : (
 						<span className="text-dark clickable-link" data-toggle="tooltip" data-placement="top" title={props.title}> {props.shortTitle}</span>
 					)}
-
 				</p>
 				<p className="mb-0 fw-light text-secondary mx-1">•</p>
 				<p className="mb-0 d-inline text-secondary me-1">Posted by</p>

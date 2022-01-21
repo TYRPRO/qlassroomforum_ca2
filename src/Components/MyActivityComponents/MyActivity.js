@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Module Imports
 import React, { useState, useEffect } from "react";
 import axios from "axios"; //npm i axios
@@ -5,7 +6,7 @@ import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 //File Imports (CSS/Images)
-import "../../css/activity.css";
+import "./activity.css";
 
 //Child Imports
 import Question from "./MyActivityQuestions";
@@ -44,6 +45,13 @@ const MyActivity = () => {
 	const [savedQuestionTotalPages, setSavedQuestionTotalPages] = useState(0);
 	const [savedQuestionCurrentPage, setSavedQuestionCurrentPage] = useState(0);
 
+	//login info
+	const [firstname, setFirstname] = useState("");
+	const [lastname, setLastname] = useState("");
+	const [user_id, setUserID] = useState(0);
+	const [role, setRole] = useState("");
+	const [acquireData, setAcquireData] = useState(false);
+
 	// function getUpdatesReceived() { }
 
 	// function getAnswersPosted() { }
@@ -51,6 +59,40 @@ const MyActivity = () => {
 	// function getAnswersAccepted() { }
 
 	// function getUpvotesGiven() { }
+
+	// login functions
+	function acquireUserData() {
+		var token = findCookie("token");
+
+		axios.get("http://localhost:8000/user/userData",
+			{
+				headers: { "Authorization": "Bearer " + token }
+			})
+			.then(response => {
+				var data = response.data;
+				setFirstname(data.first_name);
+				setLastname(data.last_name);
+				setUserID(data.user_id);
+				setRole(data.roles);
+
+				setAcquireData(true);
+			})
+			.catch((err) => {
+				toast.error(err.response.data.message);
+				console.log(err.response.data.message);
+				window.location.assign("/login");
+			});
+	}
+
+	function findCookie(name) {
+		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+		if (match) {
+			return (match[2]);
+		}
+		else {
+			return ("error");
+		}
+	}
 
 	// Retrieve Tab Content Functions
 
@@ -74,6 +116,9 @@ const MyActivity = () => {
 	}
 
 	function getQuestions() {
+		if (!acquireData) {
+			return;
+		}
 		toast.info("Retrieving Questions...");
 
 		axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
@@ -149,6 +194,9 @@ const MyActivity = () => {
 	}
 
 	function getAnswers() {
+		if (!acquireData) {
+			return;
+		}
 		toast.info("Retrieving Answers...");
 
 		axios.get("http://localhost:8000/answers/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
@@ -197,6 +245,9 @@ const MyActivity = () => {
 	}
 
 	function getSavedQuestions() {
+		if (!acquireData) {
+			return;
+		}
 		toast.info("Retrieving Saved Questions...");
 
 		axios.get("http://localhost:8000/posts/save/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
@@ -347,12 +398,14 @@ const MyActivity = () => {
 
 	// Retrieves Page Content
 
+	useEffect(() => acquireUserData(), []);
+
 	useEffect(() => {
 		getQuestions();
 		getAnswers();
 		getSavedQuestions();
 		console.log(baseUrl[0]);
-	}, []);
+	}, [acquireData]);
 
 	// Changes Content Based on Tab Selected And Page Number
 

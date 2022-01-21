@@ -1,0 +1,18 @@
+.body-borders {
+    border: 1px solid #6a5acd35;
+    margin-left: 80px;
+    margin-top: 130px;
+}
+
+.channel-form {
+    background-color: #6a5acd35;
+}
+
+.SelectSubject, .SelectGrade {
+    position: relative;
+    font-family: Arial;
+    width: 90%;
+    height: 30px;
+}
+
+

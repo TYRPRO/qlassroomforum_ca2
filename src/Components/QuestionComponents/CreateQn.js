@@ -8,9 +8,15 @@ import { Modal } from "bootstrap/dist/js/bootstrap.bundle.js";
 
 
 
+<<<<<<< HEAD:src/CreateQn.js
 import TagDropdown from "./createQn/TagDropdown";
 import Tag from "./createQn/tag";
 import TextEditor from "./Components/Editor";
+=======
+import TagDropdown from './createQn/TagDropdown';
+import Tag from './createQn/tag';
+import TextEditor from './Editor';
+>>>>>>> 516b9402cd8b51fecee5f997290465cf6cc3ac41:src/Components/QuestionComponents/CreateQn.js
 
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 import DOMPurify from "dompurify";

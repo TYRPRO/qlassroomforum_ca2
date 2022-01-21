@@ -1,0 +1,22 @@
+#login_button {
+    background-color: #57749E;
+    color: #FFFFFF;
+}
+
+#SignIn_Text {
+    color: #57749E;
+}
+
+#Qlassroom_Logo {
+    width: 50%;
+    height: relative;
+}
+
+#Qlassroom_Image {
+    width: 90%;
+    height: relative;
+}
+
+.links {
+    color: #1E70BF;
+}
