@@ -5,7 +5,7 @@ import styles from "./styles.module.css";
 import renderMathInElement from "katex/dist/contrib/auto-render";
 import './conflict-agreement.css';
 
-import 'semantic-ui-css/semantic.min.css'
+// import 'semantic-ui-css/semantic.min.css'
 
 const delimiters = [
 	{ left: "$$", right: "$$", display: false },

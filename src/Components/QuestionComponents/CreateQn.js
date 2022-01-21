@@ -7,8 +7,7 @@ import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
 
 import TagDropdown from './createQn/TagDropdown';
 import Tag from './createQn/tag';
-import TextEditor from './Editor';
-import QlassroomEditor from './EditorQuill_FORUM/EditorQuill';
+import QuillEditor from './EditorQuill_FORUM/EditorQuill';
 
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import DOMPurify from 'dompurify';
@@ -44,39 +43,39 @@ function CreateQn() {
 
 
 	useEffect(() => {
-		// axios.get('https://testapi.qlassroom.ai/subject_grade')
-		// 	.then(function (response) {
-		// 		var subjects = response.data.subjectGrade;
-		// 		var subject_keys = Object.keys(subjects);
+		axios.get('https://testapi.qlassroom.ai/subject_grade')
+			.then(function (response) {
+				var subjects = response.data.subjectGrade;
+				var subject_keys = Object.keys(subjects);
 
-		// 		var tempSubjects = [];
-		// 		var tempGrades = [];
-		// 		var tempSubjectIds = [];
+				var tempSubjects = [];
+				var tempGrades = [];
+				var tempSubjectIds = [];
 
-		// 		for (let i = 0; i < subject_keys.length; i++) {
-		// 			tempSubjects.push(Object.values(subjects)[i].subject_name)
-		// 			tempGrades.push(Object.values(subjects)[i].grades)
-		// 			tempSubjectIds.push(Object.values(subjects)[i].subject_id)
+				for (let i = 0; i < subject_keys.length; i++) {
+					tempSubjects.push(Object.values(subjects)[i].subject_name)
+					tempGrades.push(Object.values(subjects)[i].grades)
+					tempSubjectIds.push(Object.values(subjects)[i].subject_id)
 
-		// 		}
+				}
 
-		// 		var tempShownGrades = [];
-		// 		for (let i = 0; i < tempGrades[0].length; i++) {
-		// 			tempShownGrades.push(tempGrades[0][i].grade_name)
-		// 		}
+				var tempShownGrades = [];
+				for (let i = 0; i < tempGrades[0].length; i++) {
+					tempShownGrades.push(tempGrades[0][i].grade_name)
+				}
 
-		// 		set_subjects(tempSubjects);
-		// 		set_selected_subject(tempSubjects[0]);
-		// 		set_subject_ids(tempSubjectIds);
+				set_subjects(tempSubjects);
+				set_selected_subject(tempSubjects[0]);
+				set_subject_ids(tempSubjectIds);
 
-		// 		set_grades(tempGrades);
-		// 		set_shown_grades(tempShownGrades);
-		// 	})
-		// 	.catch(function (error) {
-		// 		console.log(error);
+				set_grades(tempGrades);
+				set_shown_grades(tempShownGrades);
+			})
+			.catch(function (error) {
+				console.log(error);
 
-		// 	})
-		// axios.get()
+			})
+		axios.get()
 	}, []);
 
 
@@ -105,13 +104,13 @@ function CreateQn() {
 
 		// Error Handling
 		try {
-			if(grades != null) {
+			if (grades != null) {
 				var subject_index = subjects.indexOf(selected_subject);
 				var subject_id = subject_ids[subject_index];
-	
+
 				var associated_grade_array = grades[subject_index];
 				var grade_id = "";
-	
+
 				for (let i = 0; i < associated_grade_array.length; i++) {
 					if (associated_grade_array[i].grade_name === selected_grade) {
 						grade_id = associated_grade_array[i].grade_id;
@@ -122,7 +121,7 @@ function CreateQn() {
 					var data = response.data.topics;
 					if (data[0].dimension_name === "Topics") {
 						data.splice(0, 1);
-					} 
+					}
 
 					console.log(data);
 					var temp_shown_tags = [];
@@ -136,18 +135,12 @@ function CreateQn() {
 				})
 			}
 
-		}catch(err) {
+		} catch (err) {
 
 		}
 
 	}, [selected_subject, selected_grade]);
 
-
-	function handleChangeEditor(html) {
-		set_qnBody({editorHtml: html});
-	}
-
-	const qn_body_textarea = useRef("");
 
 
 	return (
@@ -165,7 +158,7 @@ function CreateQn() {
 								</div>
 								<div>
 									<select className=' form-select'>
-										{subjects.map((subject,index) => <option key={index} onClick={() => { handleSelectedSubjectChange(subject); }}>{subject}</option>)}
+										{subjects.map((subject, index) => <option key={index} onClick={() => { handleSelectedSubjectChange(subject); }}>{subject}</option>)}
 									</select>
 								</div>
 
@@ -191,7 +184,7 @@ function CreateQn() {
 								<div className=' form-text mt-0'>
 									Include all the information someone would need to answer your question
 								</div>
-								<QlassroomEditor customToolbarId={'testing'} handleContentChange={set_qnBody} contentHTML={qnBody}></QlassroomEditor>
+								<QuillEditor customToolbarId={'testing'} handleContentChange={set_qnBody} contentHTML={qnBody}></QuillEditor>
 								{/* <TextEditor storeInput={set_qnBody} /> */}
 								{/* <div value={qnBody} ref={qn_body_textarea} contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
 								</div> */}
@@ -210,7 +203,7 @@ function CreateQn() {
 									<p contentEditable='true' className='mb-0 px-3 bg-secondary text-white'></p>
 
 								</div>
-								
+
 								{openDropdown ? <TagDropdown tags={shown_tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false) }}></TagDropdown> : null}
 							</div>
 
@@ -231,6 +224,41 @@ function CreateQn() {
 
 	);
 
+	function submitPost() {
+
+		var subject_index = subjects.indexOf(selected_subject);
+		var subject_id = subject_ids[subject_index];
+		
+		var grades_info = grades[subject_index];
+		var grade_id = "";
+		for (let i = 0; i < grades_info.length; i++) { 
+			if(grades_info[i].grade_name === selected_grade){
+				grade_id = grades_info[i].grade_id;
+				break;
+			}
+		}
+		console.log(grade_id);
+
+
+
+		// Temporary user_id;
+		var user_id = '16f59363-c0a4-406a-ae65-b662c6b070cd';
+
+
+
+
+		axios.post('http://localhost:8000/posts', {
+			title: qnTitle,
+			content: qnBody,
+			user_id: user_id,
+			subforum_id: subject_id,
+			grade_id: grade_id,
+		}).then(function (response) {
+			console.log(response);
+		}).catch(function (error) {
+			console.log(error);
+		});
+	}
 
 	function addTagSelect(tag) {
 		var temp_selected_tags = selected_tags;
@@ -339,30 +367,7 @@ function CreateQn() {
 
 
 
-	function submitPost() {
 
-
-		// Sanitizes body input
-		var qnBody = document.getElementById('qn_body_textarea').innerHTML;
-		qnBody = DOMPurify.sanitize(qnBody);
-
-		// Temporary user_id;
-		var user_id = '16f59363-c0a4-406a-ae65-b662c6b070cd';
-
-		// Temporary forum_id;
-		var forum_id = "8a9e9024-8216-4a73-a5bc-3a3a55c8a23e"
-
-		axios.post('http://localhost:8000/posts', {
-			title: qnTitle,
-			content: qnBody,
-			user_id: user_id,
-			subforum_id: forum_id
-		}).then(function (response) {
-			console.log(response);
-		}).catch(function (error) {
-			console.log(error);
-		});
-	}
 
 
 }

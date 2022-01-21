@@ -11,6 +11,7 @@ import './viewQn/viewQn.css'
 import parseTime from '../../helperFunctions/parseTime';
 import Answer from './viewQn/Answer.js';
 import Editor from './Editor.js';
+import EditorQuill from './EditorQuill_FORUM/EditorQuill';
 import DOMPurify from 'dompurify';
 import { useNavigate } from 'react-router-dom'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
@@ -20,9 +21,9 @@ function ViewQn() {
 
 	const { post_id } = useParams();
 
-	const [post_title, set_post_title] = useState('Title');
-	const [post_content, set_post_content] = useState('Lorem Ipsum Dolor Sit Amet Consectetur Adipiscing Elit');
-	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 07:47:30"));
+	const [post_title, set_post_title] = useState('');
+	const [post_content, set_post_content] = useState('');
+	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
 	const [answers, set_answers] = useState([]);
 	const [tags, set_tags] = useState(["Subject","Grade","Additional Maths", "Logarithmic Functions", "Graphs"]);
 
@@ -34,31 +35,31 @@ function ViewQn() {
 
 	const navigate = useNavigate();
 
-	// useEffect(() => {
-	// 	axios.get(`http://localhost:8000/posts/${post_id}`)
-	// 		.then(function (response) {
-	// 			var data = response.data
-	// 			console.log(data)
-	// 			set_post_title(data.post_title);
-	// 			set_post_content(data.post_content);
-
-	// 			var parsedTime = parseTime(data.post_created_at);
-	// 			set_post_created_at(parsedTime);
-
-	// 		}).catch(function (error) {
-	// 			console.log(error);
-	// 		})
-	// }, [])
-
 	useEffect(() => {
-		axios.get(`http://localhost:8000/answers/posts/${post_id}`)
+		axios.get(`http://localhost:8000/posts/${post_id}`)
 			.then(function (response) {
 				var data = response.data
-				set_answers(data);
+				console.log(data)
+				set_post_title(data.post_title);
+				set_post_content(data.post_content);
+
+				var parsedTime = parseTime(data.post_created_at);
+				set_post_created_at(parsedTime);
+
 			}).catch(function (error) {
 				console.log(error);
 			})
-	}, [refreshAnswers])
+	}, [])
+
+	// useEffect(() => {
+	// 	axios.get(`http://localhost:8000/answers/posts/${post_id}`)
+	// 		.then(function (response) {
+	// 			var data = response.data
+	// 			set_answers(data);
+	// 		}).catch(function (error) {
+	// 			console.log(error);
+	// 		})
+	// }, [refreshAnswers])
 
 
 
@@ -181,7 +182,7 @@ function ViewQn() {
 									</div>
 									<div>
 										<p>Your Answer</p>
-										<Editor storeInput={set_answer_input}></Editor>
+										<EditorQuill customToolbarId={'editor_toolbar'} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
 										<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
 									</div>
 								</div>
@@ -219,13 +220,14 @@ function ViewQn() {
 
 		// Temp User ID
 		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
-		var post_id = "c059519c-6793-4ef8-9026-14869d61f28a"
 		var answer_content = DOMPurify.sanitize(answer_input);
+		var response_type = "answer";
 
 
 		axios.post("http://localhost:8000/answers", {
 			user_id: user_id,
 			post_id: post_id,
+			response_type: response_type,
 			answer: answer_content
 		}).then(function (response) {
 			console.log(response);

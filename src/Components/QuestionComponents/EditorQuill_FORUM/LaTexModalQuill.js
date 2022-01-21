@@ -5,7 +5,7 @@ import './styles.module.css';
 import styles from './styles.module.css';
 import './conflict-agreement.css'
 
-import 'semantic-ui-css/semantic.min.css'
+// import 'semantic-ui-css/semantic.min.css'
 import MathView from 'react-math-view';
 import katex from 'katex';
 

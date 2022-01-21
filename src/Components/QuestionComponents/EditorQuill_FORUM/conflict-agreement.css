@@ -1,9 +1,11 @@
 .forum-modal {
 	/* margin-left: 400px !important; */
-	margin : 32vh 18vw !important;
-	width: 64vw !important;
+	margin : 28vh 22vw !important;
+	padding: 2vh 2vw !important;
+	width: 50vw !important;
 	height: fit-content !important;
 	display: block !important;
+	background-color: white;
 }
 
 .ql-editor {

@@ -7,7 +7,6 @@ import axios from 'axios';
 import './styles.module.css';
 import './conflict-agreement.css'
 
-import 'semantic-ui-css/semantic.min.css'
 
 const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => {
 
