@@ -133,7 +133,7 @@ const Post = sequelize.define("Post", {
 		type: DataTypes.INTEGER,
 		allowNull: true,
 	},
-	fk_answer_id: {
+	fk_response_id: {
 		type: DataTypes.UUID,
 		allowNull: true,
 	}
@@ -178,20 +178,25 @@ const SavedPost = sequelize.define("SavedPost", {
 	}
 });
 
-const Answer = sequelize.define("Answer", {
-	answer_id: {
+const Response = sequelize.define("Response", {
+	response_id: {
 		type: DataTypes.UUID,
 		defaultValue: Sequelize.UUIDV4,
 		allowNull: true,
 		primaryKey: true,
 	},
-	answer: {
+	response: {
 		type: DataTypes.TEXT,
 		allowNull: false,
 	},
-	parent_answer_id: {
+	parent_response_id: {
 		type: DataTypes.UUID,
 		allowNull: true,
+	},
+	response_popularity_rating: {
+		type: DataTypes.INTEGER,
+		defaultValue: 0,
+		allowNull: false,
 	},
 	fk_post_id: {
 		type: DataTypes.UUID,
@@ -201,7 +206,7 @@ const Answer = sequelize.define("Answer", {
 		type: DataTypes.UUID,
 		allowNull: false,
 	},
-	answer_created_at: {
+	response_created_at: {
 		type: DataTypes.DATE,
 		defaultValue: Sequelize.CurrentTimestamp,
 		allowNull: true,
@@ -265,21 +270,14 @@ const Authenticate = sequelize.define("Authenticate", {
 
 });
 
-// Answer Table
-Answer.belongsTo(Post, { foreignKey: "fk_post_id" });
-Post.hasMany(Answer, { foreignKey: "fk_post_id" });
+// Response Table
+Response.belongsTo(Post, { foreignKey: "fk_post_id" });
+Post.hasMany(Response, { foreignKey: "fk_post_id" });
 
-Answer.belongsTo(Post, { foreignKey: "fk_post_id" });
-Post.hasMany(Answer, { foreignKey: "fk_post_id" });
-
-Answer.belongsTo(User, { foreignKey: "fk_user_id" });
-User.hasMany(Answer, { foreignKey: "fk_user_id" });
-
+Response.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasMany(Response, { foreignKey: "fk_user_id" });
 
 // Post Table
-Post.belongsTo(User, { foreignKey: "fk_user_id" });
-User.hasMany(Post, { foreignKey: "fk_user_id" });
-
 Post.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Post, { foreignKey: "fk_user_id" });
 

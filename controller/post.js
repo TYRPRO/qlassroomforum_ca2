@@ -139,4 +139,18 @@ router.post("/filter/home", printDebugInfo, (req, res) => {
 	});
 });
 
+router.put("/correctAnswer", printDebugInfo, (req, res) => {
+	var post_id = req.body.post_id;
+	var answer_id = req.body.answer_id;
+
+	post.setCorrectAnswer(post_id, answer_id, (err, result) => {
+		if (err) {
+			res.status(500).send(err);
+			console.log(err);
+		} else {
+			res.status(200).send(result);
+		}
+	});
+});
+
 module.exports = router;

@@ -35,18 +35,18 @@ router.get("/posts/:post_id", printDebugInfo, (req, res) => {
 	});
 });
 
-router.get('/user/:user_id', printDebugInfo, (req, res) => {
-    var user_id = req.params.user_id;
+router.get("/user/:user_id", printDebugInfo, (req, res) => {
+	var user_id = req.params.user_id;
 
-    answer.getAllAnswersByUser(user_id, (err, result) => {
-        if(err) {
-            console.log(err);
-            res.status(500).send(err);
-        }
-        else {
-            res.status(200).send(result)
-        }
-    })
-})
+	answer.getAllAnswersByUser(user_id, (err, result) => {
+		if(err) {
+			console.log(err);
+			res.status(500).send(err);
+		}
+		else {
+			res.status(200).send(result);
+		}
+	});
+});
 
 module.exports = router;

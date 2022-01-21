@@ -180,7 +180,28 @@ var post = {
 			});
 			break;
 		}
-	}
+	},
+	setCorrectAnswer: function (post_id, answer_id, callback) {
+		Post.update(
+			{
+				post_is_answered: true,
+				fk_response_id: answer_id
+
+			},
+			{
+				where: {
+					post_id: post_id
+				}
+
+				// add include once user and subforums are made
+			})
+			.then(function (result) {
+				return callback(null, result);
+			})
+			.catch(function (err) {
+				return callback(err, null);
+			});
+	},
 };
 
 

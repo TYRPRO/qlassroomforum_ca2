@@ -1,9 +1,9 @@
 var sequelize = require("./sequelize/databaseModel");
-const { Answer, User, Post } = sequelize.models;
+const { Response, User, Post } = sequelize.models;
 
 var answer = {
 	createAnswer: function (user_id, post_id, answer, callback) {
-		Answer.create({
+		Response.create({
 			fk_user_id: user_id,
 			fk_post_id: post_id,
 			answer: answer,
@@ -14,7 +14,7 @@ var answer = {
 		});
 	},
 	getAnswersForPost: function (post_id, callback) {
-		Answer.findAll({
+		Response.findAll({
 			attributes: ["answer_id", "answer", "answer_created_at"],
 			where: { fk_post_id: post_id },
 			include: [{
@@ -28,7 +28,7 @@ var answer = {
 		});
 	},
 	getAllAnswersByUser: function (user_id, callback) {
-		Answer.findAll({
+		Response.findAll({
 			where: { fk_user_id: user_id },
 			include: [
 				{
