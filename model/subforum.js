@@ -28,7 +28,7 @@ const subforum = {
 			}
 		});
 	},
-	checkIsOwner: function (fk_user_id, subforum_id, callback){
+	checkIsOwner: function (fk_user_id, subforum_id, callback) {
 		Subforum.findOne({ where: { subforum_id, fk_user_id } }).then(function (result) {
 			if (result != null) {
 				result = true;
@@ -38,7 +38,6 @@ const subforum = {
 			}
 		});
 	},
-
 	// Function to get Subjects/Subforum for landing page Channel
 	getSubjects: function (callback) {
 		Subforum.findAll({
