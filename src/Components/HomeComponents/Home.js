@@ -76,9 +76,9 @@ const Home = () => {
 							<Post Posts={CurrentPost} />
 						</div>
 						<div className="d-flex justify-content-between">
-							<div onClick={PrevPage}><i className="fa fa-caret-left"></i><b className="PrevPage">Prev Page</b></div>
+							<div onClick={PrevPage} style={{cursor:"pointer"}}><i className="fa fa-caret-left"></i><b className="PrevPage">Prev Page</b></div>
 							<p className="">{CurrentPage} out of {MaxPage}</p>
-							<div onClick={NextPage}><b className="NextPage">Next Page</b><i className="fa fa-caret-right"></i></div>
+							<div onClick={NextPage} style={{cursor:"pointer"}}><b className="NextPage">Next Page</b><i className="fa fa-caret-right"></i></div>
 						</div>
 					</div>
 				</div>
