@@ -21,8 +21,8 @@ ReactDOM.render(
 			<div>
 				<nav>
 					<ul>
-						<li><Link to="Home">App</Link></li>
-						<li><Link to="CreateQn">Create QN</Link></li>
+						<li><Link to="home">App</Link></li>
+						<li><Link to="createqn">Create QN</Link></li>
 						<li><Link to="posts/c059519c-6793-4ef8-9026-14869d61f28a">Post</Link></li>
 						<li><Link to="myactivity">My Activity</Link></li>
 					</ul>
@@ -30,12 +30,14 @@ ReactDOM.render(
 			</div>
 			<div className="d-flex flex-row">
 				<SideBar />
-				<Routes>
-					<Route path="/Home" element={<App />}></Route>
-					<Route path="/CreateQn" element={<CreateQn />}></Route>
-					<Route path="/posts/:post_id" element={<ViewQn />}></Route>
-					<Route path="/myactivity" element={<MyActivity />} />
-				</Routes>
+				<div className="d-flex flex-grow-1" id="content">
+					<Routes>
+						<Route path="/home" element={<App />}></Route>
+						<Route path="/createqn" element={<CreateQn />}></Route>
+						<Route path="/posts/:post_id" element={<ViewQn />}></Route>
+						<Route path="/myactivity" element={<MyActivity />} />
+					</Routes>
+				</div>
 			</div>
 		</BrowserRouter>
 

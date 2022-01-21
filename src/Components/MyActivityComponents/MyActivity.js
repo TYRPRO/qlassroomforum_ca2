@@ -363,9 +363,9 @@ const MyActivity = () => {
 	return (
 		<React.Fragment>
 			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
-			<div className="d-flex flex-row flex-grow-1 row justify-content-center">
-				<div className="col-xl-10 col-lg-9 row">
-					<div className="col-3 ms-lg-0 mt-4 ms-5">
+			<div className="d-flex flex-row flex-grow-1 justify-content-center" id="myactivity">
+				<div className="flex-fill d-flex flex-row">
+					<div className="ms-lg-0 mt-4 ms-5 w-25 me-5">
 						<h2>My Activity</h2>
 						<hr />
 						<div className="py-2">
@@ -385,7 +385,7 @@ const MyActivity = () => {
 							<p>upvotes given</p>
 						</div>
 					</div>
-					<div className="col-8 mt-5">
+					<div className="flex-grow-1 mt-5">
 						<ul id="tabs" className="nav nav-tabs">
 							<li className="active mx-xl-4 mx-3 text-center" id="questions">
 								<button href="#home" className="p-2 py-3" onClick={() => handleTabSelection("questions")}>MY QUESTIONS</button>

@@ -1,35 +1,51 @@
 #layer1 {
-    width: 50px;
-    height: 100vh;
-    z-index: 2;
+	background-color: #4E4E4E;
+	width: 50px;
+	height: 100vh;
+	z-index: 2;
 }
 
 #layer2 {
-    position: absolute;
-    width: 160px;
-    height: 100vh;
-    z-index: -1;
-    left: -120px;
-    transition: left 0.5s ease-in-out;
+	background-color: #C4C4C4;
+	position: absolute;
+	width: 170px;
+	height: 100vh;
+	z-index: 0;
+	left: -120px;
+	transition: left 0.5s ease-in-out;
 }
 
 #layer1:focus-within~#layer2 {
-    left: 50px;
-    z-index: 1;
-}
-
-#layer2:hover {
-    width: 200px;
+	left: 50px;
+	z-index: 1;
 }
 
 #home, #help {
-    width: 35px;
-    height: 35px;
+	width: 35px;
+	height: 35px;
+	cursor: pointer;
+}
+
+#profile {
+	cursor: pointer;
 }
 
 #forum, #chat, #blog {
-    width: 130px;
-    height: 35px;
+	width: 150px;
+	height: 45px;
+	cursor: pointer;
+}
+
+#forum a, #chat a, #blog a {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 19px;
+	text-decoration: none;
+}
+
+#forum:hover, #chat:hover, #blog:hover {
+	background-color: #D9EFFF;
+	border: 1px solid rgb(0, 121, 196);
+	border-radius: 5px;
 }
 
 /* .rotated {
