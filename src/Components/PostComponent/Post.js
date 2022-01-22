@@ -21,7 +21,7 @@ const Post = (props) => {
 						<div className="col-1">Upvote</div>
 						<div className="col-9 bg-white p-2 position-relative">
 							<div className="d-flex flex-row align-items-baseline">
-								<h6 className="d-inline"><a href={data.fk_subforum_id} className="text-dark text-decoration-none">{data.Subforum.subforum_name}</a></h6>
+								<h6 className="d-inline"><a href={"posts/" + data.fk_subforum_id} className="text-dark text-decoration-none">{data.Subforum.subforum_name}</a></h6>
 							</div>
 							<div className="d-flex flex-row align-items-baseline">
 								<span className="Add Profile Picture Here"></span><p className="d-inline text-secondary me-1">Posted by <a>{data.User.first_name}</a></p>
