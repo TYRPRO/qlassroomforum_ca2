@@ -110,7 +110,7 @@ const Channel = (props) => {
 			const FilterResult = {
 				subforum_id: SelectedSubject,
 				grade_id: SelectedGrade,
-				isanswered : selectUnanswered
+				isanswered: selectUnanswered
 			};
 			// Passing it to parent file
 			props.onFilterPost(FilterResult);
@@ -122,7 +122,7 @@ const Channel = (props) => {
 			const FilterResult = {
 				subforum_id: SelectedSubject,
 				grade_id: SelectedGrade,
-				isanswered : selectUnanswered
+				isanswered: selectUnanswered
 			};
 			// Passing it to parent file
 			props.onFilterPost(FilterResult);
@@ -133,9 +133,9 @@ const Channel = (props) => {
 
 	useEffect(() => {
 		//To minimize request spikes in database, added a temporary timeout
-		setTimeout(() => {
-			GetSubjects();
-		}, 500), GetGrades();
+
+		GetSubjects();
+		GetGrades();
 	}, []);
 
 	return (
