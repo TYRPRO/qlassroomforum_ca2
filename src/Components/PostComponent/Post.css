@@ -1,0 +1,19 @@
+.PostBody {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: 
+	-webkit-box;
+	-webkit-line-clamp: 2;
+			line-clamp: 2; 
+	-webkit-box-orient: vertical;
+ }
+ /*Testing css, not function ATM*/
+
+ div>h6.Tags{
+	border: medium solid transparent;
+	 padding-left : 10px;
+	 padding-right : 10px;
+	 padding-top : 5px;
+	 padding-bottom : 5px;
+	 background-color: rgba(131, 248, 248, 0.753);
+ }

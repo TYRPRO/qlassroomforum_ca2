@@ -1,0 +1,22 @@
+i.left-arrow {
+	padding-right: 10px;
+}
+
+
+p.page-number{
+	padding-bottom: 3px;
+}
+
+.post-margin{
+	margin-top: 25px;
+}
+
+b.PrevPage{
+	margin-left: 5px;
+	font-size: 15px;
+}
+
+b.NextPage{
+	margin-right: 5px;
+	font-size: 15px;
+}

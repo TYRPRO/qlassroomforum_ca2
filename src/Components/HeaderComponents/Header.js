@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //Module Imports
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -17,12 +18,13 @@ const Header = () => {
 	function acquireUserData() {
 		var token = findCookie("token");
 
-		axios.get("http://localhost:8000/userData",
+		axios.get("http://localhost:8000/user/userData",
 			{
 				headers: { "Authorization": "Bearer " + token }
 			})
 			.then(response => {
 				var data = response.data;
+				console.log(data);
 				editUsername(data.username);
 				editUserID(data.user_id);
 				editUserType(data.fk_user_type_id);
@@ -31,6 +33,7 @@ const Header = () => {
 			.catch((err) => {
 				toast.error(err.response.data.message);
 				console.log(err.response.data.message);
+				window.location.assign("/login");
 			});
 	}
 
