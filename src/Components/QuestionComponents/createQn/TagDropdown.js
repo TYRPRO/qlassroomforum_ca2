@@ -17,12 +17,8 @@ function TagDropdown(props) {
 			</div>
 		</div>
 
-<<<<<<< HEAD:src/createQn/TagDropdown.js
 
 	);
-=======
-    )
->>>>>>> 516b9402cd8b51fecee5f997290465cf6cc3ac41:src/Components/QuestionComponents/createQn/TagDropdown.js
 
 }
 

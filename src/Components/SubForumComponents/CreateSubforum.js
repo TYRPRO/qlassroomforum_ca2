@@ -1,7 +1,9 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../Common/common.css";
-import { updateTitle, updateDescription } from "../../store/actions/CreateSubforum"
+import { updateTitle, updateDescription } from "../../store/actions/CreateSubforum";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -57,7 +59,7 @@ const CreateSubforum = () => {
 					"fk_user_id": "188f0115-4d0c-4e88-a81c-1f107903ddd8",
 					"subforum_name": subforum_name,
 					"subforum_description": subforum_description
-				})
+				});
 				toast.promise(
 					new Promise((resolve, reject) => {
 						axios

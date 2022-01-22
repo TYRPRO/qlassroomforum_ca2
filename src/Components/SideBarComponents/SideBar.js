@@ -15,7 +15,7 @@ const SideBar = () => {
 
 	return (
 		<React.Fragment>
-			<div className="d-flex flex-column align-items-start" id="layer1">
+			<div className="d-flex flex-column align-self-stretch" id="layer1">
 				<div className="mt-4 mx-auto text-center" id="home" tabIndex="0">
 					<span className="material-icons ms-0 me-1 text-light fs-2">laptop_chromebook</span>
 				</div>
@@ -26,7 +26,7 @@ const SideBar = () => {
 					<img src={avatar} className="img-thumbnail rounded-circle w-75" />
 				</div>
 			</div>
-			<div className="d-flex flex-column align-items-start" id="layer2">
+			<div className="d-flex flex-column position-absolute align-self-stretch" id="layer2">
 				<div className="mt-5 mx-auto" id="forum">
 					<span className="material-icons ms-0 me-1 ms-2 text-secondary fs-1">receipt_long <Link to="/myactivity" className="align-top text-dark lh-lg">FORUM</Link></span>
 				</div>

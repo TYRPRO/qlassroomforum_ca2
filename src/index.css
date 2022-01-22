@@ -23,7 +23,17 @@ code {
 	transition: margin-left 0.5s ease-in-out, margin-right 0.5s ease-in-out 0s;
 }
 
-#layer1:focus-within~#content {
+#header{
+	width: auto;
+	transition: all 5s ease-in-out;
+}
+
+#layer1:focus-within~div #content {
 	margin-left: 15%;
 	margin-right: 5%;
+}
+
+#layer1:focus-within~div #header{
+	width: 1300px;
+	align-self: flex-end;
 }

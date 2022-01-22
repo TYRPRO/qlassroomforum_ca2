@@ -221,7 +221,7 @@ const MyActivity = () => {
 						answer_post_username: comment.User.first_name,
 						answer_title: comment.Post.post_title,
 						answer_post_shortTitle: post_shortTitle,
-						answer_value: comment.answer
+						answer_value: comment.response
 					});
 				}
 
