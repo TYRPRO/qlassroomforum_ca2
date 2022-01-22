@@ -311,6 +311,47 @@ const Authenticate = sequelize.define("Authenticate", {
 
 });
 
+const Label = sequelize.define("Label", {
+	label_id: {
+		type: DataTypes.UUID,
+		allowNull: true,
+		primaryKey: true,
+	},
+	label_name: {
+		type: DataTypes.STRING,
+		allowNull: false
+	},
+	editable: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false
+	},
+	usage_type: {
+		type: DataTypes.STRING,
+		allowNull: true
+	},
+	stream_id: {
+		type: DataTypes.UUID,
+		allowNull: true
+	},
+	fk_subforum_id: {
+		type: DataTypes.UUID,
+		allowNull: false
+	},
+	fk_grade_id: {
+		type: DataTypes.UUID,
+		allowNull: false
+	},
+	created_at: {
+		type: DataTypes.TIME,
+		allowNull: false
+	},
+	parent_label_id: {
+		type: DataTypes.UUID,
+		allowNull: true
+	}
+
+});
+
 // Answer Table
 Answer.belongsTo(Post, { foreignKey: "fk_post_id" });
 Post.hasMany(Answer, { foreignKey: "fk_post_id" });
@@ -329,8 +370,8 @@ User.hasMany(Post, { foreignKey: "fk_user_id" });
 Post.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Post, { foreignKey: "fk_user_id" });
 
-Post.belongsTo(Subforum, {foreignKey: "fk_subforum_id"});
-Subforum.hasMany(Post, {foreignKey: "fk_subforum_id"});
+Post.belongsTo(Subforum, { foreignKey: "fk_subforum_id" });
+Subforum.hasMany(Post, { foreignKey: "fk_subforum_id" });
 
 Post.belongsTo(Grade, { foreignKey: "fk_grade_id" });
 Grade.hasMany(Post, { foreignKey: "fk_grade_id" });
@@ -357,6 +398,7 @@ User.hasOne(Authenticate, { foreignKey: "fk_user_id" });
 Subforum.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Subforum, { foreignKey: "fk_user_id" });
 
+// Post Table
 Post.belongsTo(Subforum, { foreignKey: "fk_subforum_id" });
 Subforum.hasMany(Post, { foreignKey: "fk_subforum_id" });
 
@@ -369,9 +411,14 @@ Post.hasMany(Response, { foreignKey: "fk_post_id" });
 Response.belongsTo(User, { foreignKey: "fk_user_id" });
 User.hasMany(Response, { foreignKey: "fk_user_id" });
 
+//Label Table
+Label.belongsTo(Subforum, { foreignKey: "fk_subforum_id" });
+Label.belongsTo(Grade, { foreignKey: "fk_grade_id" });
+Subforum.hasMany(Label, { foreignKey: "fk_subforum_id" });
+Grade.hasMany(Label, { foreignKey: "fk_grade_id" });
+
 async function syncing() {
 	await User.sync();
-	await Subforum.sync();
 	console.log("Test synchronized successfully.");
 }
 syncing();

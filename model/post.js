@@ -1,6 +1,6 @@
 var sequelize = require("./sequelize/databaseModel");
 
-const { Post, Subforum, SavedPost, User } = sequelize.models;
+const { Post, Subforum, SavedPost, User,Grade } = sequelize.models;
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
@@ -39,7 +39,7 @@ var post = {
 	},
 	getAllSubforumPosts: function (fk_subforum_id, callback) {
 		Post.findAll({
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
 			where: { fk_subforum_id },
 			include: [{
 				model: User,
@@ -57,21 +57,25 @@ var post = {
 	getAllPosts: function (callback) {
 		// find multiple entries
 		Post.findAll({
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			attributes: ["post_id", "fk_subforum_id","fk_user_id","fk_grade_id","post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
 			include: [
 				{
 					model: User,
-					attributes: ["first_name", "last_name"]
+					attributes: ["user_id","first_name", "last_name"]
+				},
+				{
+					model: Grade,
+					attributes: ["grade_id","grade_name"]
 				},
 				{
 					model: Subforum,
-					attributes: ["subforum_name"]
-				}
+					attributes: ["subforum_id","subforum_name"]
+				},
 			],
 		}).then(function (result) {
-			return callback(null, result);
+			return callback(result, null);
 		}).catch(function (err) {
-			return callback(err, null);
+			return callback(null, err);
 		});
 	},
 	getAllPostByUser: function (user_id, callback) {
@@ -118,7 +122,17 @@ var post = {
 		// If user only selects unanswered questions  -- N Subforum, grades | Y unanswered 
 		case subforum_id == null && isanswered != null:
 			Post.findAll({
-				attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at"],
+				attributes: ["post_id", "fk_subforum_id","fk_user_id","fk_grade_id","post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
+				include: [{
+					model: User,
+					attributes : ["user_id","first_name"],
+				},{
+					model: Grade,
+					attributes: ["grade_id","grade_name"]
+				},{
+					model: Subforum,
+					attributes: ["subforum_id","subforum_name"]
+				}],
 				where: {
 					fk_subforum_id: { [Op.not]: subforum_id },
 					fk_grade_id: { [Op.not]: grade_id },
@@ -133,7 +147,17 @@ var post = {
 			// If user unselects subject, give all post results --  N Subforum, grades, unanswered 
 		case subforum_id == null && isanswered == null:
 			Post.findAll({
-				attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at"],
+				attributes: ["post_id", "fk_subforum_id","fk_user_id","fk_grade_id","post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
+				include: [{
+					model: User,
+					attributes : ["user_id","first_name"],
+				},{
+					model: Grade,
+					attributes: ["grade_id","grade_name"]
+				},{
+					model: Subforum,
+					attributes: ["subforum_id","subforum_name"]
+				}],
 				where: {
 					fk_subforum_id: { [Op.not]: subforum_id },
 					fk_grade_id: { [Op.not]: grade_id },
@@ -148,7 +172,17 @@ var post = {
 			// If user only selects a subject and nothing else -- Y Subforum | N Grades, unanswered 
 		case grade_id == null && isanswered == null:
 			Post.findAll({
-				attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at"],
+				attributes: ["post_id", "fk_subforum_id","fk_user_id","fk_grade_id","post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
+				include: [{
+					model: User,
+					attributes : ["user_id","first_name"],
+				},{
+					model: Grade,
+					attributes: ["grade_id","grade_name"]
+				},{
+					model: Subforum,
+					attributes: ["subforum_id","subforum_name"]
+				}],
 				where: {
 					fk_subforum_id: subforum_id,
 					fk_grade_id: { [Op.not]: grade_id },
@@ -163,7 +197,17 @@ var post = {
 			// If User only selects subjects that is unanswered -- Y Subforum | N Grades | Y unanswered
 		case grade_id == null && isanswered != null:
 			Post.findAll({
-				attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at"],
+				attributes: ["post_id", "fk_subforum_id","fk_user_id","fk_grade_id","post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
+				include: [{
+					model: User,
+					attributes : ["user_id","first_name"],
+				},{
+					model: Grade,
+					attributes: ["grade_id","grade_name"]
+				},{
+					model: Subforum,
+					attributes: ["subforum_id","subforum_name"]
+				}],
 				where: {
 					fk_subforum_id: subforum_id,
 					fk_grade_id: { [Op.not]: grade_id },
@@ -179,7 +223,17 @@ var post = {
 			// If user selects a subject with grades that is either answered or answered -- Y Subforum, Grades | N answered
 		case grade_id != null && isanswered == null:
 			Post.findAll({
-				attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at"],
+				attributes: ["post_id", "fk_subforum_id","fk_user_id","fk_grade_id","post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
+				include: [{
+					model: User,
+					attributes : ["user_id","first_name"],
+				},{
+					model: Grade,
+					attributes: ["grade_id","grade_name"]
+				},{
+					model: Subforum,
+					attributes: ["subforum_id","subforum_name"]
+				}],
 				where: {
 					fk_subforum_id: subforum_id,
 					fk_grade_id: grade_id,
@@ -195,7 +249,17 @@ var post = {
 			// If user selects a subject, grade and unanswered questions -- Y Subforum, grades, unanswered
 		default:
 			Post.findAll({
-				attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at"],
+				attributes: ["post_id", "fk_subforum_id","fk_user_id","fk_grade_id","post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
+				include: [{
+					model: User,
+					attributes : ["user_id","first_name"],
+				},{
+					model: Grade,
+					attributes: ["grade_id","grade_name"]
+				},{
+					model: Subforum,
+					attributes: ["subforum_id","subforum_name"]
+				}],
 				where: { fk_subforum_id: subforum_id, fk_grade_id: grade_id, post_is_answered: isanswered },
 			}).then(function (result) {
 				return callback(null, result);
@@ -208,19 +272,18 @@ var post = {
 	searchPost: function (title, callback) {
 		Post.findAll({
 			where: { post_title: { [Op.like]: "%" + title + "%" } },
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+            attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
 			include: [
 				{
 					model: User,
-					attributes: ["first_name", "last_name"]
+					attributes: ["first_name","last_name"]
 				},
 				{
 					model: Subforum,
 					attributes: ["subforum_name"]
-				}
+				},
 			],
 		}).then(function (result) {
-			console.log(result);
 			callback(null, result);
 		}).catch(function (err) {
 			console.log(err);

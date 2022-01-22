@@ -116,6 +116,18 @@ function editDistance(string, string2) {
 	return costs[string2.length];
 }
 
+// Get All Posts
+router.get("/", printDebugInfo, (req, res) => {
+	post.getAllPosts((err, result) => {
+		if (err) {
+			res.status(500).send(err);
+			console.log(err);
+		} else {
+			res.status(200).send(result);
+		}
+	});
+});
+
 router.post("/", printDebugInfo, (req, res) => {
 	var title = req.body.title;
 	var content = req.body.content;
@@ -135,21 +147,6 @@ router.post("/", printDebugInfo, (req, res) => {
 			// Handle labels here...
 		}
 	});
-});
-
-router.get("/:post_id", printDebugInfo, (req, res) => {
-	var post_id = req.params.post_id;
-
-	post.getPost(post_id, (err, result) => {
-		if (err) {
-			res.status(500).send(err);
-			console.log(err);
-		}
-		else {
-			res.status(200).send(result);
-		}
-	});
-
 });
 
 router.get("/user/:user_id", printDebugInfo, (req, res) => {
@@ -241,10 +238,10 @@ router.post("/filter/home", printDebugInfo, (req, res) => {
 });
 
 //get post searches
-router.get("/search/:word", printDebugInfo, function (req, res) {
-	var word = req.params.word;
+router.get("/search", printDebugInfo, function (req, res) {
+	var query = req.query.query;
 
-	post.searchPost(word, function (err, result) {
+	post.searchPost(query, function (err, result) {
 		if (!err) {
 			res.status(200).send({ "Result": result });
 		} else {
@@ -255,8 +252,8 @@ router.get("/search/:word", printDebugInfo, function (req, res) {
 });
 
 //smart search posts
-router.get("/SimilarSearch/:word", function (req, res) {
-	var word = req.params.word;
+router.get("/SimilarSearch", printDebugInfo, function (req, res) {
+	var word = req.query.query;
 
 	post.getAllPosts(function (result, err) {
 		if (!err) {
@@ -269,9 +266,24 @@ router.get("/SimilarSearch/:word", function (req, res) {
 			}
 			res.status(200).send(newarr);
 		} else {
-			res.status(500).send({ "message": "Error in retrieving similar posts." });
+			res.status(500).send({ "message": err });
 		}
 	});
+});
+
+router.get("/:post_id", printDebugInfo, (req, res) => {
+	var post_id = req.params.post_id;
+
+	post.getPost(post_id, (err, result) => {
+		if (err) {
+			res.status(500).send(err);
+			console.log(err);
+		}
+		else {
+			res.status(200).send(result);
+		}
+	});
+
 });
 
 module.exports = router;
