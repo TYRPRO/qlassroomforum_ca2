@@ -8,9 +8,9 @@ const express = require("express");
 const app = express();
 
 const bodyParser = require("body-parser");
-const verify = require("./middleware/verify.js");
 const post = require("./post");
 const answer = require("./answer");
+const responses = require("./response");
 const grade = require("./grade");
 const user = require("./user.js");
 const subforum = require("./subforum");
@@ -49,6 +49,7 @@ app.use("/answers", answer);
 app.use("/grade", grade);
 app.use("/subforum", subforum);
 app.use("/user", user);
+app.use("/responses", responses);
 
 //-----------------------------------
 // exports

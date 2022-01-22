@@ -5,26 +5,29 @@ const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
 var post = {
-	createPost: function (user_id, subforum_id, title, content, callback) {
+	createPost: function (user_id, subforum_id, title, content, grade, callback) {
+		console.log(grade);
 		Post.create({
 			post_title: title,
 			post_content: content,
 			fk_user_id: user_id,
 			fk_subforum_id: subforum_id,
+			fk_grade_id: grade
 		}).then(function (result) {
 			return callback(null, result);
 		}).catch(function (err) {
+			console.log(err);
 			return callback(err, null);
 		});
 	},
 	getPost: function (post_id, callback) {
 		Post.findOne({
-			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_answer_id"],
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
 			where: { post_id: post_id },
 			include: [{
 				model: User,
 				required: true,
-				attributes: [["first_name", "first_name"]],
+				attributes: [["first_name", "last_name"]],
 			}]
 
 			// add include once user and subforums are made

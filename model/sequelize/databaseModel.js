@@ -133,7 +133,7 @@ const Post = sequelize.define("Post", {
 		type: DataTypes.INTEGER,
 		allowNull: true,
 	},
-	fk_answer_id: {
+	fk_response_id: {
 		type: DataTypes.UUID,
 		allowNull: true,
 	}
@@ -252,6 +252,52 @@ const Grade = sequelize.define("Grade", {
 	},
 });
 
+const Response = sequelize.define("Response", {
+	response_id: {
+		type: DataTypes.UUID,
+		defaultValue: Sequelize.UUIDV4,
+		allowNull: true,
+		primaryKey: true,
+	},
+	response: {
+		type: DataTypes.TEXT,
+		allowNull: false,
+	},
+	parent_response_id: {
+		type: DataTypes.UUID,
+		allowNull: true,
+	},
+	fk_response_type_id: {
+		type: DataTypes.UUID,
+		allowNull: false,
+	},
+	fk_post_id: {
+		type: DataTypes.UUID,
+		allowNull: false,
+	},
+	fk_user_id: {
+		type: DataTypes.UUID,
+		allowNull: false,
+	},
+	response_created_at: {
+		type: DataTypes.DATE,
+		allowNull: true,
+	}
+});
+
+const ResponseType = sequelize.define("ResponseType", {
+	response_type_id: {
+		type: DataTypes.UUID,
+		defaultValue: Sequelize.UUIDV4,
+		allowNull: true,
+		primaryKey: true,
+	},
+	response_type: {
+		type: DataTypes.STRING(10),
+		allowNull: false,
+	}
+});
+
 const Authenticate = sequelize.define("Authenticate", {
 	fk_user_id: {
 		type: DataTypes.UUID,
@@ -313,6 +359,15 @@ User.hasMany(Subforum, { foreignKey: "fk_user_id" });
 
 Post.belongsTo(Subforum, { foreignKey: "fk_subforum_id" });
 Subforum.hasMany(Post, { foreignKey: "fk_subforum_id" });
+
+// Response Table
+Response.hasMany(Response, { foreignKey: "parent_response_id" });
+Response.belongsTo(ResponseType, { foreignKey: "fk_response_type_id" });
+ResponseType.hasMany(Response, { foreignKey: "fk_response_type_id" });
+Response.belongsTo(Post, { foreignKey: "fk_post_id" });
+Post.hasMany(Response, { foreignKey: "fk_post_id" });
+Response.belongsTo(User, { foreignKey: "fk_user_id" });
+User.hasMany(Response, { foreignKey: "fk_user_id" });
 
 async function syncing() {
 	await User.sync();
