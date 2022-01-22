@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Button, Icon, Modal } from 'semantic-ui-react';
+import { Button, Modal } from 'semantic-ui-react';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 import axios from 'axios';
@@ -47,29 +48,30 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 			closeOnEscape={false}
 			className={'forum-modal'}
 			closeIcon={
-				<div className='d-flex flex-row m-2'>
-					<div className='flex-grow-1'></div>
-					<Icon
-						name="times circle outline"
-						size="large"
-						className='ms-auto'
-					/>
+				// <div className='d-flex flex-row m-1'>
+				// 	<div className='flex-grow-1'></div>
+				// 	<CloseIcon/>
+				// </div>
+				<div className=' float-end'>
+					<CloseIcon />
 				</div>
 
 			}
 		>
-			<Modal.Header>
-				Insert Image
+			<Modal.Header className='modal-header'>
+				
+				<h5 className='modal-title'>Insert Image</h5>
 			</Modal.Header>
-			<Modal.Content>
-				<input type={'file'} onChange={(e) => handleOnChange(e.target.files[0])} />
+			<Modal.Content className='modal-body'>
+				<input className='form-control' type={'file'} onChange={(e) => handleOnChange(e.target.files[0])} />
 			</Modal.Content>
-			<Modal.Actions>
+			<Modal.Actions className='modal-footer'>
 				<Button
 					onClick={() => {
 						handleConfirm(imageURL);
 						setIsOpen(false);
 					}}
+					className='btn btn-primary'
 					disabled={!fileIsValid}
 				// className={`${styles.YesButton} ${styles.LaTexActionButton}`}
 				>

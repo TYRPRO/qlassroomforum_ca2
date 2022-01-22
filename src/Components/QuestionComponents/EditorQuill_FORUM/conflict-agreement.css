@@ -1,11 +1,13 @@
 .forum-modal {
 	/* margin-left: 400px !important; */
-	margin : 28vh 22vw !important;
-	padding: 2vh 2vw !important;
+	margin : 28vh 25vw !important;
+	padding: .5rem !important;
 	width: 50vw !important;
 	height: fit-content !important;
 	display: block !important;
 	background-color: white;
+	border: 1px solid #dee2e6;
+	border-radius: 0.25rem;
 }
 
 .ql-editor {

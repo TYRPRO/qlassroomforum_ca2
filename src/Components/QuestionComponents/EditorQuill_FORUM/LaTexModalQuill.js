@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Button, Icon, Modal } from 'semantic-ui-react';
+import CloseIcon from '@mui/icons-material/Close';
 
 import './styles.module.css';
 import styles from './styles.module.css';
@@ -41,21 +42,16 @@ const LaTexModalQuill = ({ isOpen, setIsOpen, value = '', handleConfirm }) => {
 			closeOnEscape={false}
 			className={'forum-modal'}
 			closeIcon={
-				<div className='d-flex flex-row m-2'>
-					<div className='flex-grow-1'></div>
-					<Icon
-						name="times circle outline"
-						size="large"
-						className='ms-auto'
-					/>
+				<div className=' float-end'>
+					<CloseIcon />
 				</div>
 
 			}
 		>
-			<Modal.Header className={styles.LaTexModalHeader}>
-				Insert LaTex
+			<Modal.Header className={'modal-header'}>
+				<h5 className='modal-title'>Insert LaTex</h5>
 			</Modal.Header>
-			<Modal.Content>
+			<Modal.Content className='modal-body'>
 				<LaTexComponent
 					modalRef={modalRef}
 					latexRef={latexRef}
@@ -63,14 +59,14 @@ const LaTexModalQuill = ({ isOpen, setIsOpen, value = '', handleConfirm }) => {
 					handleOnChange={handleOnChange}
 				/>
 			</Modal.Content>
-			<Modal.Actions className={styles.LaTexModalActions}>
+			<Modal.Actions className={"modal-footer"}>
 				<Button
 					onClick={() => {
 						handleConfirm(latexRef.current?.getValue('latex'));
 						setIsOpen(false);
 					}}
 					disabled={!latexIsValid}
-					className={`${styles.YesButton} ${styles.LaTexActionButton}`}
+					className={`btn btn-primary`}
 				>
 					Save
 				</Button>

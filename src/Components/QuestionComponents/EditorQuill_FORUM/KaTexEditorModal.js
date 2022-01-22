@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Icon, Modal, TextArea } from "semantic-ui-react";
+import { Button, Modal, TextArea } from "semantic-ui-react";
+import CloseIcon from '@mui/icons-material/Close';
 
 import styles from "./styles.module.css";
 import renderMathInElement from "katex/dist/contrib/auto-render";
@@ -62,32 +63,30 @@ const KaTexEditorModal = ({ isOpen, setIsOpen, handleConfirm }) => {
 			closeOnDimmerClick={false}
 			closeOnEscape={false}
 			closeIcon={
-				<div className='d-flex flex-row m-2'>
-					<div className='flex-grow-1'></div>
-					<Icon
-						name="times circle outline"
-						size="large"
-						className='ms-auto'
-					/>
+
+				<div className=' float-end'>
+					<CloseIcon />
 				</div>
 			}
 		>
-			<Modal.Header className={styles.LaTexModalHeader}>
+			<Modal.Header className={'modal-header'}>
+				<h5 className="modal-title">
 				KaTex Editor
+				</h5>
 			</Modal.Header>
-			<Modal.Content>
+			<Modal.Content className="modal-body">
 				<KaTexComponent
 					katexPreviewRef={katexPreviewRef}
 					isModalOpen={isOpen}
 				/>
 			</Modal.Content>
-			<Modal.Actions className={styles.LaTexModalActions}>
+			<Modal.Actions className={'modal-footer'}>
 				<Button
 					onClick={() => {
 						handleConfirmKaTex();
 						setIsOpen(false);
 					}}
-					className={`${styles.YesButton} ${styles.LaTexActionButton}`}
+					className={`btn btn-primary`}
 				>
 					Save
 				</Button>

@@ -10,6 +10,7 @@ import './viewQn/viewQn.css'
 
 import parseTime from '../../helperFunctions/parseTime';
 import Answer from './viewQn/Answer.js';
+import AnswerComment from './viewQn/AnswerComments';
 import Editor from './Editor.js';
 import EditorQuill from './EditorQuill_FORUM/EditorQuill';
 import DOMPurify from 'dompurify';
@@ -24,12 +25,17 @@ function ViewQn() {
 	const [post_title, set_post_title] = useState('');
 	const [post_content, set_post_content] = useState('');
 	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
+
 	const [answers, set_answers] = useState([]);
-	const [tags, set_tags] = useState(["Subject","Grade","Additional Maths", "Logarithmic Functions", "Graphs"]);
+	const [postComments, set_postComments] = useState([]);
+
+	const [tags, set_tags] = useState(["Subject", "Grade", "Additional Maths", "Logarithmic Functions", "Graphs"]);
 
 	const [answer_input, set_answer_input] = useState('');
 	const [refreshAnswers, set_refreshAnswers] = useState(false);
 
+	const [addComment, set_AddComment] = useState(false);
+	const [postComment, set_postComment] = useState('');
 
 	const [bookmarkHover, set_bookmarkHover] = useState(false);
 
@@ -51,6 +57,44 @@ function ViewQn() {
 			})
 	}, [])
 
+	useEffect(() => {
+		axios.get(`http://localhost:8000/responses/${post_id}`).then(function (response) {
+			var data = response.data
+			console.log(data);
+			var post_answers = [];
+			var post_comments = [];
+			var post_answer_comments = [];
+
+			for (var i = 0; i < data.length; i++) {
+
+				if (data[i].ResponseType.response_type === "answer") {
+					post_answers.push(data[i]);
+					continue;
+				}
+				else if (data[i].parent_response_id != null) {
+					post_answer_comments.push(data[i]);
+				}
+				else {
+					post_comments.push(data[i]);
+				}
+			}
+
+			for (let i = 0; i < post_answer_comments.length; i++) {
+				for (let j = 0; j < post_answers.length; j++) {
+					if (post_answers[j].response_id === post_answer_comments[i].parent_response_id) {
+						if (post_answers[j].comments == null) {
+							post_answers[j].comments = [];
+						}
+						post_answers[j].comments.push(post_answer_comments[i]);
+						break;
+					}
+				}
+			}
+			set_answers(post_answers);
+			set_postComments(post_comments);
+
+		})
+	}, [refreshAnswers])
 	// useEffect(() => {
 	// 	axios.get(`http://localhost:8000/answers/posts/${post_id}`)
 	// 		.then(function (response) {
@@ -101,7 +145,7 @@ function ViewQn() {
 
 											<div>
 												<button onMouseEnter={() => { set_bookmarkHover(true) }} onMouseLeave={() => { set_bookmarkHover(false) }} className='text-secondary anim-enter-active'>
-													<BookmarkBorderIcon sx={{fontSize: 26}}/>
+													<BookmarkBorderIcon sx={{ fontSize: 26 }} />
 													{bookmarkHover ? 'Bookmark this question?' : ''}
 												</button>
 											</div>
@@ -129,7 +173,7 @@ function ViewQn() {
 										<div className='row text-primary'>
 											<div className='col-3'>
 												<div className='d-inline-block toolbar-btn px-2'>
-													<div className='d-flex flex-row align-items-center '>
+													<div onClick={() => { set_AddComment(!addComment) }} className='d-flex flex-row align-items-center '>
 
 														<ReplyIcon></ReplyIcon>
 														<p className='px-2 py-2 mb-0'>Comment</p>
@@ -171,14 +215,23 @@ function ViewQn() {
 											</div>
 
 										</div>
-
+										{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
+										{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
+										{addComment ?
+											<div className=' input-group'>
+												<input onChange={(e) => { set_postComment(e.target.value) }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
+												<button onClick={ submitPostComment} className='btn btn-outline-secondary'>Submit</button>
+											</div>
+											:
+											null
+										}
 									</div>
 								</div>
 								<hr></hr>
 								<div className='mt-1'>
 									<p className='mb-3'>{answers.length} Answers</p>
 									<div>
-										{answers.map((answer, index) => <Answer key={index} answer={answer} />)}
+										{answers.map((answer, index) => <Answer refreshAnswers={refreshAnswersFunction} key={index} answer={answer} />)}
 									</div>
 									<div>
 										<p>Your Answer</p>
@@ -205,6 +258,9 @@ function ViewQn() {
 		</div>
 	)
 
+	function refreshAnswersFunction() {
+		set_refreshAnswers(!refreshAnswers)
+	}
 
 	function Tag(props) {
 		return (
@@ -224,11 +280,11 @@ function ViewQn() {
 		var response_type = "answer";
 
 
-		axios.post("http://localhost:8000/answers", {
+		axios.post("http://localhost:8000/responses/", {
 			user_id: user_id,
 			post_id: post_id,
 			response_type: response_type,
-			answer: answer_content
+			response: answer_content
 		}).then(function (response) {
 			console.log(response);
 			set_refreshAnswers(!refreshAnswers);
@@ -236,6 +292,24 @@ function ViewQn() {
 			console.log(error);
 		})
 
+	}
+
+	function submitPostComment() {
+		// Temp User ID
+		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
+		var response_type = "comment";
+
+		axios.post("http://localhost:8000/responses/", {
+			user_id: user_id,
+			post_id: post_id,
+			response_type: response_type,
+			response: postComment
+		}).then(function (response) {
+			console.log(response);
+			refreshAnswersFunction();
+		}).catch(function (error) {
+			console.log(error);
+		})
 	}
 }
 
