@@ -14,6 +14,8 @@ async function mediaUpload(file, callback) {
 		if (fileSizePass) {
 			cloudinary.uploadFile(file, async function (error, result) {
 				try {
+					console.log(result);
+					console.log(error);
 					let media_url = await result.imageURL;
 					await unlinkAsync(file.path);
 					let data = { success: true, media_url: media_url, content_type: content_type };
@@ -21,6 +23,7 @@ async function mediaUpload(file, callback) {
 				}
 				catch (error) {
 					let message = "File Submission Failed";
+					console.log(error);
 					// Generic Error Message
 					await unlinkAsync(file.path);
 					let data = { success: false, "message": message };
