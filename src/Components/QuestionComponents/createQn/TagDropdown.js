@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 /* eslint-disable react/prop-types */
 import React from "react";
@@ -12,11 +13,16 @@ function TagDropdown(props) {
 		<div  className="w-100 position-relative">
 			<div tabIndex={0} onBlur={handleDropdown} className=" rounded position-absolute py-2 px-4 w-100 bg-white shadow border">
 				<div className="row">
-					{tags.map((shown_tag) => <TagDropdownTag tag={shown_tag} handleSelect={handleSelect} /> /* <TagDropdownTag tag_name={shown_tag} handleSelect={handleSelect} /> */ )}
+					{tags.length === 0 ? 
+						<p>Please select a grade to choose tags.</p>
+						:
+						(tags.map((shown_tag, index) => <TagDropdownTag key={index} tag={shown_tag} handleSelect={handleSelect} /> /* <TagDropdownTag tag_name={shown_tag} handleSelect={handleSelect} /> */ )) 
+					
+					
+					}
 				</div>
 			</div>
 		</div>
-
 
 	);
 
@@ -38,13 +44,13 @@ function TagDropdownTag(props) {
 				</div>
 
 			</div>
-			<div className="row">
-				<div>
-					<p className='px-2'>
-						{tag_description}
-					</p>
-				</div>
-			</div>
+			{/* <div className="row">
+                <div>
+                    <p className='px-2'>
+                        {tag_description}
+                    </p>
+                </div>
+            </div> */}
 
 		</div>
 	);
