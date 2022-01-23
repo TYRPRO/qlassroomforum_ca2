@@ -15,14 +15,10 @@ const Question = (props) => {
 				<div className="col-11 p-3">
 					<h5>{props.title}</h5>
 					<div className="d-flex flex-row align-items-baseline pt-2">
-<<<<<<< HEAD
 						<p className="text-secondary me-auto" id="post#_time">{props.date}</p>
 						<p className="text-secondary mx-1">NO COMMENTS</p>
 						<span className="text-primary material-icons md-24 ms-3 align-self-start">chat_bubble_outline</span>
 						<p className="text-secondary mx-1">NO ANSWERS</p>
-=======
-						<p className="text-secondary" id="post#_time">{props.date}</p>
->>>>>>> a9a6abc16a1d021ea7c339381e85fcead72adff6
 					</div>
 				</div>
 			</div>
