@@ -133,8 +133,9 @@ router.post("/", printDebugInfo, (req, res) => {
 	var content = req.body.content;
 	var user_id = req.body.user_id;
 	var subforum_id = req.body.subforum_id;
+	var grade = req.body.grade_id;
 
-	post.createPost(user_id, subforum_id, title, content, (err, result) => {
+	post.createPost(user_id, subforum_id, title, content, grade, (err, result) => {
 		if (err) {
 			console.log(err);
 			res.status(500).send(err);
@@ -193,8 +194,7 @@ router.get("/getAllFromSubforum/:fk_subforum_id", printDebugInfo, (req, res) => 
 
 });
 
-router.post("/upload_image", upload.single("image"), printDebugInfo, (req, res) => {
-
+router.post("/upload_image", upload.single("file"), printDebugInfo, (req, res) => {
 	var file = req.file;
 	if (file != null) {
 
@@ -208,6 +208,9 @@ router.post("/upload_image", upload.single("image"), printDebugInfo, (req, res) 
 				//result: { success: false, message: message }
 			}
 		});
+	}
+	else {
+		res.status(500).send("No file uploaded");
 	}
 });
 
