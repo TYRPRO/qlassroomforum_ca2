@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import "./viewQn.css";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 import AnswerComment from "./AnswerComments";
@@ -30,7 +30,7 @@ function Answer(props) {
 							: props.isAccepted ? ("btn btn-outline-success btn-sm text-center")
 								: props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
 									: ("btn btn-outline-secondary btn-sm text-center")
-					} 
+					}
 					onClick={() => props.setAsAcceptedAnswer(props.index, answer_info.response_id, answer_info.fk_post_id)} >
 						<span className="material-icons-outlined">mark_chat_read</span> Set as Accepted Answer
 					</button>

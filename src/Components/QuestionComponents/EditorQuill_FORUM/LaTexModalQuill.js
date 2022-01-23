@@ -1,11 +1,9 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Button, Icon, Modal } from "semantic-ui-react";
+import { Button,  Modal } from "semantic-ui-react";
 import CloseIcon from "@mui/icons-material/Close";
 
 import "./styles.module.css";
-import styles from "./styles.module.css";
+//import styles from "./styles.module.css";
 import "./conflict-agreement.css";
 
 // import 'semantic-ui-css/semantic.min.css'

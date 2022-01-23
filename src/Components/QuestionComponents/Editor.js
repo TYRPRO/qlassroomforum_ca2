@@ -1,9 +1,10 @@
-/* eslint-disable react/prop-types */
+import React from "react";
+
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import FunctionsIcon from "@mui/icons-material/Functions";
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Modal } from "bootstrap/dist/js/bootstrap.bundle.js";
 import EquationEditor from "./createQn/EquationEditor";
 

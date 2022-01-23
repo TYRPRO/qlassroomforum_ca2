@@ -19,7 +19,11 @@ const Answer = (props) => {
 			<div className="row mb-2">
 				<div className="col-1"></div>
 				<div className="col-11">
+<<<<<<< HEAD
 					<h5>{props.value}</h5>
+=======
+					<h5>&#34{props.value}&#34</h5>
+>>>>>>> a9a6abc16a1d021ea7c339381e85fcead72adff6
 				</div>
 			</div>
 		</div >

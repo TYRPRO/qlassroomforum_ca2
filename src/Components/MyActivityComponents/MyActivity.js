@@ -151,11 +151,15 @@ const MyActivity = () => {
 					else if (hours_between_dates < 24) {
 						post_date_output = `${hours_between_dates} hours ago`;
 					} else if (days_between_dates <= 7) {
+<<<<<<< HEAD
 						if (days_between_dates == 1) {
 							post_date_output = `${days_between_dates} day ago`;
 						} else {
 							post_date_output = `${days_between_dates} days ago`;
 						}
+=======
+						post_date_output = `${days_between_dates} days ago`;
+>>>>>>> a9a6abc16a1d021ea7c339381e85fcead72adff6
 					} else {
 						post_date_output = `${weeks_between_dates} weeks ago`;
 					}
@@ -174,9 +178,13 @@ const MyActivity = () => {
 				}
 
 				for (let i = 0; i < 4; i++) {
+<<<<<<< HEAD
 					if (questionDetails[i] != undefined) {
 						dispQuestions.push(questionDetails[i]);
 					}
+=======
+					dispQuestions.push(questionDetails[i]);
+>>>>>>> a9a6abc16a1d021ea7c339381e85fcead72adff6
 				}
 
 				console.log(dispQuestions);
@@ -226,9 +234,13 @@ const MyActivity = () => {
 				}
 
 				for (let i = 0; i < 5; i++) {
+<<<<<<< HEAD
 					if (answerDetails[i] != undefined) {
 						dispAnswers.push(answerDetails[i]);
 					}
+=======
+					dispAnswers.push(answerDetails[i]);
+>>>>>>> a9a6abc16a1d021ea7c339381e85fcead72adff6
 				}
 
 				setAnswers(answerDetails);
@@ -280,11 +292,15 @@ const MyActivity = () => {
 					else if (hours_between_dates < 24) {
 						post_date_output = `${hours_between_dates} hours ago`;
 					} else if (days_between_dates <= 7) {
+<<<<<<< HEAD
 						if (days_between_dates == 1) {
 							post_date_output = `${days_between_dates} day ago`;
 						} else {
 							post_date_output = `${days_between_dates} days ago`;
 						}
+=======
+						post_date_output = `${days_between_dates} days ago`;
+>>>>>>> a9a6abc16a1d021ea7c339381e85fcead72adff6
 					} else {
 						post_date_output = `${weeks_between_dates} weeks ago`;
 					}
@@ -303,9 +319,13 @@ const MyActivity = () => {
 				}
 
 				for (let i = 0; i < 4; i++) {
+<<<<<<< HEAD
 					if (savedQuestionDetails[i] != undefined) {
 						dispSavedQuestions.push(savedQuestionDetails[i]);
 					}
+=======
+					dispSavedQuestions.push(savedQuestionDetails[i]);
+>>>>>>> a9a6abc16a1d021ea7c339381e85fcead72adff6
 				}
 
 				setSavedQuestions(savedQuestionDetails);

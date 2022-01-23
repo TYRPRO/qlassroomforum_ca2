@@ -1,10 +1,12 @@
 const initialState = {
 	isLoadingPosts: true,
 	posts: [],
+	currentPagePosts: [],
 	subjectFilter: "",
 	levelFilter: "",
-	tags: [{tag_id:1, tag_name: "Math"},{tag_id:2, tag_name: "Science"},{tag_id:3, tag_name: "Physics"}],
-	unanswered: false
+	unanswered: false,
+	currentPage: 1,
+	maxPage: 0
 };
 
 const reducer = (state = initialState, action) => {
@@ -15,14 +17,19 @@ const reducer = (state = initialState, action) => {
 			isLoadingPosts: false,
 			posts: action.posts,
 		};
-
-	case "SUBFORUM_SUBJECT_FILTER_CHANGED": 
+	case "SUBFORUM_POPULATE_CURRENT_PAGE_POSTS":
+		return {
+			...state,
+			isLoadingPosts: false,
+			currentPagePosts: action.currentPagePosts,
+		};
+	case "SUBFORUM_SUBJECT_FILTER_CHANGED":
 		return {
 			...state,
 			subjectFilter: action.subjectFilter
 		};
 
-	case "SUBFORUM_LEVEL_FILTER_CHANGED": 
+	case "SUBFORUM_LEVEL_FILTER_CHANGED":
 		return {
 			...state,
 			levelFilter: action.levelFilter
@@ -33,7 +40,17 @@ const reducer = (state = initialState, action) => {
 			...state,
 			unanswered: true
 		};
-  
+	case "SUBFORUM_PAGE_NUM_CHANGED":
+		return {
+			...state,
+			currentPage: action.currentPage
+		};
+	case "SUBFORUM_SET_MAX_PAGE_NUM":
+		return {
+			...state,
+			maxPage: action.maxPage
+		};
+
 	default:
 		return state;
 	}

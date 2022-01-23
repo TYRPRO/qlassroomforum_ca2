@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 const Toolbar = () => {
-	return(
+	return (
 		<div className="mx-3 mt-3">
 			<div className="toolbar d-flex flex-row align-items-center mb-2">
 				<div className="d-flex flex-row text-secondary me-4 toolbar_buttons" id="comments">

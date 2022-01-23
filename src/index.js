@@ -31,7 +31,7 @@ import Home from "./Components/HomeComponents/Home";
 
 const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
 
-const store = createStore(allReducers, applyMiddleware(thunk));
+const store = createStore(allReducers,  applyMiddleware(thunk));
 
 ReactDOM.render(
 	<React.StrictMode>

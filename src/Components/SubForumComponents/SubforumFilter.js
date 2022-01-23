@@ -1,7 +1,6 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
-import {setLevelFilter} from "../../store/actions/Subforum";
+import { setLevelFilter } from "../../store/actions/Subforum";
 
 const SubforumFilter = () => {
 	const dispatch = useDispatch();
@@ -12,7 +11,7 @@ const SubforumFilter = () => {
 			<form className="mx-5 justify-content-center">
 				<label>Level:</label>
 				<br />
-				<select className="form-select" onChange={(event)=>dispatch(setLevelFilter(event.target.value))}>
+				<select className="form-select" onChange={(event) => dispatch(setLevelFilter(event.target.value))}>
 					<option value="S1">Secondary 1</option>
 					<option value="S2">Secondary 2</option>
 					<option value="S3">Secondary 3</option>

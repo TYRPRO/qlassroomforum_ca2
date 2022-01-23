@@ -1,6 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../Common/common.css";
 import { updateTitle, updateDescription } from "../../store/actions/CreateSubforum";
@@ -71,7 +69,7 @@ const CreateSubforum = () => {
 								},
 								data: data
 							})
-							.then((data) => {
+							.then(() => {
 								resolve(true);
 							})
 							.catch((error) => {
@@ -131,7 +129,7 @@ const CreateSubforum = () => {
 								<hr className="mt-2" />
 								<ul className="list-group list-group-flush">
 									<li className="list-group-item">
-										1. <span className="fw-bold"> Make sure the Subforum you are creating doesn't overlap with another Subforum's topic.</span>
+										1. <span className="fw-bold"> Make sure the Subforum you are creating doesn&apos;t overlap with another Subforum&apos;s topic.</span>
 									</li>
 									<li className="list-group-item">
 										2. <span className=""> Subforums here should be created for educational purposes.</span>

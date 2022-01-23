@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal } from "bootstrap/dist/js/bootstrap.bundle";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
 import { MathJax, MathJaxContext } from "better-react-mathjax";
@@ -28,7 +28,7 @@ function EquationEditor(props) {
 		editorEl.addEventListener("hide.bs.modal", function (e) {
 			var appendElement = document.getElementById(append_ref);
 
-			if(appendElement.innerHTML.length == 0) {
+			if (appendElement.innerHTML.length == 0) {
 				document.getElementById(append_ref).remove();
 			}
 
@@ -63,7 +63,7 @@ function EquationEditor(props) {
 				</span>
 			);
 		}
-		ReactDOM.render(<EqnOutput/>, document.getElementById(append_ref));
+		ReactDOM.render(<EqnOutput />, document.getElementById(append_ref));
 		console.log(props.toIncrease);
 		props.toIncrease[1](props.toIncrease[0] + 1);
 		props.handleChange();

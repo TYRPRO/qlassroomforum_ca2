@@ -1,9 +1,7 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Button, Modal } from "semantic-ui-react";
 import CloseIcon from "@mui/icons-material/Close";
-
+import Compressor from "compressorjs";
 
 import axios from "axios";
 
@@ -17,20 +15,37 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 	const [imageURL, set_imageURL] = useState("");
 	const [fileIsValid, setFileIsValid] = useState(false);
 
+	function uploadMedia(file) {
+		const formData = new FormData();
+		formData.append("file", file, file.name);
+		axios.post("http://localhost:8000/posts/upload_image", formData).then(res => {
+			setFileIsValid(true);
+			set_imageURL(res.data.media_url);
+
+		}).catch(err => {
+			setFileIsValid(false);
+		});
+	}
+
 	const handleOnChange = useCallback(
 		file => {
 			try {
 				// Handle Input validation Here
 				set_selectedFile(file);
 
-				const formData = new FormData();
-				formData.append("file", file);
-				axios.post("http://localhost:8000/posts/upload_image", formData).then(res => {
-					setFileIsValid(true);
-					set_imageURL(res.data.media_url);
+				new Compressor(file, {
+					quality: 0.6,
 
-				}).catch(err => {
-					setFileIsValid(false);
+					// The compression process is asynchronous,
+					// which means you have to access the `result` in the `success` hook function.
+					success(result) {
+						console.log("Image compressed successfully.");
+						uploadMedia(result);
+					},
+					error(err) {
+						console.log(err.message);
+						uploadMedia(file);
+					},
 				});
 
 			} catch (err) {
@@ -61,7 +76,7 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 			}
 		>
 			<Modal.Header className='modal-header'>
-				
+
 				<h5 className='modal-title'>Insert Image</h5>
 			</Modal.Header>
 			<Modal.Content className='modal-body'>

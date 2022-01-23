@@ -76,7 +76,6 @@ function CreateQn() {
 				console.log(error);
 
 			});
-		axios.get();
 	}, []);
 
 
@@ -158,8 +157,8 @@ function CreateQn() {
 									Select the subject of your question.
 								</div>
 								<div>
-									<select className=' form-select'>
-										{subjects.map((subject, index) => <option key={index} onClick={() => { handleSelectedSubjectChange(subject); }}>{subject}</option>)}
+									<select className=' form-select' onChange={(event) => handleSelectedSubjectChange(event.target.value)}>
+										{subjects.map((subject, index) => <option key={index} value={subject}>{subject}</option>)}
 									</select>
 								</div>
 
@@ -168,16 +167,10 @@ function CreateQn() {
 									Select the grade level that best fits your question.
 								</div>
 								<div>
-									<select className=' form-select' value={selected_grade}>
+									<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
 										<option disabled={true} value={"disabled"}>Please select a grade:</option>
-										{shown_grades.map((shown_grade, index) => <option key={index} onClick={() => { set_selected_grade(shown_grade); }}>{shown_grade}</option>)}
-									</select>
-								</div>
-
-
-								<label htmlFor='qn_title' className='mt-3'>Question Title</label>
-								<div className=' form-text mt-0'>
-									Be specific and imagine you are asking a question to another person.
+										{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
+									</select>						Be specific and imagine you are asking a question to another person.
 								</div>
 								<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"e.g. Find the intercept between y=2x and 12=2y+x. "}></input>
 

@@ -7,7 +7,7 @@ const matcher = (node, delta) => {
 	// for katex
 	if (
 		node.contentEditable === "false" &&
-    !node.classList.contains("ql-clipboard")
+		!node.classList.contains("ql-clipboard")
 	) {
 		if (node.parentNode.classList.contains("ql-formula")) {
 		} else {

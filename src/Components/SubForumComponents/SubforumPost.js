@@ -1,10 +1,8 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import Toolbar from "../ToolbarComponents/Toolbar";
 import parseTime from "../../helperFunctions/parseTime";
-import AnswersPill from "./SubforumAnswersPill";
+import AnswersPill from "../PostComponent/AnswersPill";
 
 const SubforumPost = (props) => {
 	const tags = useSelector((state) => state.Subforum.tags);
@@ -37,7 +35,7 @@ const SubforumPost = (props) => {
 								<p className="d-inline text-secondary me-1">Posted by</p>
 								<p className="d-inline text-secondary clickable-link">
 									{" "}
-                  u/<a id="post_username">{post.User.username}</a>
+									u/<a id="post_username">{post.User.username}</a>
 								</p>
 								<p className="fw-light text-secondary mx-1">•</p>
 								<p className="text-secondary" id="post_timeAgo">
@@ -60,7 +58,7 @@ const SubforumPost = (props) => {
 						</div>
 					</div>
 				</div>
-				<AnswersPill answers={answers}/>
+				<AnswersPill answers={answers} />
 			</div>
 
 			{index < postsLength - 1 && <hr />}
