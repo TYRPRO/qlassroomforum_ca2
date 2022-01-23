@@ -4,7 +4,11 @@ import PropTypes from "prop-types";
 import "./Post.css";
 import PostVotes from "./PostVotes";
 import parseTime from "../../helperFunctions/parseTime";
+import AnswersPill from "./AnswersPill";
+import Toolbar from "../ToolbarComponents/Toolbar";
+import Voting from "./Voting";
 const Post = (props) => {
+
 	// Takes in a prop of "Posts" as an array
 	Post.propTypes = {
 		Posts: PropTypes.array
@@ -16,10 +20,54 @@ const Post = (props) => {
 	// Line 43 to add answer component
 	// Line 19 optional to remove math.random function for key, used it to test pagination
 
+	function redirect(post_id) {
+		window.location.href = `/posts/${post_id}`;
+	}
+
+	function extractContent(post_content) {
+		let extractedContent = "";
+		let skip = false;
+		for (let i = 0; i < post_content.length; i++) {
+			if (post_content[i] == "<"){
+				skip = true;
+			}
+			else if (post_content[i] == ">"){
+				skip = false;
+			}
+			else if (!skip == true){
+				extractedContent += post_content[i];
+			}
+		}
+
+		return extractedContent;
+	}
+
+	function extractImages(post_content) {
+		let current_image_url = "";
+		let record = false;
+		let image_link_array = [];
+		for (var i=0;i<post_content.length;i++){
+			if (post_content.slice(i,i+10) == "<img src=\""){
+				i += 9;
+				record = true;
+				console.log("True recorded");
+			}
+			else if (post_content[i] == "\"" && record == true){
+				record = false;
+				image_link_array.push(current_image_url);
+				current_image_url = "";
+			}
+			else if (record){
+				current_image_url += post_content[i];
+			}
+		}
+		return image_link_array;
+	}
+
 	return <div>
 		{props.Posts.length >= 1 ?
 			props.Posts.map((data) => (
-				<div key={data.post_id + Math.random(1000)} className="post rounded mb-2 border-top border-bottom" id={"post_" + data.post_id}>
+				<div key={data.post_id + Math.random(1000)} className="post rounded mb-2 border-top border-bottom" id={"post_" + data.post_id} onClick={() => redirect(data.post_id)}>
 					<div className="row g-0">
 						<PostVotes
 							key={"vote_" + data.post_id}
@@ -27,6 +75,7 @@ const Post = (props) => {
 							post_id={data.post_id}
 							post_rating={data.post_rating}
 						/>
+
 						<div className="col-9 bg-white p-2 position-relative">
 							<a style={{ textDecoration: "none" }} href={data.fk_subforum_id + "/" + data.post_id} className="d-flex flex-row">
 								<h5 style={{ color: "black" }} id={"post_" + data.post_id + "_content"} className="mb-0">{data.post_title}</h5>
@@ -40,19 +89,31 @@ const Post = (props) => {
 								<p className="fw-light text-secondary mx-1">•</p>
 								<p className="text-secondary" id={"post_" + data.post_id + "_time"}>{parseTime(data.post_created_at)}</p>
 							</div>
-							<p className="mt-2 PostBody">{data.post_content}</p>
-							<div id={"post_media_" + data.post_id} className="d-flex flex-row justify-content-center mediaDiv">  </div>
+							<p className="mt-2 PostBody">{extractContent(data.post_content)}</p>
+							<div id={"post_media_" + data.post_id} className="d-flex flex-row mediaDiv pb-3">
+								{extractImages(data.post_content).map((image_url, index)=>{
+									if (index < 2){
+										return(
+											<img key={image_url + Math.random(1000)} src={`${image_url}`} className="img-fluid px-1 w-25" style={{objectFit:"contain"}}></img>);
+									}
+									else if (index == 2) {
+										return <p key={`${data.post_id}_more_images`} className="align-self-end">More Images</p>;
+									}
+									
+								})}
+							</div>
 							<div className="d-flex flex-row align-items-baseline">
 								<h6 className="Tags">
-									<a href={data.fk_subforum_id} className="text-dark text-decoration-none">{data.Subforum.subforum_name}</a>
+									<a href={`/subforum/${data.fk_subforum_id}`} className="text-dark text-decoration-none">{data.Subforum.subforum_name}</a>
 								</h6>
 								<p className="fw-light text-secondary mx-1">•</p>
 								<h6 className="Tags">
-									<a href={data.fk_subforum_id} className="text-dark text-decoration-none">{data.Grade.grade_name}</a>
+									<a href={`/subforum/${data.fk_subforum_id}`} className="text-dark text-decoration-none">{data.Grade.grade_name}</a>
 								</h6>
 							</div>
+							<Toolbar />
 						</div>
-						<div className="col-lg-2">Answers</div>
+						<div className="col-lg-2 d-flex p-2"><AnswersPill answers={data.post_answers_count} isAnswered={data.post_is_answered} /> </div>
 					</div>
 				</div>
 			))
