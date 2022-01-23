@@ -6,7 +6,9 @@ import axios from "axios";
 const Channel = (props) => {
 	// Delcaring proptypes for Eslint
 	Channel.propTypes = {
-		onFilterPost: PropTypes.func
+		onFilterPost: PropTypes.func,
+		hideSubject: PropTypes.bool,
+		subforum_id: PropTypes.string
 	};
 	// Set All Subjects
 	const [Subjects, setSubjects] = useState([]);
@@ -20,6 +22,13 @@ const Channel = (props) => {
 	const [SelectedGrade, setSelectedGrade] = useState();
 	// Is unaswered checked
 	const [selectUnanswered, setSelectUnanswered] = useState(false);
+
+	function setSubjectId(hideSubject, subforum_id){
+		if (hideSubject == true){
+			setSelectedSubject(subforum_id);
+			isSubjectSelected(true);
+		}
+	}
 
 	// Get Subjects/Subforum 
 	function GetSubjects() {
@@ -79,6 +88,7 @@ const Channel = (props) => {
 
 	// Select grade option
 	function GradeChange(event) {
+		console.log("grade change");
 		if (event.target.value != "default") {
 			// Set Grade
 			setSelectedGrade(event.target.value);
@@ -87,6 +97,7 @@ const Channel = (props) => {
 				subforum_id: SelectedSubject,
 				grade_id: event.target.value
 			};
+			console.log(SelectGrades);
 			// Pass it on props to parent (Post)
 			props.onFilterPost(SelectGrades);
 		}
@@ -133,7 +144,7 @@ const Channel = (props) => {
 
 	useEffect(() => {
 		//To minimize request spikes in database, added a temporary timeout
-
+		setSubjectId(props.hideSubject, props.subforum_id);
 		GetSubjects();
 		GetGrades();
 	}, []);
@@ -145,20 +156,24 @@ const Channel = (props) => {
 					<h5>Channel</h5>
 					<form>
 						<div className="form-padding">
-							<label>Subject</label>
-							<div>
-								<select className="SelectSubject" id="SelectSubject" onChange={SubjectChange}>
-									<option value="default">Select All Subjects</option>
-									{Subjects.map((data) => (
-										<option key={data.subforum_id} value={data.subforum_id}>{data.subforum_name}</option>
-									))}
-								</select>
-							</div>
+							{!props.hideSubject &&
+								<React.Fragment>
+									<label>Subject</label>
+									<div>
+										<select className="SelectSubject" id="SelectSubject" defaultValue={props.subforum_id} onChange={SubjectChange}>
+											<option value="default">Select All Subjects</option>
+											{Subjects.map((data) => (
+												<option key={data.subforum_id} value={data.subforum_id}>{data.subforum_name}</option>
+											))}
+										</select>
+									</div>
+								</React.Fragment>
+							}
 							<br />
 							<label>Grade</label>
 							<div>
-								<select className="SelectGrade" id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event)=>GradeChange(event)}>
-									<option value="default" selected={HasSubject == false ? true : false}>Select All Grades</option>
+								<select className="SelectGrade" defaultValue={HasSubject == false && "default"} id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event) => GradeChange(event)}>
+									<option value="default">Select All Grades</option>
 									{Grades.map((data) => (
 										<option key={data.grade_id} value={data.grade_id} >{data.grade_name}</option>
 									))}

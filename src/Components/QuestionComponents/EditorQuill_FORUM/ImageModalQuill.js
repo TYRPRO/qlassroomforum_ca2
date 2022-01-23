@@ -1,19 +1,31 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Button, Modal } from 'semantic-ui-react';
-import CloseIcon from '@mui/icons-material/Close';
+import React, { useState, useCallback } from "react";
+import { Button, Modal } from "semantic-ui-react";
+import CloseIcon from "@mui/icons-material/Close";
+import Compressor from "compressorjs";
 
+import axios from "axios";
 
-import axios from 'axios';
-
-import './styles.module.css';
-import './conflict-agreement.css'
+import "./styles.module.css";
+import "./conflict-agreement.css";
 
 
 const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => {
 
 	const [selectedFile, set_selectedFile] = useState(value);
-	const [imageURL, set_imageURL] = useState('');
+	const [imageURL, set_imageURL] = useState("");
 	const [fileIsValid, setFileIsValid] = useState(false);
+
+	function uploadMedia(file) {
+		const formData = new FormData();
+		formData.append("file", file, file.name);
+		axios.post("http://localhost:8000/posts/upload_image", formData).then(res => {
+			setFileIsValid(true);
+			set_imageURL(res.data.media_url);
+
+		}).catch(err => {
+			setFileIsValid(false);
+		});
+	}
 
 	const handleOnChange = useCallback(
 		file => {
@@ -21,14 +33,19 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 				// Handle Input validation Here
 				set_selectedFile(file);
 
-				const formData = new FormData();
-				formData.append('file', file);
-				axios.post('http://localhost:8000/posts/upload_image', formData).then(res => {
-					setFileIsValid(true);
-					set_imageURL(res.data.media_url);
+				new Compressor(file, {
+					quality: 0.6,
 
-				}).catch(err => {
-					setFileIsValid(false);
+					// The compression process is asynchronous,
+					// which means you have to access the `result` in the `success` hook function.
+					success(result) {
+						console.log("Image compressed successfully.");
+						uploadMedia(result);
+					},
+					error(err) {
+						console.log(err.message);
+						uploadMedia(file);
+					},
 				});
 
 			} catch (err) {
@@ -46,7 +63,7 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 			size='large'
 			closeOnDimmerClick={false}
 			closeOnEscape={false}
-			className={'forum-modal'}
+			className={"forum-modal"}
 			closeIcon={
 				// <div className='d-flex flex-row m-1'>
 				// 	<div className='flex-grow-1'></div>
@@ -59,11 +76,11 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 			}
 		>
 			<Modal.Header className='modal-header'>
-				
+
 				<h5 className='modal-title'>Insert Image</h5>
 			</Modal.Header>
 			<Modal.Content className='modal-body'>
-				<input className='form-control' type={'file'} onChange={(e) => handleOnChange(e.target.files[0])} />
+				<input className='form-control' type={"file"} onChange={(e) => handleOnChange(e.target.files[0])} />
 			</Modal.Content>
 			<Modal.Actions className='modal-footer'>
 				<Button
@@ -82,4 +99,4 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 	);
 };
 
-export default ImageModalQuill
+export default ImageModalQuill;

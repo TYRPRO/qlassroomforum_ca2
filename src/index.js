@@ -22,7 +22,7 @@ import thunk from "redux-thunk";
 import CreateQn from "./Components/QuestionComponents/CreateQn.js";
 import ViewQn from "./Components/QuestionComponents/ViewQn.js";
 import MyActivity from "./Components/MyActivityComponents/MyActivity";
-import Login from "./Components/LoginComponents/Login";
+import Login from "./Components/LoginComponent/Login";
 import Header from "./Components/HeaderComponents/Header";
 import CreateUser from "./Components/CreateAccountComponent/CreateUser";
 import Search from "./Components/SearchComponents/Search";
@@ -32,7 +32,7 @@ import Home from "./Components/HomeComponents/Home";
 
 const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
 
-const store = createStore(allReducers, applyMiddleware(thunk));
+const store = createStore(allReducers,  applyMiddleware(thunk));
 
 ReactDOM.render(
 	<React.StrictMode>

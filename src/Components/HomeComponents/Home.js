@@ -16,10 +16,6 @@ const Home = () => {
 			.then(function (response) {
 				setCurrentPage(1);
 				var data = response.data;
-				// Adding aaditional data to test pagination
-				for (let i = 0; i < 9; i++) {
-					data.push(data[2]);
-				}
 				// Setting All post data
 				setPostsData(data);
 				// Setting Current post data
@@ -69,7 +65,7 @@ const Home = () => {
 		<div className="container-fluid">
 			<div className='container'>
 				<div className='row'>
-					<Channel onFilterPost={ChannelDataHandler} />
+					<Channel onFilterPost={ChannelDataHandler} hideSubject={false} />
 					<div className="col-lg-9">
 						<div className="post-margin">
 							<label>{CurrentPage == 1 ? CurrentPage : (CurrentPage - 1) * 4}-{PostsData.length > CurrentPage * 4 ? CurrentPage * 4 : PostsData.length} of {PostsData.length} Questions</label>

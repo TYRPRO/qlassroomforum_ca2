@@ -1,29 +1,29 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ReplyIcon from '@mui/icons-material/Reply';
-import ModeCommentIcon from '@mui/icons-material/ModeComment';
-import './viewQn/viewQn.css'
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ReplyIcon from "@mui/icons-material/Reply";
+import ModeCommentIcon from "@mui/icons-material/ModeComment";
+import "./viewQn/viewQn.css";
 
-import parseTime from '../../helperFunctions/parseTime';
-import Answer from './viewQn/Answer.js';
-import AnswerComment from './viewQn/AnswerComments';
-import Editor from './Editor.js';
-import EditorQuill from './EditorQuill_FORUM/EditorQuill';
-import DOMPurify from 'dompurify';
-import { useNavigate } from 'react-router-dom'
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import parseTime from "../../helperFunctions/parseTime";
+import Answer from "./viewQn/Answer.js";
+import AnswerComment from "./viewQn/AnswerComments";
+import Editor from "./Editor.js";
+import EditorQuill from "./EditorQuill_FORUM/EditorQuill";
+import DOMPurify from "dompurify";
+import { useNavigate } from "react-router-dom";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 
 function ViewQn() {
 
 	const { post_id } = useParams();
 
-	const [post_title, set_post_title] = useState('');
-	const [post_content, set_post_content] = useState('');
+	const [post_title, set_post_title] = useState("");
+	const [post_content, set_post_content] = useState("");
 	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
 
 	const [answers, set_answers] = useState([]);
@@ -31,11 +31,11 @@ function ViewQn() {
 
 	const [tags, set_tags] = useState(["Subject", "Grade", "Additional Maths", "Logarithmic Functions", "Graphs"]);
 
-	const [answer_input, set_answer_input] = useState('');
+	const [answer_input, set_answer_input] = useState("");
 	const [refreshAnswers, set_refreshAnswers] = useState(false);
 
 	const [addComment, set_AddComment] = useState(false);
-	const [postComment, set_postComment] = useState('');
+	const [postComment, set_postComment] = useState("");
 
 	const [bookmarkHover, set_bookmarkHover] = useState(false);
 
@@ -44,8 +44,8 @@ function ViewQn() {
 	useEffect(() => {
 		axios.get(`http://localhost:8000/posts/${post_id}`)
 			.then(function (response) {
-				var data = response.data
-				console.log(data)
+				var data = response.data;
+				console.log(data);
 				set_post_title(data.post_title);
 				set_post_content(data.post_content);
 
@@ -54,12 +54,12 @@ function ViewQn() {
 
 			}).catch(function (error) {
 				console.log(error);
-			})
-	}, [])
+			});
+	}, []);
 
 	useEffect(() => {
 		axios.get(`http://localhost:8000/responses/${post_id}`).then(function (response) {
-			var data = response.data
+			var data = response.data;
 			console.log(data);
 			var post_answers = [];
 			var post_comments = [];
@@ -93,8 +93,8 @@ function ViewQn() {
 			set_answers(post_answers);
 			set_postComments(post_comments);
 
-		})
-	}, [refreshAnswers])
+		});
+	}, [refreshAnswers]);
 	// useEffect(() => {
 	// 	axios.get(`http://localhost:8000/answers/posts/${post_id}`)
 	// 		.then(function (response) {
@@ -144,9 +144,9 @@ function ViewQn() {
 											<div className='flex-grow-1'></div>
 
 											<div>
-												<button onMouseEnter={() => { set_bookmarkHover(true) }} onMouseLeave={() => { set_bookmarkHover(false) }} className='text-secondary anim-enter-active'>
+												<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} className='text-secondary anim-enter-active'>
 													<BookmarkBorderIcon sx={{ fontSize: 26 }} />
-													{bookmarkHover ? 'Bookmark this question?' : ''}
+													{bookmarkHover ? "Bookmark this question?" : ""}
 												</button>
 											</div>
 
@@ -173,7 +173,7 @@ function ViewQn() {
 										<div className='row text-primary'>
 											<div className='col-3'>
 												<div className='d-inline-block toolbar-btn px-2'>
-													<div onClick={() => { set_AddComment(!addComment) }} className='d-flex flex-row align-items-center '>
+													<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center '>
 
 														<ReplyIcon></ReplyIcon>
 														<p className='px-2 py-2 mb-0'>Comment</p>
@@ -219,7 +219,7 @@ function ViewQn() {
 										{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
 										{addComment ?
 											<div className=' input-group'>
-												<input onChange={(e) => { set_postComment(e.target.value) }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
+												<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
 												<button onClick={ submitPostComment} className='btn btn-outline-secondary'>Submit</button>
 											</div>
 											:
@@ -235,7 +235,7 @@ function ViewQn() {
 									</div>
 									<div>
 										<p>Your Answer</p>
-										<EditorQuill customToolbarId={'editor_toolbar'} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
+										<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
 										<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
 									</div>
 								</div>
@@ -256,10 +256,10 @@ function ViewQn() {
 
 
 		</div>
-	)
+	);
 
 	function refreshAnswersFunction() {
-		set_refreshAnswers(!refreshAnswers)
+		set_refreshAnswers(!refreshAnswers);
 	}
 
 	function Tag(props) {
@@ -269,7 +269,7 @@ function ViewQn() {
 					<p className=' mb-0 px-2 d-inline text-nowrap'>{props.tag}</p>
 				</small>
 			</div>
-		)
+		);
 	}
 
 	function submitAnswer() {
@@ -290,7 +290,7 @@ function ViewQn() {
 			set_refreshAnswers(!refreshAnswers);
 		}).catch(function (error) {
 			console.log(error);
-		})
+		});
 
 	}
 
@@ -309,7 +309,7 @@ function ViewQn() {
 			refreshAnswersFunction();
 		}).catch(function (error) {
 			console.log(error);
-		})
+		});
 	}
 }
 

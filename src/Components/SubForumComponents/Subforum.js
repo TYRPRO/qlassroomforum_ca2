@@ -1,66 +1,75 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useSelector, useDispatch } from "react-redux";
-import { getPosts } from "../../store/actions/Subforum";
+import { getPosts, populateCurrentPosts, setCurrentPageNum, filterPosts } from "../../store/actions/Subforum";
 
 import "./subForum.css";
 import "../../Common/common.css";
-import SubforumFilter from "./SubforumFilter";
-import SubforumPost from "./SubforumPost";
+import Channel from "../ChannelComponents/Channel";
+import "../HomeComponents/Home.css";
+import Post from "../PostComponent/Post";
 
 const Subforum = () => {
-  const isLoadingPosts = useSelector((state) => state.Subforum.isLoadingPosts);
-  const posts = useSelector((state) => state.Subforum.posts);
-  const dispatch = useDispatch();
-  const pathname = window.location.pathname;
-  const subForumName = pathname.split("/")[2];
+	const isLoadingPosts = useSelector((state) => state.Subforum.isLoadingPosts);
+	const currentPage = useSelector((state) => state.Subforum.currentPage);
+	const maxPage = useSelector((state) => state.Subforum.maxPage);
+	const posts = useSelector((state) => state.Subforum.posts);
+	const currentPagePosts = useSelector((state) => state.Subforum.currentPagePosts);
+	const dispatch = useDispatch();
+	const pathname = window.location.pathname;
+	const subforum_id = pathname.split("/")[2];
 
-  
+	function NextPage() {
+		if (currentPage < maxPage) {
+			dispatch(populateCurrentPosts(posts.slice(currentPage * 4, (currentPage * 4) + 4)));
+			dispatch(setCurrentPageNum(currentPage + 1));
+		}
+	}
+	function PrevPage() {
+		if (currentPage != 1) {
+			dispatch(populateCurrentPosts(posts.slice((currentPage - 2) * 4), ((currentPage - 1) * 4)));
+			dispatch(setCurrentPageNum(currentPage - 1));
+		}
+	}
 
-  useEffect(() => {
-    getPosts(dispatch, subForumName, toast);
-  }, []);
+	const ChannelDataHandler = (ChannelFilterData) => {
+		filterPosts(dispatch, ChannelFilterData);
+		
+	};
 
-  return (
-    <React.Fragment>
-      <ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
-      <div className="row m-2 container">
-        <div className="col-3 p-1 bg-grey rounded h-25 sticky-top">
-          <SubforumFilter/>
-        </div>
-        <div className="col-9">
-          <div className="row">
-            <div className="col-8 position-relative">
-              <span className="position-absolute bottom-0 left-0">1-20 of 9999 Questions (0% Answered)</span>
-            </div>
-            <div className="col-4">
-              <form>
-                <select className="form-select">
-                  <option>Sort By Popular</option>
-                </select>
-              </form>
-            </div>
-          </div>
+	useEffect(() => {
+		getPosts(dispatch, subforum_id, toast);
+	}, []);
 
-          <hr />
-          {isLoadingPosts ? (
-            <h1>still loading...</h1>
-          ) : (
-            posts.map((post, index) => {
-              let i = index
-              let postLength = posts.length
-              return (
-                <SubforumPost post={post} postsLength={postLength} index={i} key={post.post_id}/>
-              );
-            })
-          )}
-        </div>
-      </div>
-    </React.Fragment>
-  );
+	return (
+		<React.Fragment>
+			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
+			<div className="row m-2 container">
+				<div className="container-fluid">
+					<div className='container'>
+						{isLoadingPosts ? <h1 className="text-center">Loading Posts...</h1> :
+							<div className='row'>
+								<Channel onFilterPost={ChannelDataHandler} hideSubject={true} subforum_id={subforum_id}/>
+								<div className="col-lg-9">
+									<div className="post-margin">
+										<label>{currentPage == 1 ? currentPage : (currentPage - 1) * 4}-{posts.length > currentPage * 4 ? currentPage * 4 : posts.length} of {posts.length} Questions</label>
+										<Post Posts={currentPagePosts} />
+									</div>
+									<div className="d-flex justify-content-between">
+										<div onClick={PrevPage} style={{ cursor: "pointer" }}><i className="fa fa-caret-left"></i><b className="PrevPage">Prev Page</b></div>
+										<p className="">{currentPage} out of {maxPage}</p>
+										<div onClick={NextPage} style={{ cursor: "pointer" }}><b className="NextPage">Next Page</b><i className="fa fa-caret-right"></i></div>
+									</div>
+								</div>
+							</div>
+						}
+					</div>
+				</div >
+			</div>
+		</React.Fragment>
+	);
 };
 
 export default Subforum;

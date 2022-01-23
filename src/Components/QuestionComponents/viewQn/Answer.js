@@ -1,12 +1,12 @@
-import './viewQn.css'
-import { useState } from 'react';
-import axios from 'axios';
-import AnswerComment from './AnswerComments';
+import "./viewQn.css";
+import React, { useState } from "react";
+import axios from "axios";
+import AnswerComment from "./AnswerComments";
 function Answer(props) {
 
 
 	const [addComment, set_AddComment] = useState(false);
-	const [answerComment, set_answerComment] = useState('');
+	const [answerComment, set_answerComment] = useState("");
 	var answer_info = props.answer;
 
 	return (
@@ -31,7 +31,7 @@ function Answer(props) {
 										</div>
 									</div>
 									<div className='col-9'>
-										<small className='mb-0'>{'Jack'} {"Mamba"}</small>
+										<small className='mb-0'>{"Jack"} {"Mamba"}</small>
 										<br></br>
 										<small className='mb-0 text-secondary'>Points ###</small>
 									</div>
@@ -44,7 +44,7 @@ function Answer(props) {
 					{answer_info.comments ? (answer_info.comments.map((comment, index) => <AnswerComment key={index} comment={comment} />)) : null}
 					{addComment ?
 						<div className=' input-group'>
-							<input onChange={(e) => { set_answerComment(e.target.value) }} value={answerComment} className='form-control' placeholder='Comment on this answer?'></input>
+							<input onChange={(e) => { set_answerComment(e.target.value); }} value={answerComment} className='form-control' placeholder='Comment on this answer?'></input>
 							<button onClick={submitAnswerComment} className='btn btn-outline-secondary'>Submit</button>
 						</div>
 						:
@@ -56,7 +56,7 @@ function Answer(props) {
 			</div>
 			<hr></hr>
 		</div>
-	)
+	);
 
 	function submitAnswerComment() {
 		// Temp User ID
@@ -76,7 +76,7 @@ function Answer(props) {
 			props.refreshAnswers();
 		}).catch(function (error) {
 			console.log(error);
-		})
+		});
 	}
 
 

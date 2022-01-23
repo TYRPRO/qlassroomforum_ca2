@@ -137,21 +137,21 @@ const Profile = () => {
 					var seconds_between_dates = Math.floor((date_now - date) / 1000);
 					var minutes_between_dates = Math.floor((date_now - date) / (60 * 1000));
 					var hours_between_dates = Math.floor((date_now - date) / (60 * 60 * 1000));
-					var days_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 1000))
-					var weeks_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 7 * 1000))
+					var days_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 1000));
+					var weeks_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 7 * 1000));
 
 					var post_date_output;
 					if (seconds_between_dates < 60) {
-						post_date_output = `${seconds_between_dates} seconds ago`
+						post_date_output = `${seconds_between_dates} seconds ago`;
 					} else if (minutes_between_dates < 60) {
-						post_date_output = `${minutes_between_dates} minutes ago`
+						post_date_output = `${minutes_between_dates} minutes ago`;
 					}
 					else if (hours_between_dates < 24) {
-						post_date_output = `${hours_between_dates} hours ago`
+						post_date_output = `${hours_between_dates} hours ago`;
 					} else if (days_between_dates <= 7) {
-						post_date_output = `${days_between_dates} days ago`
+						post_date_output = `${days_between_dates} days ago`;
 					} else {
-						post_date_output = `${weeks_between_dates} weeks ago`
+						post_date_output = `${weeks_between_dates} weeks ago`;
 					}
 
 					questionDetails.push({
@@ -167,7 +167,7 @@ const Profile = () => {
 
 				}
 
-				for (var i = 0; i < 4; i++) {
+				for (let i = 0; i < 4; i++) {
 					dispQuestions.push(questionDetails[i]);
 				}
 
@@ -217,7 +217,7 @@ const Profile = () => {
 					});
 				}
 
-				for (var i = 0; i < 5; i++) {
+				for (let i = 0; i < 5; i++) {
 					dispAnswers.push(answerDetails[i]);
 				}
 
@@ -258,21 +258,21 @@ const Profile = () => {
 					var seconds_between_dates = Math.floor((date_now - date) / 1000);
 					var minutes_between_dates = Math.floor((date_now - date) / (60 * 1000));
 					var hours_between_dates = Math.floor((date_now - date) / (60 * 60 * 1000));
-					var days_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 1000))
-					var weeks_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 7 * 1000))
+					var days_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 1000));
+					var weeks_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 7 * 1000));
 
 					var post_date_output;
 					if (seconds_between_dates < 60) {
-						post_date_output = `${seconds_between_dates} seconds ago`
+						post_date_output = `${seconds_between_dates} seconds ago`;
 					} else if (minutes_between_dates < 60) {
-						post_date_output = `${minutes_between_dates} minutes ago`
+						post_date_output = `${minutes_between_dates} minutes ago`;
 					}
 					else if (hours_between_dates < 24) {
-						post_date_output = `${hours_between_dates} hours ago`
+						post_date_output = `${hours_between_dates} hours ago`;
 					} else if (days_between_dates <= 7) {
-						post_date_output = `${days_between_dates} days ago`
+						post_date_output = `${days_between_dates} days ago`;
 					} else {
-						post_date_output = `${weeks_between_dates} weeks ago`
+						post_date_output = `${weeks_between_dates} weeks ago`;
 					}
 
 					savedQuestionDetails.push({
@@ -288,7 +288,7 @@ const Profile = () => {
 					});
 				}
 
-				for (var i = 0; i < 4; i++) {
+				for (let i = 0; i < 4; i++) {
 					dispSavedQuestions.push(savedQuestionDetails[i]);
 				}
 
@@ -323,7 +323,7 @@ const Profile = () => {
 		} else if (tabselected == "answers") {
 			var dispAnswers = [];
 
-			for (var i = 0; i < 5; i++) {
+			for (let i = 0; i < 5; i++) {
 				if (answers[i + (answerCurrentPage * 5)] != undefined) {
 					dispAnswers.push(answers[i + (answerCurrentPage * 5)]);
 				}
@@ -333,7 +333,7 @@ const Profile = () => {
 		} else {
 			var dispSavedQuestions = [];
 
-			for (var i = 0; i < 4; i++) {
+			for (let i = 0; i < 4; i++) {
 				if (savedquestions[i + (savedQuestionCurrentPage * 4)] != undefined) {
 					dispSavedQuestions.push(savedquestions[i + (savedQuestionCurrentPage * 4)]);
 				}

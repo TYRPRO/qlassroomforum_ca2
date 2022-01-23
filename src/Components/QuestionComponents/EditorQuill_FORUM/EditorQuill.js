@@ -8,11 +8,11 @@ import styles from "./styles.module.css";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 
-import './conflict-agreement.css'
+import "./conflict-agreement.css";
 import LaTexModalQuill from "./LaTexModalQuill";
 import { customSuperSubScriptMatcher } from "./matcher/CustomMatcher.js";
 import KaTexEditorModal from "./KaTexEditorModal";
-import ImageModalQuill from "./ImageModalQuill"
+import ImageModalQuill from "./ImageModalQuill";
 window.katex = katex;
 
 const EditorQuill = ({

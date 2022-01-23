@@ -19,11 +19,11 @@ const Answer = (props) => {
 			<div className="row mb-2">
 				<div className="col-1"></div>
 				<div className="col-11">
-					<h5>"{props.value}"</h5>
+					<h5>&#34{props.value}&#34</h5>
 				</div>
 			</div>
 		</div >
 	);
-}
+};
 
 export default Answer;

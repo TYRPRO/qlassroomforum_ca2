@@ -1,29 +1,29 @@
 
-import { useState, useEffect, useRef } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
+import React, { useState, useEffect, useRef } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Modal } from "bootstrap/dist/js/bootstrap.bundle.js";
 
 
 
-import TagDropdown from './createQn/TagDropdown';
-import Tag from './createQn/tag';
-import QuillEditor from './EditorQuill_FORUM/EditorQuill';
+import TagDropdown from "./createQn/TagDropdown";
+import Tag from "./createQn/tag";
+import QuillEditor from "./EditorQuill_FORUM/EditorQuill";
 
-import { MathJax, MathJaxContext } from 'better-react-mathjax'
-import DOMPurify from 'dompurify';
-import axios from 'axios';
+import { MathJax, MathJaxContext } from "better-react-mathjax";
+import DOMPurify from "dompurify";
+import axios from "axios";
 
 function CreateQn() {
 	const config = {
-		loader: { load: ['input/asciimath'] }
-	}
+		loader: { load: ["input/asciimath"] }
+	};
 
-	const [subjects, set_subjects] = useState([])
+	const [subjects, set_subjects] = useState([]);
 	const [selected_subject, set_selected_subject] = useState("");
 	const [subject_ids, set_subject_ids] = useState([]);
 
-	const [qnTitle, set_qnTitle] = useState('');
-	const [qnBody, set_qnBody] = useState('');
+	const [qnTitle, set_qnTitle] = useState("");
+	const [qnBody, set_qnBody] = useState("");
 
 	const [grades, set_grades] = useState([]);
 	const [shown_grades, set_shown_grades] = useState(["Loading"]);
@@ -43,7 +43,7 @@ function CreateQn() {
 
 
 	useEffect(() => {
-		axios.get('https://testapi.qlassroom.ai/subject_grade')
+		axios.get("https://testapi.qlassroom.ai/subject_grade")
 			.then(function (response) {
 				var subjects = response.data.subjectGrade;
 				var subject_keys = Object.keys(subjects);
@@ -53,15 +53,15 @@ function CreateQn() {
 				var tempSubjectIds = [];
 
 				for (let i = 0; i < subject_keys.length; i++) {
-					tempSubjects.push(Object.values(subjects)[i].subject_name)
-					tempGrades.push(Object.values(subjects)[i].grades)
-					tempSubjectIds.push(Object.values(subjects)[i].subject_id)
+					tempSubjects.push(Object.values(subjects)[i].subject_name);
+					tempGrades.push(Object.values(subjects)[i].grades);
+					tempSubjectIds.push(Object.values(subjects)[i].subject_id);
 
 				}
 
 				var tempShownGrades = [];
 				for (let i = 0; i < tempGrades[0].length; i++) {
-					tempShownGrades.push(tempGrades[0][i].grade_name)
+					tempShownGrades.push(tempGrades[0][i].grade_name);
 				}
 
 				set_subjects(tempSubjects);
@@ -74,8 +74,7 @@ function CreateQn() {
 			.catch(function (error) {
 				console.log(error);
 
-			})
-		axios.get()
+			});
 	}, []);
 
 
@@ -91,7 +90,7 @@ function CreateQn() {
 		var subject_index = subjects.indexOf(subject);
 		var tempShownGrades = [];
 		for (let i = 0; i < grades[subject_index].length; i++) {
-			tempShownGrades.push(grades[subject_index][i].grade_name)
+			tempShownGrades.push(grades[subject_index][i].grade_name);
 		}
 
 		set_shown_grades(tempShownGrades);
@@ -126,13 +125,13 @@ function CreateQn() {
 					console.log(data);
 					var temp_shown_tags = [];
 					for (let i = 0; i < data.length; i++) {
-						temp_shown_tags.push(data[i].dimension_name)
+						temp_shown_tags.push(data[i].dimension_name);
 					}
 
 					set_tags(data);
 					set_shown_tags(temp_shown_tags);
 					set_selected_tags([]);
-				})
+				});
 			}
 
 		} catch (err) {
@@ -157,8 +156,8 @@ function CreateQn() {
 									Select the subject of your question.
 								</div>
 								<div>
-									<select className=' form-select'>
-										{subjects.map((subject, index) => <option key={index} onClick={() => { handleSelectedSubjectChange(subject); }}>{subject}</option>)}
+									<select className=' form-select' onChange={(event) => handleSelectedSubjectChange(event.target.value)}>
+										{subjects.map((subject, index) => <option key={index} value={subject}>{subject}</option>)}
 									</select>
 								</div>
 
@@ -167,24 +166,18 @@ function CreateQn() {
 									Select the grade level that best fits your question.
 								</div>
 								<div>
-									<select className=' form-select' value={selected_grade}>
+									<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
 										<option disabled={true} value={"disabled"}>Please select a grade:</option>
-										{shown_grades.map((shown_grade, index) => <option key={index} onClick={() => { set_selected_grade(shown_grade) }}>{shown_grade}</option>)}
-									</select>
+										{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
+									</select>						Be specific and imagine you are asking a question to another person.
 								</div>
-
-
-								<label htmlFor='qn_title' className='mt-3'>Question Title</label>
-								<div className=' form-text mt-0'>
-									Be specific and imagine you are asking a question to another person.
-								</div>
-								<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={'e.g. Find the intercept between y=2x and 12=2y+x. '}></input>
+								<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"e.g. Find the intercept between y=2x and 12=2y+x. "}></input>
 
 								<label htmlFor='qn_body' className='mt-2'>Body</label>
 								<div className=' form-text mt-0'>
 									Include all the information someone would need to answer your question
 								</div>
-								<QuillEditor customToolbarId={'testing'} handleContentChange={set_qnBody} contentHTML={qnBody}></QuillEditor>
+								<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody}></QuillEditor>
 								{/* <TextEditor storeInput={set_qnBody} /> */}
 								{/* <div value={qnBody} ref={qn_body_textarea} contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
 								</div> */}
@@ -204,7 +197,7 @@ function CreateQn() {
 
 								</div>
 
-								{openDropdown ? <TagDropdown tags={shown_tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false) }}></TagDropdown> : null}
+								{openDropdown ? <TagDropdown tags={shown_tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false); }}></TagDropdown> : null}
 							</div>
 
 
@@ -228,11 +221,11 @@ function CreateQn() {
 
 		var subject_index = subjects.indexOf(selected_subject);
 		var subject_id = subject_ids[subject_index];
-		
+
 		var grades_info = grades[subject_index];
 		var grade_id = "";
-		for (let i = 0; i < grades_info.length; i++) { 
-			if(grades_info[i].grade_name === selected_grade){
+		for (let i = 0; i < grades_info.length; i++) {
+			if (grades_info[i].grade_name === selected_grade) {
 				grade_id = grades_info[i].grade_id;
 				break;
 			}
@@ -242,12 +235,12 @@ function CreateQn() {
 
 
 		// Temporary user_id;
-		var user_id = '16f59363-c0a4-406a-ae65-b662c6b070cd';
+		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
 
 
 
 
-		axios.post('http://localhost:8000/posts', {
+		axios.post("http://localhost:8000/posts", {
 			title: qnTitle,
 			content: qnBody,
 			user_id: user_id,
@@ -298,7 +291,7 @@ function CreateQn() {
 
 	function onlyInEditor() {
 		var current_selection_id = window.getSelection().anchorNode.parentElement.id;
-		if (current_selection_id === 'qn_body_textarea') {
+		if (current_selection_id === "qn_body_textarea") {
 			return true;
 
 		}
@@ -313,7 +306,7 @@ function CreateQn() {
 			var selection = window.getSelection();
 
 			if (selection.getRangeAt && selection.rangeCount) {
-				var range = []
+				var range = [];
 				for (var i = 0; i < selection.rangeCount; i++) {
 					range.push(selection.getRangeAt(i));
 				}
@@ -327,14 +320,14 @@ function CreateQn() {
 
 	function modifyDesign(action) {
 
-		if (action === 'createLink') {
+		if (action === "createLink") {
 			saveSelection();
-			var link_modal = new Modal(document.getElementById('add_url'), { backdrop: 'static', keyboard: false });
-			document.getElementById('wysiwyg_link').value = '';
+			var link_modal = new Modal(document.getElementById("add_url"), { backdrop: "static", keyboard: false });
+			document.getElementById("wysiwyg_link").value = "";
 			link_modal.toggle();
 		}
 		else {
-			console.log('seting', action);
+			console.log("seting", action);
 			document.execCommand(action, false);
 		}
 
@@ -358,11 +351,11 @@ function CreateQn() {
 	function clearFormatting(removeLink) {
 		if (removeLink) {
 			restoreSelection();
-			document.execCommand('unlink', false);
+			document.execCommand("unlink", false);
 		}
 
-		console.log('removing format');
-		document.execCommand('removeFormat', false);
+		console.log("removing format");
+		document.execCommand("removeFormat", false);
 	}
 
 
