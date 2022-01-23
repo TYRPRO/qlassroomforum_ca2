@@ -1,6 +1,8 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./Post.css";
+import PostVotes from "./PostVotes";
 import parseTime from "../../helperFunctions/parseTime";
 const Post = (props) => {
 	// Takes in a prop of "Posts" as an array
@@ -19,7 +21,12 @@ const Post = (props) => {
 			props.Posts.map((data) => (
 				<div key={data.post_id + Math.random(1000)} className="post rounded mb-2 border-top border-bottom" id={"post_" + data.post_id}>
 					<div className="row g-0">
-						<div className="col-1">Upvote</div>
+						<PostVotes
+							key={"vote_" + data.post_id}
+							user_id={data.fk_user_id}
+							post_id={data.post_id}
+							post_rating={data.post_rating}
+						/>
 						<div className="col-9 bg-white p-2 position-relative">
 							<a style={{ textDecoration: "none" }} href={data.fk_subforum_id + "/" + data.post_id} className="d-flex flex-row">
 								<h5 style={{ color: "black" }} id={"post_" + data.post_id + "_content"} className="mb-0">{data.post_title}</h5>

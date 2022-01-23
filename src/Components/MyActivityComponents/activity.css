@@ -71,7 +71,7 @@ button {
 }
 
 .upvoted {
-    background-color: #734f96;
+    background-color: #6997d6;
 }
 
 .upvoted i {
@@ -79,7 +79,7 @@ button {
 }
 
 .upvoted:hover {
-    background-color: #6a5acd35;
+    background-color: #6996d660;
     color: black !important;
 }
 
@@ -88,7 +88,7 @@ button {
 }
 
 .downvoted {
-    background-color: #734f96 !important;
+    background-color: #6997d6 !important;
 }
 
 .downvoted i {
@@ -96,7 +96,7 @@ button {
 }
 
 .downvoted:hover {
-    background-color: #6a5acd35 !important;
+    background-color: #6996d660 !important;
     color: black !important;
 }
 
