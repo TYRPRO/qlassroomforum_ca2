@@ -6,6 +6,7 @@ const config = require("../../config.js").key;
 
 const verify = {
 	verifySameUserId : function (req, res, next){
+		console.log(req.body);
 		var user_id = req.body.user_id || req.params.user_id || req.body.data.user_id;
 		console.log("user_id: " + user_id);
 
@@ -20,11 +21,11 @@ const verify = {
 					return res.status(403).send({ "message": "Unauthorized access", errCode: 1 });
 				} else {
 					if (data.type == 2) {
-						req.body.fk_user_type_id = data.user_id;
+						req.body.fk_user_type_id = data.userData.user_id;
 						next();
 					}
 					else {
-						if (data.user_id != user_id){
+						if (data.userData.user_id !== user_id){
 							return res.status(403).send({ "message": "Unauthorized access", errCode: 2 });
 						}
 						else{
@@ -50,7 +51,7 @@ const verify = {
 					console.log(err);
 					return res.status(403).send({ "message": "Unauthorized access", errCode: 1 });
 				} else {
-					req.body.token_user_id = data.user_id;
+					req.body.token_user_id = data.userData.user_id;
 					next();
 				}
 			});

@@ -269,7 +269,7 @@ var post = {
 	searchPost: function (title, callback) {
 		Post.findAll({
 			where: { post_title: { [Op.like]: "%" + title + "%" } },
-            attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
+			attributes: ["post_id", "post_title", "post_content", "post_is_pinned", "post_is_answered", "post_created_at", "post_rating", "post_answers_count", "fk_response_id"],
 			include: [
 				{
 					model: User,

@@ -15,6 +15,7 @@ const grade = require("./grade");
 const user = require("./user.js");
 const subforum = require("./subforum");
 const label = require("./label");
+const vote = require("./vote");
 
 //-----------------------------------
 // Middleware functions
@@ -51,6 +52,7 @@ app.use("/grade", grade);
 app.use("/subforum", subforum);
 app.use("/user", user);
 app.use("/label", label);
+app.use("/vote", vote);
 
 //-----------------------------------
 // exports
