@@ -1,16 +1,18 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Button, Icon, Modal } from 'semantic-ui-react';
-import CloseIcon from '@mui/icons-material/Close';
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Button, Icon, Modal } from "semantic-ui-react";
+import CloseIcon from "@mui/icons-material/Close";
 
-import './styles.module.css';
-import styles from './styles.module.css';
-import './conflict-agreement.css'
+import "./styles.module.css";
+import styles from "./styles.module.css";
+import "./conflict-agreement.css";
 
 // import 'semantic-ui-css/semantic.min.css'
-import MathView from 'react-math-view';
-import katex from 'katex';
+import MathView from "react-math-view";
+import katex from "katex";
 
-const LaTexModalQuill = ({ isOpen, setIsOpen, value = '', handleConfirm }) => {
+const LaTexModalQuill = ({ isOpen, setIsOpen, value = "", handleConfirm }) => {
 	const [latexIsValid, setLatexIsValid] = useState(true);
 	const modalRef = useRef(null);
 	const latexRef = useRef(null);
@@ -40,7 +42,7 @@ const LaTexModalQuill = ({ isOpen, setIsOpen, value = '', handleConfirm }) => {
 			size='large'
 			closeOnDimmerClick={false}
 			closeOnEscape={false}
-			className={'forum-modal'}
+			className={"forum-modal"}
 			closeIcon={
 				<div className=' float-end'>
 					<CloseIcon />
@@ -48,7 +50,7 @@ const LaTexModalQuill = ({ isOpen, setIsOpen, value = '', handleConfirm }) => {
 
 			}
 		>
-			<Modal.Header className={'modal-header'}>
+			<Modal.Header className={"modal-header"}>
 				<h5 className='modal-title'>Insert LaTex</h5>
 			</Modal.Header>
 			<Modal.Content className='modal-body'>
@@ -62,7 +64,7 @@ const LaTexModalQuill = ({ isOpen, setIsOpen, value = '', handleConfirm }) => {
 			<Modal.Actions className={"modal-footer"}>
 				<Button
 					onClick={() => {
-						handleConfirm(latexRef.current?.getValue('latex'));
+						handleConfirm(latexRef.current?.getValue("latex"));
 						setIsOpen(false);
 					}}
 					disabled={!latexIsValid}
@@ -85,7 +87,7 @@ const LaTexComponent = ({ modalRef, latexRef, value, handleOnChange }) => {
 					modalRef.current.dimmerRef.current.style.zIndex = 5;
 			}
 		}
-		latexRef.current?.executeCommand('showVirtualKeyboard');
+		latexRef.current?.executeCommand("showVirtualKeyboard");
 	}, [modalRef, latexRef]);
 
 	useEffect(() => {
@@ -95,13 +97,13 @@ const LaTexComponent = ({ modalRef, latexRef, value, handleOnChange }) => {
 	return (
 		<MathView
 			ref={latexRef}
-			className={'border'}
+			className={"border"}
 			defaultValue={value}
 			virtualKeyboardMode="auto"
 			defaultMode="math"
 			onFocus={handleOnFocus}
 			onChange={() => {
-				handleOnChange(latexRef.current?.getValue('latex'));
+				handleOnChange(latexRef.current?.getValue("latex"));
 			}}
 		/>
 	);

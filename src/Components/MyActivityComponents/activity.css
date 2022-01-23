@@ -1,10 +1,10 @@
 /* Tabs Styling */
 
-#tabs>li {
+#tabs>div {
     width: 19%;
 }
 
-#tabs>li.active {
+#tabs>div.active {
     border-bottom: solid 3px black;
 }
 
@@ -18,18 +18,20 @@ button {
     color: lightskyblue;
 }
 
-#tabs>li>button {
+#tabs>div>button {
     font-size: 15px;
     font-weight: 600;
+	width: 100%;
+	height: 100%;
 }
 
-#tabs>li.active>button {
+#tabs>div.active>button {
     color: black;
 }
 
 /* Tabs Animation */
 
-#tabs>li:not(.active):after {
+#tabs>div:not(.active):after {
     display: block;
     content: '';
     border-bottom: 3px solid lightskyblue;
@@ -37,7 +39,7 @@ button {
     transition: transform 250ms ease-in-out;
 }
 
-#tabs>li:not(.active):hover:after {
+#tabs>div:not(.active):hover:after {
     transform: scaleX(1);
 }
 

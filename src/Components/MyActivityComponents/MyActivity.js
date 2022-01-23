@@ -60,7 +60,7 @@ const MyActivity = () => {
 
 	// function getUpvotesGiven() { }
 
-	// login functions
+	// Login Functions
 	function acquireUserData() {
 		var token = findCookie("token");
 
@@ -179,7 +179,7 @@ const MyActivity = () => {
 					}
 				}
 
-				console.log(questionTotalPages);
+				console.log(dispQuestions);
 				setQuestions(questionDetails);
 				setQuestionToDisplay(dispQuestions);
 				setQuestionTotalPages(totalQuestions);
@@ -329,7 +329,7 @@ const MyActivity = () => {
 			var dispQuestions = [];
 
 			for (let i = 0; i < 4; i++) {
-				if (questions[i + (questionCurrentPage * 5)] != undefined) {
+				if (questions[i + (questionCurrentPage * 4)] != undefined) {
 					dispQuestions.push(questions[i + (questionCurrentPage * 4)]);
 				}
 			}
@@ -350,7 +350,7 @@ const MyActivity = () => {
 			var dispSavedQuestions = [];
 
 			for (let i = 0; i < 4; i++) {
-				if (savedquestions[i + (savedQuestionCurrentPage * 5)] != undefined) {
+				if (savedquestions[i + (savedQuestionCurrentPage * 4)] != undefined) {
 					dispSavedQuestions.push(savedquestions[i + (savedQuestionCurrentPage * 4)]);
 				}
 			}
@@ -417,38 +417,46 @@ const MyActivity = () => {
 		<React.Fragment>
 			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
 			<div className="d-flex flex-row flex-grow-1 justify-content-center" id="myactivity">
-				<div className="flex-fill d-flex flex-row">
-					<div className="ms-lg-0 mt-4 ms-5 w-25 me-5">
-						<h2>My Activity</h2>
-						<hr />
-						<div className="py-2">
-							<h5>{0}</h5>
-							<p>updates received</p>
+				<div className="flex-fill d-flex flex-row flex-wrap">
+					<div className="ms-lg-0 mt-4 ms-5 w-25 me-5 d-flex flex-column flex-grow-1 flex-lg-grow-0">
+						<div>
+							<h2>My Activity</h2>
+							<hr />
 						</div>
-						<div className="py-2">
-							<h5>{0}</h5>
-							<p>answers posted</p>
-						</div>
-						<div className="py-2">
-							<h5>{0}</h5>
-							<p>answers accepted</p>
-						</div>
-						<div className="py-2">
-							<h5>{0}</h5>
-							<p>upvotes given</p>
+						<div className="d-flex flex-row flex-lg-column">
+							<div className="flex-grow-1">
+								<div className="py-2">
+									<h5>{0}</h5>
+									<p>updates received</p>
+								</div>
+								<div className="py-2">
+									<h5>{0}</h5>
+									<p>answers posted</p>
+								</div>
+							</div>
+							<div className="flex-grow-1">
+								<div className="py-2">
+									<h5>{0}</h5>
+									<p>answers accepted</p>
+								</div>
+								<div className="py-2">
+									<h5>{0}</h5>
+									<p>upvotes given</p>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div className="flex-grow-1 mt-5">
-						<ul id="tabs" className="nav nav-tabs">
-							<li className="active mx-xl-4 mx-3 text-center" id="questions">
+						<ul id="tabs" className="nav nav-tabs d-flex">
+							<div className="active mx-xl-4 mx-3" id="questions">
 								<button href="#home" className="p-2 py-3" onClick={() => handleTabSelection("questions")}>MY QUESTIONS</button>
-							</li>
-							<li className="mx-xl-4 mx-3 text-center" id="answers">
+							</div>
+							<div className="mx-xl-4 mx-3 text-center" id="answers">
 								<button href="#menu1" className="p-2 py-3" onClick={() => handleTabSelection("answers")}>MY ANSWERS</button>
-							</li>
-							<li className="mx-xl-4 mx-3 text-center" id="savedquestions">
+							</div>
+							<div className="mx-xl-4 mx-3 text-center" id="savedquestions">
 								<button href="#menu2" className="p-2 py-3" onClick={() => handleTabSelection("savedquestions")}>SAVED QUESTIONS</button>
-							</li>
+							</div>
 						</ul>
 
 						<div className="tab-content mt-3">

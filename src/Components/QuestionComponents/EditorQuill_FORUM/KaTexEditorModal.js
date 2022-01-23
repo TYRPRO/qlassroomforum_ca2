@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Modal, TextArea } from "semantic-ui-react";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 import styles from "./styles.module.css";
 import renderMathInElement from "katex/dist/contrib/auto-render";
-import './conflict-agreement.css';
+import "./conflict-agreement.css";
 
 // import 'semantic-ui-css/semantic.min.css'
 
@@ -59,7 +60,7 @@ const KaTexEditorModal = ({ isOpen, setIsOpen, handleConfirm }) => {
 			onClose={() => setIsOpen(false)}
 			onOpen={() => setIsOpen(true)}
 			open={isOpen}
-			className={'forum-modal'}
+			className={"forum-modal"}
 			closeOnDimmerClick={false}
 			closeOnEscape={false}
 			closeIcon={
@@ -69,7 +70,7 @@ const KaTexEditorModal = ({ isOpen, setIsOpen, handleConfirm }) => {
 				</div>
 			}
 		>
-			<Modal.Header className={'modal-header'}>
+			<Modal.Header className={"modal-header"}>
 				<h5 className="modal-title">
 				KaTex Editor
 				</h5>
@@ -80,7 +81,7 @@ const KaTexEditorModal = ({ isOpen, setIsOpen, handleConfirm }) => {
 					isModalOpen={isOpen}
 				/>
 			</Modal.Content>
-			<Modal.Actions className={'modal-footer'}>
+			<Modal.Actions className={"modal-footer"}>
 				<Button
 					onClick={() => {
 						handleConfirmKaTex();
@@ -121,7 +122,7 @@ const KaTexComponent = ({ katexPreviewRef, isModalOpen }) => {
 		<div className={styles.KaTexComponent}>
 			<TextArea
 				ref={textAreaRef}
-				className={'w-100'}
+				className={"w-100"}
 				value={textAreaValue}
 				onChange={(_, { value }) => setTextAreaValue(value)}
 			/>

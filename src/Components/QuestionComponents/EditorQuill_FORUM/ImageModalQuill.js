@@ -1,18 +1,20 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Button, Modal } from 'semantic-ui-react';
-import CloseIcon from '@mui/icons-material/Close';
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Button, Modal } from "semantic-ui-react";
+import CloseIcon from "@mui/icons-material/Close";
 
 
-import axios from 'axios';
+import axios from "axios";
 
-import './styles.module.css';
-import './conflict-agreement.css'
+import "./styles.module.css";
+import "./conflict-agreement.css";
 
 
 const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => {
 
 	const [selectedFile, set_selectedFile] = useState(value);
-	const [imageURL, set_imageURL] = useState('');
+	const [imageURL, set_imageURL] = useState("");
 	const [fileIsValid, setFileIsValid] = useState(false);
 
 	const handleOnChange = useCallback(
@@ -22,8 +24,8 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 				set_selectedFile(file);
 
 				const formData = new FormData();
-				formData.append('file', file);
-				axios.post('http://localhost:8000/posts/upload_image', formData).then(res => {
+				formData.append("file", file);
+				axios.post("http://localhost:8000/posts/upload_image", formData).then(res => {
 					setFileIsValid(true);
 					set_imageURL(res.data.media_url);
 
@@ -46,7 +48,7 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 			size='large'
 			closeOnDimmerClick={false}
 			closeOnEscape={false}
-			className={'forum-modal'}
+			className={"forum-modal"}
 			closeIcon={
 				// <div className='d-flex flex-row m-1'>
 				// 	<div className='flex-grow-1'></div>
@@ -63,7 +65,7 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 				<h5 className='modal-title'>Insert Image</h5>
 			</Modal.Header>
 			<Modal.Content className='modal-body'>
-				<input className='form-control' type={'file'} onChange={(e) => handleOnChange(e.target.files[0])} />
+				<input className='form-control' type={"file"} onChange={(e) => handleOnChange(e.target.files[0])} />
 			</Modal.Content>
 			<Modal.Actions className='modal-footer'>
 				<Button
@@ -82,4 +84,4 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 	);
 };
 
-export default ImageModalQuill
+export default ImageModalQuill;

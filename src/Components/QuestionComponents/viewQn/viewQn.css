@@ -38,3 +38,7 @@ img {
 .user-info {
     min-width: 218px
 }
+
+button>span{
+	vertical-align: middle;
+}

@@ -8,7 +8,7 @@
 
 #header {
     background-color: #ccdbf0;
-    margin: 0px;
+	align-self: flex-end;
 }
 
 #headerSearchBtn {

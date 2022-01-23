@@ -1,13 +1,16 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import "./viewQn.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AnswerComment from "./AnswerComments";
-function Answer(props) {
 
+import AnswerComment from "./AnswerComments";
+
+function Answer(props) {
 
 	const [addComment, set_AddComment] = useState(false);
 	const [answerComment, set_answerComment] = useState("");
+
 	var answer_info = props.answer;
 
 	return (
@@ -19,6 +22,18 @@ function Answer(props) {
 					<a className="text-center d-block py-1 post-downvote" id="post_downvote"><i className="fas fa-arrow-down text-dark" /></a>
 				</div>
 				<div className="col-10">
+					<button className={
+						props.isAlrdAccepted ?
+							props.isAccepted ? ("btn btn-outline-success btn-sm text-center")
+								: props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
+									: ("btn btn-outline-success btn-sm text-center")
+							: props.isAccepted ? ("btn btn-outline-success btn-sm text-center")
+								: props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
+									: ("btn btn-outline-secondary btn-sm text-center")
+					} 
+					onClick={() => props.setAsAcceptedAnswer(props.index, answer_info.response_id, answer_info.fk_post_id)} >
+						<span className="material-icons-outlined">mark_chat_read</span> Set as Accepted Answer
+					</button>
 					<p className='qn-content' dangerouslySetInnerHTML={{ __html: answer_info.response }}></p>
 					<div className="row">
 						<div className="col-7"></div>

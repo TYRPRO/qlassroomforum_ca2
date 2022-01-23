@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+import React from "react";
+
 function AnswerComment(props) {
 	var comment_info = props.comment;
 	return (
@@ -5,7 +8,7 @@ function AnswerComment(props) {
 			<small>{comment_info.response} - <span className='text-primary'>Name </span></small>
 			<hr className='mb-1'></hr>
 		</div>
-	)
+	);
 }
 
 export default AnswerComment;
