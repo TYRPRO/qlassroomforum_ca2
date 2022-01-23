@@ -17,9 +17,9 @@
 }
 
 .min-profile-pic {
-    width: 48px;
-    height: 48px;
-    border-radius: 10%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
 }
 
 .postedBySection {
@@ -27,7 +27,12 @@
 }
 
 .qn-content {
-    height: 12vh;
+    min-height: 12vh;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
 }
 
 .user-info {
