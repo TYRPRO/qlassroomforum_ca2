@@ -131,6 +131,11 @@ const MyActivity = () => {
 
 				for (let i = 0; i < questions.length; i++) {
 					var post = questions[i];
+					var post_shortTitle = "";
+
+					if (post.post_title.length > 30) {
+						post_shortTitle = post.post_title.substring(0, 30) + "...";
+					}
 
 					// Calculates Time
 					var date = new Date(post.post_created_at);
@@ -168,7 +173,8 @@ const MyActivity = () => {
 						post_votes: post.post_rating,
 						post_username: post.User.first_name,
 						post_date: post_date_output,
-						post_title: post.post_title
+						post_title: post.post_title,
+						post_shortTitle: post_shortTitle,
 					});
 
 				}
@@ -260,6 +266,11 @@ const MyActivity = () => {
 
 				for (let i = 0; i < savedQuestions.length; i++) {
 					var post = savedQuestions[i];
+					var post_shortTitle = "";
+
+					if (post.post_title.length > 30) {
+						post_shortTitle = post.post_title.substring(0, 30) + "...";
+					}
 
 					// Calculates Time
 					var date = new Date(post.post_created_at);
@@ -298,6 +309,7 @@ const MyActivity = () => {
 						post_username: post.User.first_name,
 						post_date: post_date_output,
 						post_title: post.post_title,
+						post_shortTitle: post_shortTitle,
 						post_bookmarkId: `post_bookmark_${post.post_id}`
 					});
 				}
@@ -487,6 +499,7 @@ const MyActivity = () => {
 											username={data.post_username}
 											date={data.post_date}
 											title={data.post_title}
+											shortTitle={data.post_shortTitle}
 											bookmark={data.post_bookmarkId}
 										/>
 									))
@@ -505,6 +518,7 @@ const MyActivity = () => {
 											username={data.post_username}
 											date={data.post_date}
 											title={data.post_title}
+											shortTitle={data.post_shortTitle}
 										/>
 									))
 								) : (
