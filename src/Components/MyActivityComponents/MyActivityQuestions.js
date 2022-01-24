@@ -13,7 +13,11 @@ const Question = (props) => {
 						className="fas fa-caret-down text-dark fs-3"></i></a>
 				</div>
 				<div className="col-11 p-3">
-					<h5>{props.title}</h5>
+					{props.shortTitle == "" ? (
+						<h5 className="text-dark clickable-link" style={{ cursor: "pointer" }}> {props.title}</h5>
+					) : (
+						<h5 className="text-dark clickable-link" style={{ cursor: "pointer" }} data-toggle="tooltip" data-placement="top" title={props.title}> {props.shortTitle}</h5>
+					)}
 					<div className="d-flex flex-row align-items-baseline pt-2">
 						<p className="text-secondary me-auto" id="post#_time">{props.date}</p>
 						<p className="text-secondary mx-1">NO COMMENTS</p>

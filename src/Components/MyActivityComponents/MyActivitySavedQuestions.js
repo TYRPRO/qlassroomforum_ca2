@@ -21,7 +21,11 @@ const SavedQuestion = (props) => {
 						<p className="fw-light text-secondary mx-1">•</p>
 						<p className="text-secondary" id="post#_time">{props.date}</p>
 					</div>
-					<h5 className="mb-3">{props.title}</h5>
+					{props.shortTitle == "" ? (
+						<h5 className="text-dark clickable-link mb-3" style={{ cursor: "pointer" }}> {props.title}</h5>
+					) : (
+						<h5 className="text-dark clickable-link mb-3" style={{ cursor: "pointer" }} data-toggle="tooltip" data-placement="top" title={props.title}> {props.shortTitle}</h5>
+					)}
 					<div className="toolbar d-flex flex-row align-items-center mt-2">
 						<div className="d-flex flex-row text-secondary me-4 p-1 rounded hoverable">
 							<span className="material-icons md-24 ms-0 me-1">chat_bubble_outline</span>
