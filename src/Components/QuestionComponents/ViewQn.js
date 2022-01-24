@@ -15,6 +15,7 @@ import parseTime from "../../helperFunctions/parseTime";
 import Answer from "./viewQn/Answer.js";
 import AnswerComment from "./viewQn/AnswerComments";
 import Editor from "./Editor.js";
+import QnVotes from "./QnVotes";
 import EditorQuill from "./EditorQuill_FORUM/EditorQuill";
 import DOMPurify from "dompurify";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +27,7 @@ function ViewQn() {
 	const { post_id } = useParams();
 
 	const [post_title, set_post_title] = useState("");
+	const [fk_user_id, set_fk_user_id] = useState("");
 	const [post_content, set_post_content] = useState("");
 	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
 	const [post_accepted_response, set_post_accepted_response] = useState({ answer_is_accepted: false, response_id: 0 });
@@ -53,6 +55,7 @@ function ViewQn() {
 				var data = response.data;
 				console.log(data);
 				set_post_title(data.post_title);
+				set_fk_user_id(data.fk_user_id);
 				set_post_content(data.post_content);
 				set_post_accepted_response({
 					answer_is_accepted: data.post_is_answered,
@@ -144,11 +147,11 @@ function ViewQn() {
 							<div className='row mt-3'>
 								<div className='col-9'>
 									<div className='row'>
-										<div className='col-1'>
-											<a className="text-center d-block py-1 post-upvote" id="post_upvote"><i className="fas fa-arrow-up text-dark" /></a>
-											<p id="post_rating" className="text-center mb-0">##</p>
-											<a className="text-center d-block py-1 post-downvote" id="post_downvote"><i className="fas fa-arrow-down text-dark" /></a>
-										</div>
+										<QnVotes
+											key={"vote_" + post_id}
+											user_id={fk_user_id}
+											post_id={post_id}
+										/>
 										<div className='col-11'>
 											{/* No worries, we do input validation for this innerhtml */}
 											<div className='col-12 d-flex align-items-center'>

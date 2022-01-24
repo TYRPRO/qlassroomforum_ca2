@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 // Module Imports
 import React, { useState, useEffect } from "react";
@@ -8,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 //File Imports (CSS/Images)
 import "./search.css";
-import Post from "./SearchPost";
+import SearchPost from "./SearchPost";
 
 //Component Creation
 const Search = () => {
@@ -106,13 +107,24 @@ const Search = () => {
 					})
 					.then(response => {
 						var similars = arrangeSimilars(response.data);
-						setSimilars(similars);
-
+						var newlst = [];
+						for (var i = 0; i < similars.length; i++) {
+							var duplicate = false;
+							for (var count = 0; count < posts.length; count++) {
+								if (similars[i].post_id == posts[count].post_id) {
+									duplicate = true;
+								}
+							}
+							if (duplicate == false) {
+								newlst.push(similars[i]);
+							}
+						}
+						setSimilars(newlst);
 						setIsLoadedSimilars(true);
 					})
 					.catch((err) => {
-						toast.error(err.response.data.message);
-						console.log(err.response.data.message);
+						toast.error("Error finding similar posts");
+						console.log(err);
 					});
 
 			})
@@ -133,7 +145,7 @@ const Search = () => {
 					<div className="col-lg-1"></div>
 					<div className="col-lg-10">
 						<div id="resultheader">
-							<h5 className="mb-2 headers"> Displaying Search Results for {getParams()} </h5>
+							<h5 className="mb-2 headers"> Displaying Search Results for "{getParams()}" </h5>
 						</div>
 						<hr></hr>
 
@@ -144,17 +156,26 @@ const Search = () => {
 
 										postlst.length > 0 ? (
 											postlst.map((data) => (
-												<Post
+												<SearchPost
 													key={data.post_id}
 													post_id={data.post_id}
-													post_title={data.post_title}
-													post_content={data.post_content}
-													post_is_answered={data.post_is_answered}
-													post_created_at={data.post_created_at}
-													post_rating={data.post_rating}
-													first_name={data.User.first_name}
-													last_name={data.User.last_name}
-													subforum_name={data.Subforum.subforum_name}
+													fk_subforum_id= {data.fk_subforum_id}
+													fk_user_id= {data.fk_user_id}
+													fk_grade_id= {data.fk_grade_id}
+													post_title= {data.post_title}
+													post_content= {data.post_content}
+													post_is_pinned= {data.post_is_pinned}
+													post_is_answered= {data.post_is_answered}
+													post_created_at= {data.post_created_at}
+													post_rating= {data.post_rating}
+													post_answers_count= {data.post_answers_count}
+													fk_response_id= {data.fk_response_id}
+													first_name= {data.User.first_name}
+													last_name= {data.User.last_name}
+													user_id= {data.User.user_id}
+													grade_id= {data.Grade.grade_id}
+													grade_name= {data.Grade.grade_name}
+													subforum_name= {data.Subforum.subforum_name}
 												/>
 											))
 										) : (
@@ -174,17 +195,26 @@ const Search = () => {
 
 										similarsLst.length > 0 ? (
 											similarsLst.map((data) => (
-												<Post
+												<SearchPost
 													key={data.post_id}
 													post_id={data.post_id}
-													post_title={data.post_title}
-													post_content={data.post_content}
-													post_is_answered={data.post_is_answered}
-													post_created_at={data.post_created_at}
-													post_rating={data.post_rating}
-													first_name={data.User.first_name}
-													last_name={data.User.last_name}
-													subforum_name={data.Subforum.subforum_name}
+													fk_subforum_id= {data.fk_subforum_id}
+													fk_user_id= {data.fk_user_id}
+													fk_grade_id= {data.fk_grade_id}
+													post_title= {data.post_title}
+													post_content= {data.post_content}
+													post_is_pinned= {data.post_is_pinned}
+													post_is_answered= {data.post_is_answered}
+													post_created_at= {data.post_created_at}
+													post_rating= {data.post_rating}
+													post_answers_count= {data.post_answers_count}
+													fk_response_id= {data.fk_response_id}
+													first_name= {data.User.first_name}
+													last_name= {data.User.last_name}
+													user_id= {data.User.user_id}
+													grade_id= {data.Grade.grade_id}
+													grade_name= {data.Grade.grade_name}
+													subforum_name= {data.Subforum.subforum_name}
 												/>
 											))
 										) : (
