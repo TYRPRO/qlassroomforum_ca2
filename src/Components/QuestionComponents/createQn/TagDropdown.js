@@ -29,7 +29,7 @@ function TagDropdown(props) {
 
 function TagDropdownTag(props) {
 
-	var tag_name = props.tag;
+	var tag_name = props.tag.label_name;
 	//var tag_description = "lorem ipsum dolor sit amet consectetur";
 	var handleSelect = props.handleSelect;
 	return (

@@ -28,16 +28,18 @@ function ViewQn() {
 
 	const [post_title, set_post_title] = useState("");
 	const [fk_user_id, set_fk_user_id] = useState("");
+	const [first_name, set_first_name] = useState("");
 	const [post_content, set_post_content] = useState("");
 	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
 	const [post_accepted_response, set_post_accepted_response] = useState({ answer_is_accepted: false, response_id: 0 });
 	const [activeIndex, setActiveIndex] = useState();
 	const [isRemoved, setIsRemoved] = useState(false);
 
+
 	const [answers, set_answers] = useState([]);
 	const [postComments, set_postComments] = useState([]);
 
-	const [tags, set_tags] = useState(["Subject", "Grade", "Additional Maths", "Logarithmic Functions", "Graphs"]);
+	const [tags, set_tags] = useState(["Subject", "Grade"]);
 
 	const [answer_input, set_answer_input] = useState("");
 	const [refreshAnswers, set_refreshAnswers] = useState(false);
@@ -61,6 +63,14 @@ function ViewQn() {
 					answer_is_accepted: data.post_is_answered,
 					response_id: data.fk_response_id
 				});
+				set_first_name(data.User.last_name);
+
+				let tempArr = [];
+				tags.map((tag) => tempArr.push(tag));
+				for (let i = 0; i < data.PostLabels.length; i++) {
+					tempArr.push(data.PostLabels[i].Label.label_name);
+				}
+				set_tags(tempArr);
 
 				var parsedTime = parseTime(data.post_created_at);
 				set_post_created_at(parsedTime);
@@ -175,20 +185,13 @@ function ViewQn() {
 
 												</div>
 												<p className='ms-2'>
-													Ben
+													{first_name}
 												</p>
 												<p className="fw-light text-secondary mx-2">•</p>
 												<p>
 													{post_created_at}
 												</p>
 											</div>
-											<p className='ms-2'>
-												Ben
-											</p>
-											<p className="fw-light text-secondary mx-2">•</p>
-											<p>
-												{post_created_at}
-											</p>
 										</div>
 										<p className='qn-content mt-3' dangerouslySetInnerHTML={{ __html: post_content }}></p>
 										<div className='d-flex'>
