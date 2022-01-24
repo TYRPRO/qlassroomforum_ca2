@@ -111,6 +111,18 @@ const Post = (props) => {
 									<h6 className="Tags">
 										<a href={`/subforum/${data.fk_subforum_id}`} className="text-dark text-decoration-none">{data.Grade.grade_name}</a>
 									</h6>
+									{data.PostLabels.length > 0 && data.PostLabels.map((post_label)=>{
+										return (
+											<React.Fragment key={`${data.post_id}_${post_label.Label.label_name}`}>
+												<p className="fw-light text-secondary mx-1">•</p>
+												<h6 className="Tags" key={`${data.post_id}_${post_label.Label.label_name}`}>
+													<a className="text-dark text-decoration-none">{post_label.Label.label_name}</a>
+												</h6>
+											</React.Fragment>
+
+											
+										);
+									})}
 								</div>
 							</div>
 							<Toolbar />
