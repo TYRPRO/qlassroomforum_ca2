@@ -39,11 +39,11 @@ ReactDOM.render(
 		<Provider store={store}>
 			<BrowserRouter>
 				<div className="d-flex flex-row" id="all">
-					{window.location.pathname !== "/login" && window.location.pathname !== "/signup" && window.location.pathname !== "/" ? (
+					{window.location.pathname !== "/login" && window.location.pathname !== "/signup"  ? (
 						<SideBar />
 					) : null}
 					<div className="d-flex flex-column flex-grow-1" id="headcontent">
-						{window.location.pathname !== "/login" && window.location.pathname !== "/signup" && window.location.pathname !== "/" ? (
+						{window.location.pathname !== "/login" && window.location.pathname !== "/signup" ? (
 							<Header />
 						) : null}
 						<div id="content">
