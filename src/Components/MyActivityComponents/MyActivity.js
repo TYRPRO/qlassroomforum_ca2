@@ -60,7 +60,7 @@ const MyActivity = () => {
 
 	// function getUpvotesGiven() { }
 
-	// Login Functions
+	// login functions
 	function acquireUserData() {
 		var token = findCookie("token");
 
@@ -78,8 +78,7 @@ const MyActivity = () => {
 				setAcquireData(true);
 			})
 			.catch((err) => {
-				toast.error(err.response.data.message);
-				console.log(err.response.data.message);
+				console.log(err);
 				window.location.assign("/login");
 			});
 	}

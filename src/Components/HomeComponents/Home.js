@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Channel from "../ChannelComponents/Channel";
@@ -26,6 +27,7 @@ const Home = () => {
 				console.log(error);
 			});
 	}
+
 	useEffect(() => {
 		getAllPost();
 	}, []);
@@ -38,7 +40,7 @@ const Home = () => {
 	}
 	function PrevPage() {
 		if (CurrentPage != 1) {
-			setCurrentPost(PostsData.slice(((CurrentPage - 2)*4), ((CurrentPage - 1) * 4)));
+			setCurrentPost(PostsData.slice(((CurrentPage - 2) * 4), ((CurrentPage - 1) * 4)));
 			setCurrentPage(CurrentPage - 1);
 		}
 	}
@@ -72,9 +74,9 @@ const Home = () => {
 							<Post Posts={CurrentPost} />
 						</div>
 						<div className="d-flex justify-content-between">
-							<div onClick={PrevPage} style={{cursor:"pointer"}}><i className="fa fa-caret-left"></i><b className="PrevPage">Prev Page</b></div>
+							<div onClick={PrevPage} style={{ cursor: "pointer" }}><i className="fa fa-caret-left"></i><b className="PrevPage">Prev Page</b></div>
 							<p className="">{CurrentPage} out of {MaxPage}</p>
-							<div onClick={NextPage} style={{cursor:"pointer"}}><b className="NextPage">Next Page</b><i className="fa fa-caret-right"></i></div>
+							<div onClick={NextPage} style={{ cursor: "pointer" }}><b className="NextPage">Next Page</b><i className="fa fa-caret-right"></i></div>
 						</div>
 					</div>
 				</div>
