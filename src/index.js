@@ -9,7 +9,8 @@ import {
 	BrowserRouter,
 	Routes,
 	Route,
-	Link
+	Link,
+	Navigate
 } from "react-router-dom";
 
 import { createStore, applyMiddleware, compose } from "redux";
@@ -31,16 +32,18 @@ import Home from "./Components/HomeComponents/Home";
 
 const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
 
-const store = createStore(allReducers,  applyMiddleware(thunk));
+const store = createStore(allReducers, applyMiddleware(thunk));
 
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<BrowserRouter>
 				<div className="d-flex flex-row" id="all">
-					<SideBar />
+					{window.location.pathname !== "/login" && window.location.pathname !== "/signup" && window.location.pathname !== "/" ? (
+						<SideBar />
+					) : null}
 					<div className="d-flex flex-column flex-grow-1" id="headcontent">
-						{window.location.pathname !== "/login" && window.location.pathname !== "/signup" ? (
+						{window.location.pathname !== "/login" && window.location.pathname !== "/signup" && window.location.pathname !== "/" ? (
 							<Header />
 						) : null}
 						<div id="content">
@@ -54,6 +57,7 @@ ReactDOM.render(
 								<Route path="/search" element={<Search />} />
 								<Route path="subforum/:subForum" element={<Subforum />} />
 								<Route path="newforum" element={<CreateSubforum />} />
+								<Route path="/" element={<Navigate replace to="/login" />} />
 							</Routes>
 						</div>
 					</div>
