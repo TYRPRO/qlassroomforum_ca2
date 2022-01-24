@@ -59,7 +59,7 @@ const Header = () => {
 	//Rendering the Header
 	return (
 		<React.Fragment>
-			<nav className="navbar navbar-dark navbar-expand-lg" id="header">
+			<nav className="navbar navbar-dark navbar-expand-lg sticky-top" id="header">
 				<div className="container-fluid">
 					<a href="/home" id="HeaderText">Knowledge</a>
 					<button className="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#readitNavbar" aria-controls="readitNavbar" aria-expanded="false" aria-label="Toggle navigation">
