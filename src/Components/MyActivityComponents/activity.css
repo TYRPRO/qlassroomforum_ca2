@@ -65,45 +65,43 @@ button {
 /* Voting Styling */
 
 .post-upvote:hover {
-    background-color: #6a5acd35;
+    color: #6996d660;
 }
 
 .post-downvote:hover {
-    background-color: #6a5acd35;
+    color: #6996d660;
 }
 
 .upvoted {
-    background-color: #6997d6;
+    color: #6997d6;
 }
 
 .upvoted i {
-    color: white !important;
+    color: #6997d6 !important;
 }
 
 .upvoted:hover {
-    background-color: #6996d660;
-    color: black !important;
+    color: #6996d660 !important;
 }
 
 .upvoted:hover i {
-    color: black !important;
+    color: #6996d660 !important;
 }
 
 .downvoted {
-    background-color: #6997d6 !important;
+    color: #6997d6 !important;
 }
 
 .downvoted i {
-    color: white !important;
+    color: #6997d6 !important;
 }
 
 .downvoted:hover {
-    background-color: #6996d660 !important;
-    color: black !important;
+    color: #6996d660 !important;
 }
 
 .downvoted:hover i {
-    color: black !important;
+    color: #6996d660 !important;
 }
 
 /* Saved Questions Buttons Styling */

@@ -232,10 +232,10 @@ const PostVotes = (props) => {
 	, [acquireData]);
 	return <div className="col-1 py-2">
 		<a onClick={() => upvote()} className={"text-center d-block py-3 post-upvote " + checkUpvote()} id={"post_" + props.post_id + "_upvote"}><i
-			className="fas fa-arrow-up text-dark"></i></a>
+			className="fas fa-caret-up text-dark fs-3"></i></a>
 		<p id={"post_" + props.post_id + "_popularity"} className="text-center mb-0">{votecount}</p>
 		<a onClick={() => downvote()} className={"text-center d-block py-3 post-downvote " + checkDownvote()} id={"post_" + props.post_id + "_downvote"}><i
-			className="fas fa-arrow-down text-dark"></i></a>
+			className="fas fa-caret-down text-dark fs-3"></i></a>
 	</div>;
 };
 
