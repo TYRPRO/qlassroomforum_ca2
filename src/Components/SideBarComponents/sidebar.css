@@ -1,0 +1,54 @@
+#layer1>div {
+	background-color: #4E4E4E;
+	width: 50px;
+	height: 100vh;
+	z-index: 2;
+}
+
+#layer2 {
+	background-color: #C4C4C4;
+	position: fixed;
+	height: 100vh;
+	width: 170px;
+	z-index: 0;
+	left: -125px;
+	transition: left 0.5s ease-in-out;
+}
+
+#layer1:focus-within~#layer2 {
+	left: 50px;
+	z-index: 1;
+}
+
+#home, #help {
+	width: 35px;
+	height: 35px;
+	cursor: pointer;
+}
+
+#profile {
+	cursor: pointer;
+}
+
+#forum, #chat, #blog {
+	width: 150px;
+	height: 45px;
+	cursor: pointer;
+}
+
+#forum a, #chat a, #blog a {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 19px;
+	text-decoration: none;
+}
+
+#forum:hover, #chat:hover, #blog:hover {
+	background-color: #D9EFFF;
+	border: 1px solid rgb(0, 121, 196);
+	border-radius: 5px;
+}
+
+/* .rotated {
+    transform: rotate(deg);
+    background-color: pink;
+} */

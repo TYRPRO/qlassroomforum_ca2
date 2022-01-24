@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 export const customSuperSubScriptMatcher = () => {
 	return [Node.ELEMENT_NODE, matcher];
 };

@@ -36,7 +36,7 @@ const Subforum = () => {
 
 	const ChannelDataHandler = (ChannelFilterData) => {
 		filterPosts(dispatch, ChannelFilterData);
-		
+
 	};
 
 	useEffect(() => {
@@ -51,7 +51,7 @@ const Subforum = () => {
 					<div className='container'>
 						{isLoadingPosts ? <h1 className="text-center">Loading Posts...</h1> :
 							<div className='row'>
-								<Channel onFilterPost={ChannelDataHandler} hideSubject={true} subforum_id={subforum_id}/>
+								<Channel onFilterPost={ChannelDataHandler} hideSubject={true} subforum_id={subforum_id} />
 								<div className="col-lg-9">
 									<div className="post-margin">
 										<label>{currentPage == 1 ? currentPage : (currentPage - 1) * 4}-{posts.length > currentPage * 4 ? currentPage * 4 : posts.length} of {posts.length} Questions</label>

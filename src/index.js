@@ -5,7 +5,6 @@ import "./index.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
 import {
 	BrowserRouter,
 	Routes,
@@ -18,10 +17,10 @@ import allReducers from "./store/reducers/index";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 
-// Components
 import CreateQn from "./Components/QuestionComponents/CreateQn.js";
 import ViewQn from "./Components/QuestionComponents/ViewQn.js";
 import MyActivity from "./Components/MyActivityComponents/MyActivity";
+import SideBar from "./Components/SideBarComponents/SideBar";
 import Login from "./Components/LoginComponent/Login";
 import Header from "./Components/HeaderComponents/Header";
 import CreateUser from "./Components/CreateAccountComponent/CreateUser";
@@ -37,25 +36,32 @@ const store = createStore(allReducers,  applyMiddleware(thunk));
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
-			{window.location.pathname !== "/login" && window.location.pathname !== "/signup" ? (
-				<Header />
-			) : null}
 			<BrowserRouter>
-				<Routes>
-					<Route path="/Home" element={<Home />}></Route>
-					<Route path="/CreateQn" element={<CreateQn />}></Route>
-					<Route path="/posts/:post_id" element={<ViewQn />}></Route>
-					<Route path="/myactivity" element={<MyActivity />} />
-					<Route path="/login" element={<Login />} />
-					<Route path="/signup" element={<CreateUser />} />
-					<Route path="/search" element={<Search />} />
-					<Route path="subforum/:subForum" element={<Subforum />} />
-					<Route path="newforum" element={<CreateSubforum />} />
-				</Routes>
+				<div className="d-flex flex-row" id="all">
+					<SideBar />
+					<div className="d-flex flex-column flex-grow-1" id="headcontent">
+						{window.location.pathname !== "/login" && window.location.pathname !== "/signup" ? (
+							<Header />
+						) : null}
+						<div id="content">
+							<Routes>
+								<Route path="/home" element={<Home />}></Route>
+								<Route path="/createqn" element={<CreateQn />}></Route>
+								<Route path="/posts/:post_id" element={<ViewQn />}></Route>
+								<Route path="/myactivity" element={<MyActivity />} />
+								<Route path="/login" element={<Login />} />
+								<Route path="/signup" element={<CreateUser />} />
+								<Route path="/search" element={<Search />} />
+								<Route path="subforum/:subForum" element={<Subforum />} />
+								<Route path="newforum" element={<CreateSubforum />} />
+							</Routes>
+						</div>
+					</div>
+				</div>
 			</BrowserRouter>
 		</Provider>
 
-	</React.StrictMode >,
+	</React.StrictMode>,
 	document.getElementById("root")
 );
 

@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal } from "bootstrap/dist/js/bootstrap.bundle";
-import { useEffect, useState } from "react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
 import { MathJax, MathJaxContext } from "better-react-mathjax";

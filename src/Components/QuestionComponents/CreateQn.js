@@ -1,9 +1,10 @@
+/* eslint-disable no-empty */
+/* eslint-disable react/jsx-key */
+/* eslint-disable no-unused-vars */
 
 import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal } from "bootstrap/dist/js/bootstrap.bundle.js";
-
-
 
 import TagDropdown from "./createQn/TagDropdown";
 import Tag from "./createQn/tag";

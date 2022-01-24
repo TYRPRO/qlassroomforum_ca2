@@ -1,6 +1,9 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast, Slide } from "react-toastify";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -25,6 +28,9 @@ function ViewQn() {
 	const [post_title, set_post_title] = useState("");
 	const [post_content, set_post_content] = useState("");
 	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
+	const [post_accepted_response, set_post_accepted_response] = useState({ answer_is_accepted: false, response_id: 0 });
+	const [activeIndex, setActiveIndex] = useState();
+	const [isRemoved, setIsRemoved] = useState(false);
 
 	const [answers, set_answers] = useState([]);
 	const [postComments, set_postComments] = useState([]);
@@ -48,6 +54,10 @@ function ViewQn() {
 				console.log(data);
 				set_post_title(data.post_title);
 				set_post_content(data.post_content);
+				set_post_accepted_response({
+					answer_is_accepted: data.post_is_answered,
+					response_id: data.fk_response_id
+				});
 
 				var parsedTime = parseTime(data.post_created_at);
 				set_post_created_at(parsedTime);
@@ -90,6 +100,7 @@ function ViewQn() {
 					}
 				}
 			}
+
 			set_answers(post_answers);
 			set_postComments(post_comments);
 
@@ -108,55 +119,65 @@ function ViewQn() {
 
 
 	return (
-		<div className="container-fluid">
-			<div className='container'>
-				<div className='row'>
-					<div className='col-2  border-end'>
-						<button className=' ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
-							<ArrowBackIosNewIcon sx={{ fontSize: 23 }} />
-							<p className='mb-0 ms-4 align-middle'>Back</p>
-						</button>
-						<button className='ms-4 mt-3 ps-1  py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
-							<EditIcon sx={{ fontSize: 23 }} />
-							<p className='mb-0 ms-4 align-middle'>Edit</p>
-						</button>
-						<button className='ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
-							<DeleteIcon sx={{ fontSize: 23 }} />
-							<p className='mb-0 ms-4 align-middle'>Delete</p>
-						</button>
-					</div>
-					<div className="col-10 mt-2 mb-1">
+		<React.Fragment>
+			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
+			<div className="container-fluid">
+				<div className='container'>
+					<div className='row'>
+						<div className='col-2  border-end'>
+							<button className=' ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
+								<ArrowBackIosNewIcon sx={{ fontSize: 23 }} />
+								<p className='mb-0 ms-4 align-middle'>Back</p>
+							</button>
+							<button className='ms-4 mt-3 ps-1  py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
+								<EditIcon sx={{ fontSize: 23 }} />
+								<p className='mb-0 ms-4 align-middle'>Edit</p>
+							</button>
+							<button className='ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
+								<DeleteIcon sx={{ fontSize: 23 }} />
+								<p className='mb-0 ms-4 align-middle'>Delete</p>
+							</button>
+						</div>
+						<div className="col-10 mt-2 mb-1">
 
 
-						<div className='row mt-3'>
-							<div className='col-9'>
-								<div className='row'>
-									<div className='col-1'>
-										<a className="text-center d-block py-1 post-upvote" id="post_upvote"><i className="fas fa-arrow-up text-dark" /></a>
-										<p id="post_rating" className="text-center mb-0">##</p>
-										<a className="text-center d-block py-1 post-downvote" id="post_downvote"><i className="fas fa-arrow-down text-dark" /></a>
-									</div>
-									<div className='col-11'>
-										{/* No worries, we do input validation for this innerhtml */}
-										<div className='col-12 d-flex align-items-center'>
+							<div className='row mt-3'>
+								<div className='col-9'>
+									<div className='row'>
+										<div className='col-1'>
+											<a className="text-center d-block py-1 post-upvote" id="post_upvote"><i className="fas fa-arrow-up text-dark" /></a>
+											<p id="post_rating" className="text-center mb-0">##</p>
+											<a className="text-center d-block py-1 post-downvote" id="post_downvote"><i className="fas fa-arrow-down text-dark" /></a>
+										</div>
+										<div className='col-11'>
+											{/* No worries, we do input validation for this innerhtml */}
+											<div className='col-12 d-flex align-items-center'>
 
-											<h1>{post_title}</h1>
-											<div className='flex-grow-1'></div>
+												<h1>{post_title}</h1>
+												<div className='flex-grow-1'></div>
 
-											<div>
-												<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} className='text-secondary anim-enter-active'>
-													<BookmarkBorderIcon sx={{ fontSize: 26 }} />
-													{bookmarkHover ? "Bookmark this question?" : ""}
-												</button>
+												<div>
+													<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} className='text-secondary anim-enter-active'>
+														<BookmarkBorderIcon sx={{ fontSize: 26 }} />
+														{bookmarkHover ? "Bookmark this question?" : ""}
+													</button>
+												</div>
+
+
 											</div>
 
 
-										</div>
+											<div className='d-flex flex-row'>
+												<div className='min-profile-pic bg-secondary'>
 
-
-										<div className='d-flex flex-row'>
-											<div className='min-profile-pic bg-secondary'>
-
+												</div>
+												<p className='ms-2'>
+													Ben
+												</p>
+												<p className="fw-light text-secondary mx-2">•</p>
+												<p>
+													{post_created_at}
+												</p>
 											</div>
 											<p className='ms-2'>
 												Ben
@@ -220,24 +241,44 @@ function ViewQn() {
 										{addComment ?
 											<div className=' input-group'>
 												<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
-												<button onClick={ submitPostComment} className='btn btn-outline-secondary'>Submit</button>
+												<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
 											</div>
 											:
 											null
 										}
 									</div>
+									{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
+									{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
+									{addComment ?
+										<div className=' input-group'>
+											<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
+											<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
+										</div>
+										:
+										null
+									}
 								</div>
-								<hr></hr>
-								<div className='mt-1'>
-									<p className='mb-3'>{answers.length} Answers</p>
-									<div>
-										{answers.map((answer, index) => <Answer refreshAnswers={refreshAnswersFunction} key={index} answer={answer} />)}
-									</div>
-									<div>
-										<p>Your Answer</p>
-										<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
-										<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
-									</div>
+							</div >
+							<hr></hr>
+							<div className='mt-1'>
+								<p className='mb-3'>{answers.length} Answers</p>
+								<div>
+									{answers.map((answer, index) =>
+										<Answer
+											refreshAnswers={refreshAnswersFunction}
+											isAccepted={activeIndex === index}
+											isRemoved={isRemoved}
+											isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
+											key={index}
+											answer={answer}
+											index={index}
+											setAsAcceptedAnswer={setAsAcceptedAnswer}
+										/>)}
+								</div>
+								<div>
+									<p>Your Answer</p>
+									<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
+									<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
 								</div>
 
 
@@ -247,15 +288,13 @@ function ViewQn() {
 									WIP
 								</div>
 							</div>
-						</div>
+						</div >
 
-					</div>
+					</div >
 
-				</div>
-			</div>
-
-
-		</div>
+				</div >
+			</div >
+		</React.Fragment >
 	);
 
 	function refreshAnswersFunction() {
@@ -311,6 +350,33 @@ function ViewQn() {
 			console.log(error);
 		});
 	}
+
+	function setAsAcceptedAnswer(index, response_id, post_id) {
+		toast.info("Setting as Accepted Answer...");
+
+		if (!(post_accepted_response.response_id === response_id)) {
+			axios.put("http://localhost:8000/posts/correctAnswer",
+				{
+					answer_id: response_id,
+					post_id: post_id
+				})
+				.then(res => {
+					console.log(res.data);
+					setActiveIndex(index);
+					setIsRemoved(false);
+					set_post_accepted_response({ answer_is_accepted: true, response_id: response_id });
+					toast.success("Answer Accepted!");
+				})
+				.catch((err) => {
+					console.log(err);
+					toast.error("Error Setting Answer as Correct Answer");
+				});
+		} else {
+			console.log("Already Accepted");
+			toast.error("Answer Already Accepted!");
+		}
+	}
+
 }
 
 export default ViewQn;

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Modal, TextArea } from "semantic-ui-react";
 import CloseIcon from "@mui/icons-material/Close";

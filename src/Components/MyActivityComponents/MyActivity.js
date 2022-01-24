@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Module Imports
 import React, { useState, useEffect } from "react";
 import axios from "axios"; //npm i axios
@@ -13,16 +14,16 @@ import Answer from "./MyActivityAnswers";
 import SavedQuestion from "./MyActivitySavedQuestions";
 
 //Component Creation
-const Profile = () => {
+const MyActivity = () => {
 
 	const baseUrl = ["https://readdit-backend.herokuapp.com", "https://readdit-sp.herokuapp.com"];
 
 	// State Creation
 
-	const [updatesreceived, setUpdatesReceived] = useState(0);
-	const [answersposted, setAnswersPosted] = useState(0);
-	const [answersaccepted, setAnswersAccepted] = useState(0);
-	const [upvotesgiven, setUpvotesGiven] = useState(0);
+	// const [updatesreceived, setUpdatesReceived] = useState(0);
+	// const [answersposted, setAnswersPosted] = useState(0);
+	// const [answersaccepted, setAnswersAccepted] = useState(0);
+	// const [upvotesgiven, setUpvotesGiven] = useState(0);
 
 	const [tabselected, setTabSelected] = useState("questions");
 
@@ -51,15 +52,15 @@ const Profile = () => {
 	const [role, setRole] = useState("");
 	const [acquireData, setAcquireData] = useState(false);
 
-	function getUpdatesReceived() { }
+	// function getUpdatesReceived() { }
 
-	function getAnswersPosted() { }
+	// function getAnswersPosted() { }
 
-	function getAnswersAccepted() { }
+	// function getAnswersAccepted() { }
 
-	function getUpvotesGiven() { }
+	// function getUpvotesGiven() { }
 
-	// login functions
+	// Login Functions
 	function acquireUserData() {
 		var token = findCookie("token");
 
@@ -119,7 +120,8 @@ const Profile = () => {
 			return;
 		}
 		toast.info("Retrieving Questions...");
-		axios.get(`${baseUrl[0]}/post/user/${user_id}`)
+
+		axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
 			.then((data) => {
 				console.log(data.data);
 				var questions = data.data;
@@ -127,11 +129,11 @@ const Profile = () => {
 				var totalQuestions = Math.ceil(questions.length / 4);
 				var dispQuestions = [];
 
-				for (var i = 0; i < questions.length; i++) {
+				for (let i = 0; i < questions.length; i++) {
 					var post = questions[i];
 
 					// Calculates Time
-					var date = new Date(post.created_at);
+					var date = new Date(post.post_created_at);
 					var date_now = new Date();
 
 					var seconds_between_dates = Math.floor((date_now - date) / 1000);
@@ -149,29 +151,35 @@ const Profile = () => {
 					else if (hours_between_dates < 24) {
 						post_date_output = `${hours_between_dates} hours ago`;
 					} else if (days_between_dates <= 7) {
-						post_date_output = `${days_between_dates} days ago`;
+						if (days_between_dates == 1) {
+							post_date_output = `${days_between_dates} day ago`;
+						} else {
+							post_date_output = `${days_between_dates} days ago`;
+						}
 					} else {
 						post_date_output = `${weeks_between_dates} weeks ago`;
 					}
 
 					questionDetails.push({
-						post_id: `post_${post.post_id}_${post.Subreaddit.subreaddit_name}`,
+						post_id: `post_${post.post_id}_${post.Subforum.subforum_name}`,
 						question_id: post.post_id,
-						post_href: `/r/${post.Subreaddit.subreaddit_name}`,
-						post_subforumName: post.Subreaddit.subreaddit_name,
-						post_votes: post.Post_Votes,
-						post_username: post.User.username,
+						post_href: `/r/${post.Subforum.subforum_name}`,
+						post_subforumName: post.Subforum.subforum_name,
+						post_votes: post.post_rating,
+						post_username: post.User.first_name,
 						post_date: post_date_output,
-						post_title: post.title
+						post_title: post.post_title
 					});
 
 				}
 
 				for (let i = 0; i < 4; i++) {
-					dispQuestions.push(questionDetails[i]);
+					if (questionDetails[i] != undefined) {
+						dispQuestions.push(questionDetails[i]);
+					}
 				}
 
-				console.log(questionTotalPages);
+				console.log(dispQuestions);
 				setQuestions(questionDetails);
 				setQuestionToDisplay(dispQuestions);
 				setQuestionTotalPages(totalQuestions);
@@ -191,7 +199,7 @@ const Profile = () => {
 		}
 		toast.info("Retrieving Answers...");
 
-		axios.get(`${baseUrl[0]}/comment/user/${user_id}`)
+		axios.get("http://localhost:8000/answers/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
 			.then((data) => {
 				console.log(data.data);
 				var answers = data.data;
@@ -199,26 +207,28 @@ const Profile = () => {
 				var totalAnswers = Math.ceil(answers.length / 5);
 				var dispAnswers = [];
 
-				for (var i = 0; i < answers.length; i++) {
+				for (let i = 0; i < answers.length; i++) {
 					var comment = answers[i];
 					var post_shortTitle = "";
 
-					if (comment.Post.title.length > 30) {
-						post_shortTitle = comment.Post.title.substring(0, 30) + "...";
+					if (comment.Post.post_title.length > 30) {
+						post_shortTitle = comment.Post.post_title.substring(0, 30) + "...";
 					}
 
 					answerDetails.push({
 						answer_id: i,
-						answer_username: comment.User.username,
-						answer_post_username: comment.Post.User.username,
-						answer_title: comment.Post.title,
+						answer_username: comment.User.first_name,
+						answer_post_username: comment.User.first_name,
+						answer_title: comment.Post.post_title,
 						answer_post_shortTitle: post_shortTitle,
-						answer_value: comment.comment
+						answer_value: comment.response
 					});
 				}
 
 				for (let i = 0; i < 5; i++) {
-					dispAnswers.push(answerDetails[i]);
+					if (answerDetails[i] != undefined) {
+						dispAnswers.push(answerDetails[i]);
+					}
 				}
 
 				setAnswers(answerDetails);
@@ -240,7 +250,7 @@ const Profile = () => {
 		}
 		toast.info("Retrieving Saved Questions...");
 
-		axios.get(`${baseUrl[0]}/save/posts?user_id=${user_id}`)
+		axios.get("http://localhost:8000/posts/save/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
 			.then((data) => {
 				console.log(data.data);
 				var savedQuestions = data.data;
@@ -248,11 +258,11 @@ const Profile = () => {
 				var totalSavedQuestions = Math.ceil(savedQuestions.length / 4);
 				var dispSavedQuestions = [];
 
-				for (var i = 0; i < savedQuestions.length; i++) {
-					var post = savedQuestions[i].Post;
+				for (let i = 0; i < savedQuestions.length; i++) {
+					var post = savedQuestions[i];
 
 					// Calculates Time
-					var date = new Date(post.created_at);
+					var date = new Date(post.post_created_at);
 					var date_now = new Date();
 
 					var seconds_between_dates = Math.floor((date_now - date) / 1000);
@@ -270,7 +280,11 @@ const Profile = () => {
 					else if (hours_between_dates < 24) {
 						post_date_output = `${hours_between_dates} hours ago`;
 					} else if (days_between_dates <= 7) {
-						post_date_output = `${days_between_dates} days ago`;
+						if (days_between_dates == 1) {
+							post_date_output = `${days_between_dates} day ago`;
+						} else {
+							post_date_output = `${days_between_dates} days ago`;
+						}
 					} else {
 						post_date_output = `${weeks_between_dates} weeks ago`;
 					}
@@ -278,18 +292,20 @@ const Profile = () => {
 					savedQuestionDetails.push({
 						post_id: `post_${post.post_id}`,
 						question_id: post.post_id,
-						post_votes: post.Post_Votes,
-						post_href: `/r/${post.Subreaddit.subreaddit_name}`,
-						post_subforumName: post.Subreaddit.subreaddit_name,
-						post_username: post.User.username,
+						post_votes: post.post_rating,
+						post_href: `/r/${post.Subforum.subforum_name}`,
+						post_subforumName: post.Subforum.subforum_name,
+						post_username: post.User.first_name,
 						post_date: post_date_output,
-						post_title: post.title,
+						post_title: post.post_title,
 						post_bookmarkId: `post_bookmark_${post.post_id}`
 					});
 				}
 
 				for (let i = 0; i < 4; i++) {
-					dispSavedQuestions.push(savedQuestionDetails[i]);
+					if (savedQuestionDetails[i] != undefined) {
+						dispSavedQuestions.push(savedQuestionDetails[i]);
+					}
 				}
 
 				setSavedQuestions(savedQuestionDetails);
@@ -312,7 +328,7 @@ const Profile = () => {
 		if (tabselected == "questions") {
 			var dispQuestions = [];
 
-			for (var i = 0; i < 4; i++) {
+			for (let i = 0; i < 4; i++) {
 				if (questions[i + (questionCurrentPage * 4)] != undefined) {
 					dispQuestions.push(questions[i + (questionCurrentPage * 4)]);
 				}
@@ -389,7 +405,6 @@ const Profile = () => {
 		getAnswers();
 		getSavedQuestions();
 		console.log(baseUrl[0]);
-
 	}, [acquireData]);
 
 	// Changes Content Based on Tab Selected And Page Number
@@ -401,39 +416,47 @@ const Profile = () => {
 	return (
 		<React.Fragment>
 			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
-			<div className="row mw-100 justify-content-center">
-				<div className="col-xl-10 col-lg-9 row">
-					<div className="col-3 ms-lg-0 mt-4 ms-5">
-						<h2>My Activity</h2>
-						<hr />
-						<div className="py-2">
-							<h5>{updatesreceived}</h5>
-							<p>updates received</p>
+			<div className="d-flex flex-row flex-grow-1 justify-content-center" id="myactivity">
+				<div className="flex-fill d-flex flex-row flex-wrap">
+					<div className="ms-lg-0 mt-4 ms-5 w-25 me-5 d-flex flex-column flex-grow-1 flex-lg-grow-0">
+						<div>
+							<h2>My Activity</h2>
+							<hr />
 						</div>
-						<div className="py-2">
-							<h5>{answersposted}</h5>
-							<p>answers posted</p>
-						</div>
-						<div className="py-2">
-							<h5>{answersaccepted}</h5>
-							<p>answers accepted</p>
-						</div>
-						<div className="py-2">
-							<h5>{upvotesgiven}</h5>
-							<p>upvotes given</p>
+						<div className="d-flex flex-row flex-lg-column">
+							<div className="flex-grow-1">
+								<div className="py-2">
+									<h5>{0}</h5>
+									<p>updates received</p>
+								</div>
+								<div className="py-2">
+									<h5>{0}</h5>
+									<p>answers posted</p>
+								</div>
+							</div>
+							<div className="flex-grow-1">
+								<div className="py-2">
+									<h5>{0}</h5>
+									<p>answers accepted</p>
+								</div>
+								<div className="py-2">
+									<h5>{0}</h5>
+									<p>upvotes given</p>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div className="col-8 mt-5">
-						<ul id="tabs" className="nav nav-tabs">
-							<li className="active mx-xl-4 mx-3 text-center" id="questions">
+					<div className="flex-grow-1 mt-5">
+						<ul id="tabs" className="nav nav-tabs d-flex">
+							<div className="active mx-xl-4 mx-3" id="questions">
 								<button href="#home" className="p-2 py-3" onClick={() => handleTabSelection("questions")}>MY QUESTIONS</button>
-							</li>
-							<li className="mx-xl-4 mx-3 text-center" id="answers">
+							</div>
+							<div className="mx-xl-4 mx-3 text-center" id="answers">
 								<button href="#menu1" className="p-2 py-3" onClick={() => handleTabSelection("answers")}>MY ANSWERS</button>
-							</li>
-							<li className="mx-xl-4 mx-3 text-center" id="savedquestions">
+							</div>
+							<div className="mx-xl-4 mx-3 text-center" id="savedquestions">
 								<button href="#menu2" className="p-2 py-3" onClick={() => handleTabSelection("savedquestions")}>SAVED QUESTIONS</button>
-							</li>
+							</div>
 						</ul>
 
 						<div className="tab-content mt-3">
@@ -497,13 +520,25 @@ const Profile = () => {
 							</div>
 							<div id="paginationNum" className="col-6 text-center">
 								{!isLoadingAnswers && tabselected == "answers" ? (
-									<p className="mx-auto my-2 text-dark">{answerCurrentPage + 1} of {answerTotalPages}</p>
+									answersToDisplay.length > 0 ? (
+										<p className="mx-auto my-2 text-dark">{answerCurrentPage + 1} of {answerTotalPages}</p>
+									) : (
+										<p className="mx-auto my-2 text-dark"></p>
+									)
 
 								) : !isLoadingSavedQuestions && tabselected == "savedquestions" ? (
-									<p className="mx-auto my-2 text-dark">{savedQuestionCurrentPage + 1} of {savedQuestionTotalPages}</p>
+									savedQuestionToDisplay.length > 0 ? (
+										<p className="mx-auto my-2 text-dark">{savedQuestionCurrentPage + 1} of {savedQuestionTotalPages}</p>
+									) : (
+										<p className="mx-auto my-2 text-dark"></p>
+									)
 
 								) : !isLoadingQuestions && (
-									<p className="mx-auto my-2 text-dark">{questionCurrentPage + 1} of {questionTotalPages}</p>
+									questionToDisplay.length > 0 ? (
+										<p className="mx-auto my-2 text-dark">{questionCurrentPage + 1} of {questionTotalPages}</p>
+									) : (
+										<p className="mx-auto my-2 text-dark"></p>
+									)
 								)
 								}
 							</div>
@@ -518,4 +553,4 @@ const Profile = () => {
 	);
 };
 
-export default Profile;
+export default MyActivity;
