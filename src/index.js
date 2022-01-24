@@ -57,7 +57,7 @@ ReactDOM.render(
 								<Route path="/search" element={<Search />} />
 								<Route path="subforum/:subForum" element={<Subforum />} />
 								<Route path="newforum" element={<CreateSubforum />} />
-								<Route path="/" element={<Navigate replace to="/login" />} />
+								<Route path="/" element={<Navigate replace to="/home" />} />
 							</Routes>
 						</div>
 					</div>
