@@ -5,33 +5,24 @@ const SavedQuestion = (props) => {
 	return (
 		<div className="post rounded mb-2" id={props.id}>
 			<div className="row g-0">
-				<div className="col-1 upvote-section py-2 justify-content-center">
-					<a className="text-center d-block py-1 post-upvote" id="post1-upvote"><i
-						className="fas fa-arrow-up text-dark"></i></a>
+				<div className="col-1 upvote-section py-1 justify-content-center align-self-center">
+					<a className="text-center d-block" id="post1-upvote"><i
+						className="fas fa-caret-up text-dark fs-3"></i></a>
 					<p id="post#-val" className="text-center mb-0">{props.votes}</p>
-					<a className="text-center d-block py-1 post-downvote" id="post1-downvote"><i
-						className="fas fa-arrow-down text-dark"></i></a>
+					<a className="text-center d-block" id="post1-downvote"><i
+						className="fas fa-caret-down text-dark fs-3"></i></a>
 				</div>
 				<div className="col-11 bg-white p-2">
-					<div className="d-flex flex-row align-items-baseline">
-						<h6 className="d-inline fw-bold clickable-link">r/<a href={props.post_href} className="text-dark text-decoration-none">{props.subforumName}</a></h6>
-						<p className="fw-light text-secondary mx-1">•</p>
-						<p className="d-inline text-secondary me-1">Posted by</p>
-						<p className="d-inline text-secondary clickable-link" id="post#_user"> u/{props.username}</p>
-						<p className="fw-light text-secondary mx-1">•</p>
-						<p className="text-secondary" id="post#_time">{props.date}</p>
-					</div>
 					{props.shortTitle == "" ? (
 						<h5 className="text-dark clickable-link mb-3" style={{ cursor: "pointer" }}> {props.title}</h5>
 					) : (
 						<h5 className="text-dark clickable-link mb-3" style={{ cursor: "pointer" }} data-toggle="tooltip" data-placement="top" title={props.title}> {props.shortTitle}</h5>
 					)}
 					<div className="toolbar d-flex flex-row align-items-center mt-2">
-						<div className="d-flex flex-row text-secondary me-4 p-1 rounded hoverable">
-							<span className="material-icons md-24 ms-0 me-1">chat_bubble_outline</span>
-							<p className="mb-0 fw-bold me-1" id="comment_total"></p>
-							<p className="mb-0 fw-bold fs-6">Comments</p>
-						</div>
+						<p className="text-secondary me-auto" id="post#_time">{props.date}</p>
+						<p className="text-secondary mx-1">NO COMMENTS</p>
+						<span className="text-primary material-icons md-24 ms-3 align-self-start">chat_bubble_outline</span>
+						<p className="text-secondary mx-1">NO ANSWERS</p>
 						<div className="d-flex flex-row text-secondary me-4 p-1 rounded hoverable">
 							<span className="material-icons md-24 ms-0 mx-1">share</span>
 							<p className="mb-0 fw-bold fs-6">Share</p>

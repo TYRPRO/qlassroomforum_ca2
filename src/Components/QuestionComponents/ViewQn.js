@@ -20,6 +20,7 @@ import EditorQuill from "./EditorQuill_FORUM/EditorQuill";
 import DOMPurify from "dompurify";
 import { useNavigate } from "react-router-dom";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 
 function ViewQn() {
@@ -47,11 +48,23 @@ function ViewQn() {
 	const [addComment, set_AddComment] = useState(false);
 	const [postComment, set_postComment] = useState("");
 
+	const [isBookmarked, setIsBookmarked] = useState(false);
 	const [bookmarkHover, set_bookmarkHover] = useState(false);
+
+	const [loggedInUser, set_loggedInUser] = useState({});
+
+	const [acquireData, setAcquireData] = useState(false);
 
 	const navigate = useNavigate();
 
+	useEffect(() => acquireUserData(), []);
+
 	useEffect(() => {
+		if (!acquireData) {
+			return;
+		}
+		toast.info("Retreiving post...");
+
 		axios.get(`http://localhost:8000/posts/${post_id}`)
 			.then(function (response) {
 				var data = response.data;
@@ -72,53 +85,70 @@ function ViewQn() {
 				}
 				set_tags(tempArr);
 
+				for (let i = 0; i < data.SavedPosts.length; i++) {
+					var savePostData = data.SavedPosts[i];
+
+					if (savePostData.fk_user_id === loggedInUser.user_id) {
+						setIsBookmarked(true);
+					}
+				}
+
 				var parsedTime = parseTime(data.post_created_at);
 				set_post_created_at(parsedTime);
 
 			}).catch(function (error) {
 				console.log(error);
 			});
-	}, []);
+	}, [acquireData]);
 
 	useEffect(() => {
-		axios.get(`http://localhost:8000/responses/${post_id}`).then(function (response) {
-			var data = response.data;
-			console.log(data);
-			var post_answers = [];
-			var post_comments = [];
-			var post_answer_comments = [];
+		if (!acquireData) {
+			return;
+		}
+		toast.info("Retreiving answers...");
 
-			for (var i = 0; i < data.length; i++) {
+		axios.get(`http://localhost:8000/responses/${post_id}`)
+			.then(function (response) {
+				console.log("getting answers in axios");
+				var data = response.data;
+				console.log(data);
+				var post_answers = [];
+				var post_comments = [];
+				var post_answer_comments = [];
 
-				if (data[i].ResponseType.response_type === "answer") {
-					post_answers.push(data[i]);
-					continue;
-				}
-				else if (data[i].parent_response_id != null) {
-					post_answer_comments.push(data[i]);
-				}
-				else {
-					post_comments.push(data[i]);
-				}
-			}
+				for (var i = 0; i < data.length; i++) {
 
-			for (let i = 0; i < post_answer_comments.length; i++) {
-				for (let j = 0; j < post_answers.length; j++) {
-					if (post_answers[j].response_id === post_answer_comments[i].parent_response_id) {
-						if (post_answers[j].comments == null) {
-							post_answers[j].comments = [];
-						}
-						post_answers[j].comments.push(post_answer_comments[i]);
-						break;
+					if (data[i].ResponseType.response_type === "answer") {
+						post_answers.push(data[i]);
+						continue;
+					}
+					else if (data[i].parent_response_id != null) {
+						post_answer_comments.push(data[i]);
+					}
+					else {
+						post_comments.push(data[i]);
 					}
 				}
-			}
 
-			set_answers(post_answers);
-			set_postComments(post_comments);
+				console.log(post_comments);
 
-		});
-	}, [refreshAnswers]);
+				for (let i = 0; i < post_answer_comments.length; i++) {
+					for (let j = 0; j < post_answers.length; j++) {
+						if (post_answers[j].response_id === post_answer_comments[i].parent_response_id) {
+							if (post_answers[j].comments == null) {
+								post_answers[j].comments = [];
+							}
+							post_answers[j].comments.push(post_answer_comments[i]);
+							break;
+						}
+					}
+				}
+
+				set_answers(post_answers);
+				set_postComments(post_comments);
+
+			});
+	}, [refreshAnswers, acquireData]);
 	// useEffect(() => {
 	// 	axios.get(`http://localhost:8000/answers/posts/${post_id}`)
 	// 		.then(function (response) {
@@ -170,10 +200,22 @@ function ViewQn() {
 												<div className='flex-grow-1'></div>
 
 												<div>
-													<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} className='text-secondary anim-enter-active'>
-														<BookmarkBorderIcon sx={{ fontSize: 26 }} />
-														{bookmarkHover ? "Bookmark this question?" : ""}
-													</button>
+													{
+														!(loggedInUser.user_id === fk_user_id) ?
+															(isBookmarked ? (
+																<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-success anim-enter-active'>
+																	<BookmarkIcon sx={{ fontSize: 26 }} />
+																	{bookmarkHover ? "Bookmarked" : ""}
+																</button>
+															) : (
+																<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-secondary anim-enter-active'>
+																	<BookmarkBorderIcon sx={{ fontSize: 26 }} />
+																	{bookmarkHover ? "Bookmark this question?" : ""}
+																</button>
+															))
+															: ("")
+													}
+
 												</div>
 
 
@@ -242,16 +284,6 @@ function ViewQn() {
 											</div>
 
 										</div>
-										{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
-										{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
-										{addComment ?
-											<div className=' input-group'>
-												<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
-												<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
-											</div>
-											:
-											null
-										}
 									</div>
 									{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
 									{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
@@ -302,6 +334,41 @@ function ViewQn() {
 			</div >
 		</React.Fragment >
 	);
+
+	function acquireUserData() {
+		var token = findCookie("token");
+
+		axios.get("http://localhost:8000/user/userData",
+			{
+				headers: { "Authorization": "Bearer " + token }
+			})
+			.then(response => {
+				var data = response.data;
+				set_loggedInUser({
+					user_id: data.user_id,
+					first_name: data.first_name,
+					last_name: data.last_name,
+					role: data.roles,
+				});
+
+				setAcquireData(true);
+
+			})
+			.catch((err) => {
+				console.log(err);
+				window.location.assign("/login");
+			});
+	}
+
+	function findCookie(name) {
+		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+		if (match) {
+			return (match[2]);
+		}
+		else {
+			return ("error");
+		}
+	}
 
 	function refreshAnswersFunction() {
 		set_refreshAnswers(!refreshAnswers);
@@ -381,6 +448,48 @@ function ViewQn() {
 			console.log("Already Accepted");
 			toast.error("Answer Already Accepted!");
 		}
+	}
+
+	function bookmarkPost() {
+		// Temp User ID
+		// var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
+		var user_id = loggedInUser.user_id;
+		var answer_content = DOMPurify.sanitize(answer_input);
+		var response_type = "answer";
+
+		if (!isBookmarked) {
+			toast.info("Bookmarking Post...");
+
+			axios.post("http://localhost:8000/posts/save", {
+				user_id: user_id,
+				post_id: post_id,
+			}).then(function (response) {
+				console.log(response);
+				setIsBookmarked(true);
+				toast.success("Post Bookmarked!");
+			}).catch(function (error) {
+				console.log(error);
+				toast.error("Error Bookmarking Post");
+			});
+		} else {
+			toast.info("Removing Bookmark...");
+
+			axios.delete("http://localhost:8000/posts/remove", {
+				data: {
+					user_id: user_id,
+					post_id: post_id,
+				}
+			}).then(function (response) {
+				console.log(response);
+				setIsBookmarked(false);
+				toast.success("Bookmark Removed!");
+			}).catch(function (error) {
+				console.log(error);
+				toast.error("Error Removing Bookmark");
+			});
+		}
+
+
 	}
 
 }
