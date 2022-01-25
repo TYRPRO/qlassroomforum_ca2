@@ -11,7 +11,7 @@ import "./activity.css";
 //Child Imports
 import Question from "./MyActivityQuestions";
 import Answer from "./MyActivityAnswers";
-import SavedQuestion from "./MyActivitySavedQuestions";
+// import SavedQuestion from "./MyActivitySavedQuestions";
 
 //Component Creation
 const MyActivity = () => {
@@ -120,7 +120,8 @@ const MyActivity = () => {
 		}
 		toast.info("Retrieving Questions...");
 
-		axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
+		// axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
+		axios.get("http://localhost:8000/posts/user/" + user_id)
 			.then((data) => {
 				console.log(data.data);
 				var questions = data.data;
@@ -165,12 +166,9 @@ const MyActivity = () => {
 					}
 
 					questionDetails.push({
-						post_id: `post_${post.post_id}_${post.Subforum.subforum_name}`,
+						post_id: `post_${post.post_id}`,
 						question_id: post.post_id,
-						post_href: `/r/${post.Subforum.subforum_name}`,
-						post_subforumName: post.Subforum.subforum_name,
 						post_votes: post.post_rating,
-						post_username: post.User.first_name,
 						post_date: post_date_output,
 						post_title: post.post_title,
 						post_shortTitle: post_shortTitle,
@@ -204,7 +202,7 @@ const MyActivity = () => {
 		}
 		toast.info("Retrieving Answers...");
 
-		axios.get("http://localhost:8000/answers/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
+		axios.get("http://localhost:8000/answers/user/" + user_id)
 			.then((data) => {
 				console.log(data.data);
 				var answers = data.data;
@@ -255,7 +253,7 @@ const MyActivity = () => {
 		}
 		toast.info("Retrieving Saved Questions...");
 
-		axios.get("http://localhost:8000/posts/save/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
+		axios.get("http://localhost:8000/posts/save/user/" + user_id)
 			.then((data) => {
 				console.log(data.data);
 				var savedQuestions = data.data;
@@ -267,12 +265,12 @@ const MyActivity = () => {
 					var post = savedQuestions[i];
 					var post_shortTitle = "";
 
-					if (post.post_title.length > 30) {
-						post_shortTitle = post.post_title.substring(0, 30) + "...";
+					if (post.Post.post_title.length > 30) {
+						post_shortTitle = post.Post.post_title.substring(0, 30) + "...";
 					}
 
 					// Calculates Time
-					var date = new Date(post.post_created_at);
+					var date = new Date(post.Post.post_created_at);
 					var date_now = new Date();
 
 					var seconds_between_dates = Math.floor((date_now - date) / 1000);
@@ -300,16 +298,12 @@ const MyActivity = () => {
 					}
 
 					savedQuestionDetails.push({
-						post_id: `post_${post.post_id}`,
-						question_id: post.post_id,
-						post_votes: post.post_rating,
-						post_href: `/r/${post.Subforum.subforum_name}`,
-						post_subforumName: post.Subforum.subforum_name,
-						post_username: post.User.first_name,
+						post_id: `post_${post.Post.post_id}`,
+						question_id: post.Post.post_id,
+						post_votes: post.Post.post_rating,
 						post_date: post_date_output,
-						post_title: post.post_title,
-						post_shortTitle: post_shortTitle,
-						post_bookmarkId: `post_bookmark_${post.post_id}`
+						post_title: post.Post.post_title,
+						post_shortTitle: post_shortTitle
 					});
 				}
 
@@ -489,17 +483,13 @@ const MyActivity = () => {
 							) : !isLoadingSavedQuestions && tabselected == "savedquestions" ? (
 								savedQuestionToDisplay.length > 0 ? (
 									savedQuestionToDisplay.map((data) => (
-										<SavedQuestion
+										<Question
 											key={data.question_id}
 											id={data.post_id}
-											post_href={data.post_href}
-											subforumName={data.post_subforumName}
 											votes={data.post_votes}
-											username={data.post_username}
 											date={data.post_date}
 											title={data.post_title}
 											shortTitle={data.post_shortTitle}
-											bookmark={data.post_bookmarkId}
 										/>
 									))
 								) : (
@@ -511,10 +501,7 @@ const MyActivity = () => {
 										<Question
 											key={data.question_id}
 											id={data.post_id}
-											post_href={data.post_href}
-											subforumName={data.post_subforumName}
 											votes={data.post_votes}
-											username={data.post_username}
 											date={data.post_date}
 											title={data.post_title}
 											shortTitle={data.post_shortTitle}
