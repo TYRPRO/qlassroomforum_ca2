@@ -10,56 +10,12 @@ import "react-toastify/dist/ReactToastify.css";
 //File Imports (CSS/Images)
 import "./search.css";
 import SearchPost from "./SearchPost";
+import Channel from "../ChannelComponents/Channel";
 
 //Component Creation
 const Search = () => {
-	//login info
-	const [firstname, setFirstname] = useState("");
-	const [lastname, setLastname] = useState("");
-	const [user_id, setUserID] = useState(0);
-	const [role, setRole] = useState("");
-	const [acquireData, setAcquireData] = useState(false);
-
-	const [postlst, setPostLst] = useState([]);
 	const [similarsLst, setSimilars] = useState([]);
-
-	const [isLoadedPosts, setIsLoadedPosts] = useState(false);
 	const [isLoadedSimilars, setIsLoadedSimilars] = useState(false);
-
-	// login functions
-	function acquireUserData() {
-		var token = findCookie("token");
-
-		axios.get("http://localhost:8000/user/userData",
-			{
-				headers: { "Authorization": "Bearer " + token }
-			})
-			.then(response => {
-				var data = response.data;
-				console.log(data);
-				setFirstname(data.first_name);
-				setLastname(data.last_name);
-				setUserID(data.user_id);
-				setRole(data.roles);
-
-				setAcquireData(true);
-			})
-			.catch((err) => {
-				toast.error(err.response.data.message);
-				console.log(err.response.data.message);
-				window.location.assign("/login");
-			});
-	}
-
-	function findCookie(name) {
-		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-		if (match) {
-			return (match[2]);
-		}
-		else {
-			return ("error");
-		}
-	}
 
 	function getParams() {
 		var queryParams = new URLSearchParams(window.location.search);
@@ -90,52 +46,24 @@ const Search = () => {
 	function searchPosts() {
 		var queryParams = new URLSearchParams(window.location.search);
 
-		//basic subreaddit search
-		axios.get(`http://localhost:8000/posts/search?` + queryParams,
+		//similar search
+		axios.get(`http://localhost:8000/posts/SimilarSearch?` + queryParams,
 			{
 				contentType: "application/json; charset=utf-8"
 			})
 			.then(response => {
-				var posts = response.data.Result;
-				setPostLst(posts);
-				setIsLoadedPosts(true);
+				var similars = arrangeSimilars(response.data);
 
-				//similar search
-				axios.get(`http://localhost:8000/posts/SimilarSearch?` + queryParams,
-					{
-						contentType: "application/json; charset=utf-8"
-					})
-					.then(response => {
-						var similars = arrangeSimilars(response.data);
-						var newlst = [];
-						for (var i = 0; i < similars.length; i++) {
-							var duplicate = false;
-							for (var count = 0; count < posts.length; count++) {
-								if (similars[i].post_id == posts[count].post_id) {
-									duplicate = true;
-								}
-							}
-							if (duplicate == false) {
-								newlst.push(similars[i]);
-							}
-						}
-						setSimilars(newlst);
-						setIsLoadedSimilars(true);
-					})
-					.catch((err) => {
-						toast.error("Error finding similar posts");
-						console.log(err);
-					});
-
+				setSimilars(similars);
+				setIsLoadedSimilars(true);
 			})
 			.catch((err) => {
-				toast.error(err.response.data.message);
-				console.log(err.response.data.message);
+				toast.error("Error finding similar posts");
+				console.log(err);
 			});
 	}
 
 	useEffect(() => {
-		acquireUserData();
 		searchPosts();
 	}, []);
 	return (
@@ -150,45 +78,6 @@ const Search = () => {
 						<hr></hr>
 
 						<div id="posts" className="w3-container w3-border tab">
-							<div id="posts_content">
-								{
-									isLoadedPosts == true ? (
-
-										postlst.length > 0 ? (
-											postlst.map((data) => (
-												<SearchPost
-													key={data.post_id}
-													post_id={data.post_id}
-													fk_subforum_id= {data.fk_subforum_id}
-													fk_user_id= {data.fk_user_id}
-													fk_grade_id= {data.fk_grade_id}
-													post_title= {data.post_title}
-													post_content= {data.post_content}
-													post_is_pinned= {data.post_is_pinned}
-													post_is_answered= {data.post_is_answered}
-													post_created_at= {data.post_created_at}
-													post_rating= {data.post_rating}
-													post_answers_count= {data.post_answers_count}
-													fk_response_id= {data.fk_response_id}
-													first_name= {data.User.first_name}
-													last_name= {data.User.last_name}
-													user_id= {data.User.user_id}
-													grade_id= {data.Grade.grade_id}
-													grade_name= {data.Grade.grade_name}
-													subforum_name= {data.Subforum.subforum_name}
-												/>
-											))
-										) : (
-											<div >No Questions found</div>
-										)
-
-									) : (
-										<div className="text-center">Loading...</div>
-									)
-								}
-							</div>
-							<h5 className="mt-3 headers" id="similar_header">Similar results</h5>
-							<hr></hr>
 							<div id="posts_similar">
 								{
 									isLoadedSimilars == true ? (
@@ -198,23 +87,23 @@ const Search = () => {
 												<SearchPost
 													key={data.post_id}
 													post_id={data.post_id}
-													fk_subforum_id= {data.fk_subforum_id}
-													fk_user_id= {data.fk_user_id}
-													fk_grade_id= {data.fk_grade_id}
-													post_title= {data.post_title}
-													post_content= {data.post_content}
-													post_is_pinned= {data.post_is_pinned}
-													post_is_answered= {data.post_is_answered}
-													post_created_at= {data.post_created_at}
-													post_rating= {data.post_rating}
-													post_answers_count= {data.post_answers_count}
-													fk_response_id= {data.fk_response_id}
-													first_name= {data.User.first_name}
-													last_name= {data.User.last_name}
-													user_id= {data.User.user_id}
-													grade_id= {data.Grade.grade_id}
-													grade_name= {data.Grade.grade_name}
-													subforum_name= {data.Subforum.subforum_name}
+													fk_subforum_id={data.fk_subforum_id}
+													fk_user_id={data.fk_user_id}
+													fk_grade_id={data.fk_grade_id}
+													post_title={data.post_title}
+													post_content={data.post_content}
+													post_is_pinned={data.post_is_pinned}
+													post_is_answered={data.post_is_answered}
+													post_created_at={data.post_created_at}
+													post_rating={data.post_rating}
+													post_answers_count={data.post_answers_count}
+													fk_response_id={data.fk_response_id}
+													first_name={data.User.first_name}
+													last_name={data.User.last_name}
+													user_id={data.User.user_id}
+													grade_id={data.Grade.grade_id}
+													grade_name={data.Grade.grade_name}
+													subforum_name={data.Subforum.subforum_name}
 												/>
 											))
 										) : (
@@ -227,6 +116,7 @@ const Search = () => {
 								}
 							</div>
 						</div>
+
 					</div>
 				</div>
 				<div className="col-lg-1"></div>
