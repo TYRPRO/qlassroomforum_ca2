@@ -234,35 +234,34 @@ function ViewQn() {
 													{post_created_at}
 												</p>
 											</div>
-										</div>
-										<p className='qn-content mt-3' dangerouslySetInnerHTML={{ __html: post_content }}></p>
-										<div className='d-flex'>
-											{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
-										</div>
-										<div className='row text-primary'>
-											<div className='col-3'>
-												<div className='d-inline-block toolbar-btn px-2'>
-													<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center '>
+											<p className='qn-content mt-3' dangerouslySetInnerHTML={{ __html: post_content }}></p>
+											<div className='d-flex'>
+												{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
+											</div>
+											<div className='row text-primary'>
+												<div className='col-3'>
+													<div className='d-inline-block toolbar-btn px-2'>
+														<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center '>
 
-														<ReplyIcon></ReplyIcon>
-														<p className='px-2 py-2 mb-0'>Comment</p>
+															<ReplyIcon></ReplyIcon>
+															<p className='px-2 py-2 mb-0'>Comment</p>
+														</div>
+													</div>
+
+
+												</div>
+												<div className='col-3 '>
+													<div className='d-inline-block toolbar-btn px-2'>
+														<div className='d-flex flex-row align-items-center '>
+
+															<ModeCommentIcon></ModeCommentIcon>
+															<p className='px-2 py-2 mb-0'>Answer</p>
+														</div>
 													</div>
 												</div>
-
-
-											</div>
-											<div className='col-3 '>
-												<div className='d-inline-block toolbar-btn px-2'>
-													<div className='d-flex flex-row align-items-center '>
-
-														<ModeCommentIcon></ModeCommentIcon>
-														<p className='px-2 py-2 mb-0'>Answer</p>
-													</div>
-												</div>
-											</div>
-											<div className='col-3'></div>
-											<div className='col-3 '>
-												{/* <div className='container p-1 postedBySection rounded'>
+												<div className='col-3'></div>
+												<div className='col-3 '>
+													{/* <div className='container p-1 postedBySection rounded'>
 													<small className='mb-0 text-secondary'>Posted by</small>
 													<div className=' row g-0'>
 														<div className='col-3 py-1'>
@@ -276,25 +275,34 @@ function ViewQn() {
 														</div>
 													</div>
 												</div> */}
-												<div className=' text-secondary d-flex flex-row align-items-center h-100'>
-													<p className='mb-0'>Edit</p>
-													<p className='mb-0 ms-3'>Delete</p>
+													{!(loggedInUser.user_id === fk_user_id) ? (
+														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
+															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">REPORT</p>
+														</div>
+													) : (
+														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
+															<p className='mb-0'>EDIT</p>
+															<p className='mb-0 ms-3'>DELETE</p>
+														</div>
+													)}
 												</div>
 
 											</div>
-
+											{addComment ?
+												<div className=' input-group'>
+													<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
+													<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
+												</div>
+												:
+												null
+											}
 										</div>
+
+
 									</div>
 									{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
 									{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
-									{addComment ?
-										<div className=' input-group'>
-											<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
-											<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
-										</div>
-										:
-										null
-									}
+
 								</div>
 							</div >
 							<hr></hr>
