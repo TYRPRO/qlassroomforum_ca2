@@ -6,6 +6,9 @@ import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal } from "bootstrap/dist/js/bootstrap.bundle.js";
 
+import { ToastContainer, toast, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import TagDropdown from "./createQn/TagDropdown";
 import Tag from "./createQn/tag";
 import QuillEditor from "./EditorQuill_FORUM/EditorQuill";
@@ -117,16 +120,32 @@ function CreateQn() {
 						break;
 					}
 				}
-				axios.get(`https://testapi.qlassroom.ai/topics?subject_id=${subject_id}&grade_id=${grade_id}`).then(function (response) {
-					var data = response.data.topics;
-					if (data[0].dimension_name === "Topics") {
+				// axios.get(`https://testapi.qlassroom.ai/topics?subject_id=${subject_id}&grade_id=${grade_id}`).then(function (response) {
+				// 	var data = response.data.topics;
+				// 	if (data[0].label_name === "Topics") {
+				// 		data.splice(0, 1);
+				// 	}
+
+				// 	console.log(data);
+				// 	var temp_shown_tags = [];
+				// 	for (let i = 0; i < data.length; i++) {
+				// 		temp_shown_tags.push(data[i]);
+				// 	}
+
+				// 	set_tags(data);
+				// 	set_shown_tags(temp_shown_tags);
+				// 	set_selected_tags([]);
+				// });
+				axios.get(`http://localhost:8000/label/${subject_id}/${grade_id}`).then(function (response) {
+					var data = response.data;
+					if (data[0].label_name === "Topics") {
 						data.splice(0, 1);
 					}
 
 					console.log(data);
 					var temp_shown_tags = [];
 					for (let i = 0; i < data.length; i++) {
-						temp_shown_tags.push(data[i].dimension_name);
+						temp_shown_tags.push(data[i]);
 					}
 
 					set_tags(data);
@@ -144,77 +163,81 @@ function CreateQn() {
 
 
 	return (
-		<div className="container">
-			<div className='row'>
-				<div className='col-12 col-lg-8'>
-					<h3 className='mt-4 mb-3'>Ask a Question</h3>
-					<div className=' bg-white py-3 px-4 shadow-sm border'>
-						<form>
-							<div className="form-group">
+		<React.Fragment>
+			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
+			<div className="container">
+				<div className='row'>
+					<div className='col-12 col-lg-8'>
+						<h3 className='mt-4 mb-3'>Ask a Question</h3>
+						<div className=' bg-white py-3 px-4 shadow-sm border'>
+							<form>
+								<div className="form-group">
 
-								<label>Subject</label>
-								<div className='form-text mt-0'>
+									<label>Subject</label>
+									<div className='form-text mt-0'>
 									Select the subject of your question.
-								</div>
-								<div>
-									<select className=' form-select' onChange={(event) => handleSelectedSubjectChange(event.target.value)}>
-										{subjects.map((subject, index) => <option key={index} value={subject}>{subject}</option>)}
-									</select>
-								</div>
+									</div>
+									<div>
+										<select className=' form-select' onChange={(event) => handleSelectedSubjectChange(event.target.value)}>
+											{subjects.map((subject, index) => <option key={index} value={subject}>{subject}</option>)}
+										</select>
+									</div>
 
-								<label className='mt-3'>Grade</label>
-								<div className='form-text mt-0'>
+									<label className='mt-3'>Grade</label>
+									<div className='form-text mt-0'>
 									Select the grade level that best fits your question.
-								</div>
-								<div>
-									<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
-										<option disabled={true} value={"disabled"}>Please select a grade:</option>
-										{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
-									</select>						Be specific and imagine you are asking a question to another person.
-								</div>
-								<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"e.g. Find the intercept between y=2x and 12=2y+x. "}></input>
+									</div>
+									<div>
+										<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
+											<option disabled={true} value={"disabled"}>Please select a grade:</option>
+											{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
+										</select>						Be specific and imagine you are asking a question to another person.
+									</div>
+									<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"e.g. Find the intercept between y=2x and 12=2y+x. "}></input>
 
-								<label htmlFor='qn_body' className='mt-2'>Body</label>
-								<div className=' form-text mt-0'>
+									<label htmlFor='qn_body' className='mt-2'>Body</label>
+									<div className=' form-text mt-0'>
 									Include all the information someone would need to answer your question
-								</div>
-								<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody}></QuillEditor>
-								{/* <TextEditor storeInput={set_qnBody} /> */}
-								{/* <div value={qnBody} ref={qn_body_textarea} contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
+									</div>
+									<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody}></QuillEditor>
+									{/* <TextEditor storeInput={set_qnBody} /> */}
+									{/* <div value={qnBody} ref={qn_body_textarea} contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
 								</div> */}
 
 
 
 
 
-								<label className='mt-3'>Tags</label>
-								<div className=' form-text mt-0'>
+									<label className='mt-3'>Tags</label>
+									<div className=' form-text mt-0'>
 									Add some tags to help others find your question.
+									</div>
+									<div className='form-control d-flex flex-wrap' tabIndex={0} onClick={() => set_openDropdown(openDropdown ? false : true)}>
+
+										{selected_tags.map((selected_tags) => <Tag tag={selected_tags} handleRemove={removeTagSelect}></Tag>)}
+										<p contentEditable='true' className='mb-0 px-3 bg-secondary text-white'></p>
+
+									</div>
+
+									{openDropdown ? <TagDropdown tags={shown_tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false); }}></TagDropdown> : null}
 								</div>
-								<div className='form-control d-flex flex-wrap' tabIndex={0} onClick={() => set_openDropdown(openDropdown ? false : true)}>
-
-									{selected_tags.map((selected_tags) => <Tag tag={selected_tags} handleRemove={removeTagSelect}></Tag>)}
-									<p contentEditable='true' className='mb-0 px-3 bg-secondary text-white'></p>
-
-								</div>
-
-								{openDropdown ? <TagDropdown tags={shown_tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false); }}></TagDropdown> : null}
-							</div>
 
 
 
-						</form>
+							</form>
+						</div>
+						<button onClick={submitPost} className='btn btn-primary shadow-sm mt-4'>Review your question</button>
 					</div>
-					<button onClick={submitPost} className='btn btn-primary shadow-sm mt-4'>Review your question</button>
-				</div>
-				<div className='col-lg-4'>
-					<h5 >Left</h5>
-					<MathJaxContext config={config}>
-						<MathJax>{"`(10)/(4x) approx 2^(12)`"}</MathJax>
-					</MathJaxContext>
+					<div className='col-lg-4'>
+						<h5 >Left</h5>
+						<MathJaxContext config={config}>
+							<MathJax>{"`(10)/(4x) approx 2^(12)`"}</MathJax>
+						</MathJaxContext>
+					</div>
 				</div>
 			</div>
-		</div>
+		</React.Fragment>
+		
 
 	);
 
@@ -222,7 +245,7 @@ function CreateQn() {
 
 		var subject_index = subjects.indexOf(selected_subject);
 		var subject_id = subject_ids[subject_index];
-
+		var tags = selected_tags;
 		var grades_info = grades[subject_index];
 		var grade_id = "";
 		for (let i = 0; i < grades_info.length; i++) {
@@ -239,34 +262,55 @@ function CreateQn() {
 		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
 
 
+		toast.promise(
+			new Promise((resolve, reject) => {
+				axios.post("http://localhost:8000/posts", {
+					title: qnTitle,
+					content: qnBody,
+					user_id: user_id,
+					subforum_id: subject_id,
+					grade_id: grade_id,
+					tags: tags
+				}).then(function (response) {
+					setTimeout(() => {	
+						window.location.href = `/posts/${response.data.post_id}`;
+					}, 2500);
+					resolve();
+					console.log(response);
+				}).catch(function (error) {
+					console.log(error);
+					reject();
+				});
+			}),
+			{
+				pending: "Creating Post...",
+				success: "Post Created! Redirecting...",
+				error: {
+					render({ data }) {
+						return `${data}`;
+					},
+				},
+			}
+		);
 
 
-		axios.post("http://localhost:8000/posts", {
-			title: qnTitle,
-			content: qnBody,
-			user_id: user_id,
-			subforum_id: subject_id,
-			grade_id: grade_id,
-		}).then(function (response) {
-			console.log(response);
-		}).catch(function (error) {
-			console.log(error);
-		});
+		
 	}
 
 	function addTagSelect(tag) {
 		var temp_selected_tags = selected_tags;
 		var temp_tags = [];
+		var tag_object = {};
 
 		for (var i = 0; i < shown_tags.length; i++) {
-			if (shown_tags[i] === tag) {
-
+			if (shown_tags[i].label_name === tag) {
+				tag_object = shown_tags[i];
 			} else {
 				temp_tags.push(shown_tags[i]);
 			}
 		}
 
-		temp_selected_tags.push(tag);
+		temp_selected_tags.push(tag_object);
 
 		set_shown_tags(temp_tags);
 		set_selected_tags(temp_selected_tags);
@@ -275,16 +319,18 @@ function CreateQn() {
 	function removeTagSelect(tag) {
 		var temp_selected_tags = [];
 		var temp_tags = shown_tags;
+		var tag_object = {};
 
 		for (var i = 0; i < selected_tags.length; i++) {
-			if (selected_tags[i] === tag) {
-
+			if (selected_tags[i].label_name === tag) {
+				tag_object = selected_tags[i];
 			} else {
 				temp_selected_tags.push(selected_tags[i]);
+				
 			}
 		}
 
-		temp_tags.push(tag);
+		temp_tags.push(tag_object);
 
 		set_shown_tags(temp_tags);
 		set_selected_tags(temp_selected_tags);

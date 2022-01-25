@@ -5,3 +5,11 @@
 .bg-grey {
     background-color: rgb(243, 243, 243);
 }
+
+.bg-light-green {
+	background-color: rgb(173, 251, 136);
+}
+
+.disable-pointer-events{
+	pointer-events: none;
+}
