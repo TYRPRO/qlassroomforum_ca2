@@ -21,22 +21,18 @@ function Answer(props) {
 				<div className="col-10">
 					<button className={
 						props.isAlrdAccepted ?
-							props.isAccepted ? ("btn btn-outline-success btn-sm text-center")
-								: props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
-									: ("btn btn-outline-success btn-sm text-center")
-							: props.isAccepted ? ("btn btn-outline-success btn-sm text-center")
-								: props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
-									: ("btn btn-outline-secondary btn-sm text-center")
+							props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
+								: ("btn btn-outline-success btn-sm text-center")
+							: props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
+								: ("btn btn-outline-secondary btn-sm text-center")
 					}
 					onClick={() => props.setAsAcceptedAnswer(props.index, answer_info.response_id, answer_info.fk_post_id)} >
 						<span className="material-icons-outlined">mark_chat_read</span> {
 							props.isAlrdAccepted ?
-								props.isAccepted ? ("Answer Accepted")
-									: props.isRemoved ? ("Set as Answer Accepted")
-										: ("Answer Accepted")
-								: props.isAccepted ? ("Answer Accepted")
-									: props.isRemoved ? ("Set as Answer Accepted")
-										: ("Set as Answer Accepted")
+								props.isRemoved ? ("Set as Answer Accepted")
+									: ("Answer Accepted")
+								: props.isRemoved ? ("Set as Answer Accepted")
+									: ("Set as Answer Accepted")
 						}
 					</button>
 					<p className='qn-content' dangerouslySetInnerHTML={{ __html: answer_info.response }}></p>

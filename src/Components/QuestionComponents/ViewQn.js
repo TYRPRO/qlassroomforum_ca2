@@ -32,10 +32,11 @@ function ViewQn() {
 	const [first_name, set_first_name] = useState("");
 	const [post_content, set_post_content] = useState("");
 	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
-	const [post_accepted_response, set_post_accepted_response] = useState({ answer_is_accepted: false, response_id: 0 });
+
+	const [post_accepted_response, set_post_accepted_response] = useState({});
 	const [activeIndex, setActiveIndex] = useState();
 	const [isRemoved, setIsRemoved] = useState(false);
-
+	const [isAccepted, setIsAccepted] = useState(false);
 
 	const [answers, set_answers] = useState([]);
 	const [postComments, set_postComments] = useState([]);
@@ -102,9 +103,10 @@ function ViewQn() {
 	}, [acquireData]);
 
 	useEffect(() => {
-		if (!acquireData) {
+		if (!acquireData || Object.keys(post_accepted_response).length === 0) {
 			return;
 		}
+		
 		toast.info("Retreiving answers...");
 
 		axios.get(`http://localhost:8000/responses/${post_id}`)
@@ -144,11 +146,26 @@ function ViewQn() {
 					}
 				}
 
+				console.log(post_accepted_response);
+
+				for (let i = 0; i < post_answers.length; i++) {
+					var postAnswer = post_answers[i];
+
+					if (post_accepted_response.answer_is_accepted && post_accepted_response.response_id === postAnswer.response_id) {
+						var acceptedAnswer = post_answers.splice(i, 1);
+						post_answers.unshift(acceptedAnswer[0]);
+						console.log(acceptedAnswer);
+					}
+				}
+
+
+				console.log(post_answers);
+
 				set_answers(post_answers);
 				set_postComments(post_comments);
 
 			});
-	}, [refreshAnswers, acquireData]);
+	}, [refreshAnswers, acquireData, post_accepted_response]);
 	// useEffect(() => {
 	// 	axios.get(`http://localhost:8000/answers/posts/${post_id}`)
 	// 		.then(function (response) {
@@ -159,7 +176,7 @@ function ViewQn() {
 	// 		})
 	// }, [refreshAnswers])
 
-
+	useEffect(() => formatAnswers(), [isAccepted]);
 
 	return (
 		<React.Fragment>
@@ -312,7 +329,6 @@ function ViewQn() {
 									{answers.map((answer, index) =>
 										<Answer
 											refreshAnswers={refreshAnswersFunction}
-											isAccepted={activeIndex === index}
 											isRemoved={isRemoved}
 											isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
 											key={index}
@@ -436,6 +452,7 @@ function ViewQn() {
 		toast.info("Setting as Accepted Answer...");
 
 		if (!(post_accepted_response.response_id === response_id)) {
+
 			axios.put("http://localhost:8000/posts/correctAnswer",
 				{
 					answer_id: response_id,
@@ -443,9 +460,11 @@ function ViewQn() {
 				})
 				.then(res => {
 					console.log(res.data);
+
 					setActiveIndex(index);
 					setIsRemoved(false);
 					set_post_accepted_response({ answer_is_accepted: true, response_id: response_id });
+					setIsAccepted(true);
 					toast.success("Answer Accepted!");
 				})
 				.catch((err) => {
@@ -456,6 +475,22 @@ function ViewQn() {
 			console.log("Already Accepted");
 			toast.error("Answer Already Accepted!");
 		}
+	}
+
+	function formatAnswers() {
+		if (!isAccepted) {
+			console.log("Formatting Answers Nope");
+			return;
+		}
+
+		var answersArray = answers;
+		var acceptedAnswer = answersArray.splice(activeIndex, 1);
+		answersArray.unshift(acceptedAnswer[0]);
+		console.log(acceptedAnswer);
+		console.log(answersArray);
+
+		set_answers(answersArray);
+		setIsAccepted(false);
 	}
 
 	function bookmarkPost() {
