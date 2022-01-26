@@ -77,8 +77,8 @@ const Post = (props) => {
 						/>
 
 						<div className="col-9 bg-white p-2">
-							<div className="position-relative" onClick={() => redirect(data.post_id)}>
-								<a style={{ textDecoration: "none" }} href={data.fk_subforum_id + "/" + data.post_id} className="d-flex flex-row">
+							<div className="position-relative">
+								<a style={{ textDecoration: "none" }} href={"/posts/" + data.post_id} className="d-flex flex-row">
 									<h5 style={{ color: "black" }} id={"post_" + data.post_id + "_content"} className="mb-0">{data.post_title}</h5>
 									<div className="d-flex flex-row">
 

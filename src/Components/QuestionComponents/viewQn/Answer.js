@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 import AnswerComment from "./AnswerComments";
+import AnswerVote from "./AnswerVote";
 
 function Answer(props) {
 
@@ -16,11 +17,7 @@ function Answer(props) {
 	return (
 		<div className="qn-answer">
 			<div className="row">
-				<div className="col-2">
-					<a className="text-center d-block py-1 post-upvote" id="post_upvote"><i className="fas fa-arrow-up text-dark" /></a>
-					<p id="post_rating" className="text-center mb-0">####</p>
-					<a className="text-center d-block py-1 post-downvote" id="post_downvote"><i className="fas fa-arrow-down text-dark" /></a>
-				</div>
+				<AnswerVote response_id={answer_info.response_id} post_id={answer_info.fk_post_id}/>
 				<div className="col-10">
 					<button className={
 						props.isAlrdAccepted ?
