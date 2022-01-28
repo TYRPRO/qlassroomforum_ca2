@@ -308,22 +308,20 @@ function EditQn() {
 		}
 		console.log(grade_id);
 
-
-
-		// Temporary user_id;
-		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
-
+		var token = findCookie("token");
 
 		toast.promise(
 			new Promise((resolve, reject) => {
 				axios.put("http://localhost:8000/posts", {
 					title: qnTitle,
 					content: qnBody,
-					user_id: user_id,
+					user_id: loggedInUser.user_id,
 					subforum_id: subject_id,
 					grade_id: grade_id,
 					tags: tags,
 					post_id: post_id
+				}, {
+					headers: { authorization: "Bearer " + token }
 				}).then(function (response) {
 					// setTimeout(() => {
 					// 	window.location.href = `/posts/${post_id}`;

@@ -171,7 +171,7 @@ function ViewQn() {
 					}
 				}
 
-				if(acceptedAnswer) {
+				if (acceptedAnswer) {
 					post_answers.unshift(acceptedAnswer[0]);
 				}
 
@@ -182,15 +182,6 @@ function ViewQn() {
 
 			});
 	}, [refreshAnswers, acquireData, post_accepted_response]);
-	// useEffect(() => {
-	// 	axios.get(`http://localhost:8000/answers/posts/${post_id}`)
-	// 		.then(function (response) {
-	// 			var data = response.data
-	// 			set_answers(data);
-	// 		}).catch(function (error) {
-	// 			console.log(error);
-	// 		})
-	// }, [refreshAnswers])
 
 	useEffect(() => formatAnswers(), [isAccepted]);
 
@@ -417,17 +408,19 @@ function ViewQn() {
 
 	function submitAnswer() {
 
-		// Temp User ID
-		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
+
+		var token = findCookie("token");
 		var answer_content = DOMPurify.sanitize(answer_input);
 		var response_type = "answer";
 
 
 		axios.post("http://localhost:8000/responses/", {
-			user_id: user_id,
+			user_id: loggedInUser.user_id,
 			post_id: post_id,
 			response_type: response_type,
 			response: answer_content
+		}, {
+			headers: { authorization: "Bearer " + token }
 		}).then(function (response) {
 			console.log(response);
 			set_refreshAnswers(!refreshAnswers);
@@ -438,15 +431,17 @@ function ViewQn() {
 	}
 
 	function submitPostComment() {
-		// Temp User ID
-		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
+
+		var token = findCookie("token");
 		var response_type = "comment";
 
 		axios.post("http://localhost:8000/responses/", {
-			user_id: user_id,
+			user_id: loggedInUser.user_id,
 			post_id: post_id,
 			response_type: response_type,
 			response: postComment
+		}, {
+			headers: { authorization: "Bearer " + token }
 		}).then(function (response) {
 			console.log(response);
 			refreshAnswersFunction();
@@ -538,8 +533,6 @@ function ViewQn() {
 				toast.error("Error Removing Bookmark");
 			});
 		}
-
-
 	}
 
 }

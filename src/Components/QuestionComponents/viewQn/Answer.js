@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import "./viewQn.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import AnswerComment from "./AnswerComments";
@@ -11,8 +11,11 @@ function Answer(props) {
 
 	const [addComment, set_AddComment] = useState(false);
 	const [answerComment, set_answerComment] = useState("");
+	const [loggedInUser, set_loggedInUser] = useState({});
 
 	var answer_info = props.answer;
+
+	useEffect(() => acquireUserData(), []);
 
 	return (
 		<div className="qn-answer">
@@ -75,19 +78,52 @@ function Answer(props) {
 		</div>
 	);
 
+	function findCookie(name) {
+		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+		if (match) {
+			return (match[2]);
+		}
+		else {
+			return ("error");
+		}
+	}
+
+	function acquireUserData() {
+
+		var token = findCookie("token");
+		axios.get("http://localhost:8000/user/userData",
+			{
+				headers: { "Authorization": "Bearer " + token }
+			})
+			.then(response => {
+				var data = response.data;
+				set_loggedInUser({
+					user_id: data.user_id,
+					first_name: data.first_name,
+					last_name: data.last_name,
+					role: data.roles,
+				});
+				console.log("logged in user eing set");
+			})
+			.catch((err) => {
+				console.log(err);
+				window.location.assign("/login");
+			});
+	}
+
 	function submitAnswerComment() {
-		// Temp User ID
-		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
+		
+		var token = findCookie("token");
 		var response_type = "comment";
 
-
-
 		axios.post("http://localhost:8000/responses/", {
-			user_id: user_id,
+			user_id: loggedInUser.user_id,
 			post_id: answer_info.fk_post_id,
 			parent_response_id: answer_info.response_id,
 			response_type: response_type,
 			response: answerComment
+		}, {
+			headers: { "Authorization": "Bearer " + token }
 		}).then(function (response) {
 			console.log(response);
 			props.refreshAnswers();
@@ -95,9 +131,6 @@ function Answer(props) {
 			console.log(error);
 		});
 	}
-
-
-
 }
 
 
