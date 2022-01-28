@@ -150,18 +150,32 @@ function ViewQn() {
 
 				console.log(post_accepted_response);
 
+				var acceptedAnswer;
 				for (let i = 0; i < post_answers.length; i++) {
 					var postAnswer = post_answers[i];
 
 					if (post_accepted_response.answer_is_accepted && post_accepted_response.response_id === postAnswer.response_id) {
-						var acceptedAnswer = post_answers.splice(i, 1);
-						post_answers.unshift(acceptedAnswer[0]);
+						acceptedAnswer = post_answers.splice(i, 1);
 						console.log(acceptedAnswer);
 					}
 				}
+				for (let i = 0; i < post_answers.length; i++) {
+					if (i == post_answers.length - 1) {
+						break;
+					}
+					if (post_answers[i].response_votes_count < post_answers[i + 1].response_votes_count) {
+						var tmp = post_answers[i];
+						post_answers[i] = post_answers[i + 1];
+						post_answers[i + 1] = tmp;
+						i = -1;
+					}
+				}
+
+				if(acceptedAnswer) {
+					post_answers.unshift(acceptedAnswer[0]);
+				}
 
 
-				console.log(post_answers);
 
 				set_answers(post_answers);
 				set_postComments(post_comments);
@@ -212,7 +226,7 @@ function ViewQn() {
 											post_id={post_id}
 										/>
 										<div className='col-11'>
-											{/* No worries, we do input validation for this innerhtml */}
+											{/* we do input validation for this innerhtml */}
 											<div className='col-12 d-flex align-items-center'>
 
 												<h4 className="fw-bold">{post_title}</h4>
