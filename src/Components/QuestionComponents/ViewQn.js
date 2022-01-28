@@ -30,6 +30,7 @@ function ViewQn() {
 	const [post_title, set_post_title] = useState("");
 	const [fk_user_id, set_fk_user_id] = useState("");
 	const [first_name, set_first_name] = useState("");
+	const [last_name, set_last_name] = useState("");
 	const [post_content, set_post_content] = useState("");
 	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
 
@@ -77,7 +78,8 @@ function ViewQn() {
 					answer_is_accepted: data.post_is_answered,
 					response_id: data.fk_response_id
 				});
-				set_first_name(data.User.last_name);
+				set_first_name(data.User.first_name);
+				set_last_name(data.User.last_name);
 
 				let tempArr = [];
 				tags.map((tag) => tempArr.push(tag));
@@ -244,7 +246,7 @@ function ViewQn() {
 
 												</div>
 												<p className='ms-2'>
-													{first_name}
+													{first_name} {last_name}
 												</p>
 												<p className="fw-light text-secondary mx-2">•</p>
 												<p>
