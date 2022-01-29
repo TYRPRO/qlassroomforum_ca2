@@ -4,7 +4,7 @@ import QnVotes from "../QuestionComponents/QnVotes";
 
 const Question = (props) => {
 	return (
-		<div className="post rounded mb-2 bg-white" id={"post_" + props.id}>
+		<div className="div-shadow rounded mb-2 bg-white" id={"post_" + props.id}>
 			<div className="row g-0">
 				{/* <div className="col-1 upvote-section py-1 justify-content-center align-self-center">
 					<a className="text-center d-block" id="post1-upvote"><i

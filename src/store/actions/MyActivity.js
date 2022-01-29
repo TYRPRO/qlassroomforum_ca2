@@ -195,7 +195,7 @@ export const getQuestions = async (dispatch, toast, user_id, acquireData) => {
 	if (!acquireData) {
 		return;
 	}
-	toast.info("Retrieving Questions...");
+
 
 	// axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
 	axios.get("http://localhost:8000/posts/user/" + user_id)
@@ -282,7 +282,6 @@ export const getQuestions = async (dispatch, toast, user_id, acquireData) => {
 			dispatch(setQuestionsTotalPages(totalQuestions));
 			dispatch(setLoadingQuestions(false));
 
-			toast.success("Questions Successfully Loaded");
 		})
 		.catch((err) => {
 			console.log(err);
@@ -295,7 +294,7 @@ export const getAnswers = async (dispatch, toast, user_id, acquireData) => {
 	if (!acquireData) {
 		return;
 	}
-	toast.info("Retrieving Answers...");
+
 
 	axios.get("http://localhost:8000/answers/user/" + user_id)
 		.then((data) => {
@@ -342,7 +341,6 @@ export const getAnswers = async (dispatch, toast, user_id, acquireData) => {
 			dispatch(setLoadingAnswers(false));
 			dispatch(setAnswersPosted(answers.length));
 
-			toast.success("Answers Successfully Loaded");
 		})
 		.catch((err) => {
 			console.log(err);
@@ -355,7 +353,7 @@ export const getSavedQuestions = async (dispatch, toast, user_id, acquireData) =
 	if (!acquireData) {
 		return;
 	}
-	toast.info("Retrieving Saved Questions...");
+
 
 	axios.get("http://localhost:8000/posts/save/user/" + user_id)
 		.then((data) => {
@@ -422,7 +420,6 @@ export const getSavedQuestions = async (dispatch, toast, user_id, acquireData) =
 			dispatch(setSavedQuestionsTotalPages(totalSavedQuestions));
 			dispatch(setLoadingSavedQuestions(false));
 
-			toast.success("Saved Questions Successfully Loaded");
 		})
 		.catch((err) => {
 			console.log(err);

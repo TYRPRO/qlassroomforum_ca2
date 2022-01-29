@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./Post.css";
+import "../../Common/common.css";
 import PostVotes from "./PostVotes";
 import parseTime from "../../helperFunctions/parseTime";
 import AnswersPill from "./AnswersPill";
@@ -67,7 +68,7 @@ const Post = (props) => {
 	return <div>
 		{props.Posts.length >= 1 ?
 			props.Posts.map((data) => (
-				<div key={data.post_id + Math.random(1000)} className="posts rounded mb-2" id={"post_" + data.post_id}>
+				<div key={data.post_id + Math.random(1000)} className="div-shadow posts rounded mb-2" id={"post_" + data.post_id}>
 					<div className="row g-0">
 						<PostVotes
 							key={"vote_" + data.post_id}

@@ -3,7 +3,7 @@ import React from "react";
 
 const Answer = (props) => {
 	return (
-		<div className="comment rounded mb-1">
+		<div className="comment div-shadow rounded mb-1">
 			<div className="d-flex flex-row p-2 px-3">
 				<p className="text-secondary mb-0 mw-50">u/<span className="clickable-link">{props.username}</span> commented on
 					{props.shortTitle == "" ? (
