@@ -2,6 +2,36 @@
 // Module Imports
 import React, { useState, useEffect } from "react";
 import axios from "axios"; //npm i axios
+import { useSelector, useDispatch } from "react-redux";
+import { getUserDetails } from "../../store/actions/Common";
+import {
+	setUpdatesReceived,
+	setAnswersPosted,
+	setAnswersAccepted,
+	setUpvotesGiven,
+	populateQuestions,
+	populateDispQuestions,
+	setQuestionsTotalPages,
+	setQuestionsCurrentPage,
+	setLoadingQuestions,
+	populateAnswers,
+	populateDispAnswers,
+	setAnswersTotalPages,
+	setAnswersCurrentPage,
+	setLoadingAnswers,
+	populateSavedQuestions,
+	populateDispSavedQuestions,
+	setSavedQuestionsTotalPages,
+	setSavedQuestionsCurrentPage,
+	setLoadingSavedQuestions,
+	handleTabsSelection,
+	getUpdatesReceived,
+	getAnswersAccepted,
+	getUpvotesGiven,
+	getQuestions,
+	getAnswers,
+	getSavedQuestions
+} from "../../store/actions/MyActivity";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -16,82 +46,103 @@ import Answer from "./MyActivityAnswers";
 //Component Creation
 const MyActivity = () => {
 
-	const baseUrl = ["https://readdit-backend.herokuapp.com", "https://readdit-sp.herokuapp.com"];
-
 	// State Creation
+	const updatesReceived = useSelector((state) => state.MyActivity.updatesReceived);
+	const answersPosted = useSelector((state) => state.MyActivity.answersPosted);
+	const answersAccepted = useSelector((state) => state.MyActivity.answersAccepted);
+	const upvotesGiven = useSelector((state) => state.MyActivity.upvotesGiven);
+
+	const tabselected = useSelector((state) => state.MyActivity.tabSelected);
+
+	const questions = useSelector((state) => state.MyActivity.questions);
+	const isLoadingQuestions = useSelector((state) => state.MyActivity.isLoadingQuestions);
+	const questionToDisplay = useSelector((state) => state.MyActivity.questionToDisplay);
+	const questionTotalPages = useSelector((state) => state.MyActivity.questionTotalPages);
+	const questionCurrentPage = useSelector((state) => state.MyActivity.questionCurrentPage);
+
+	const answers = useSelector((state) => state.MyActivity.answers);
+	const isLoadingAnswers = useSelector((state) => state.MyActivity.isLoadingAnswers);
+	const answerToDisplay = useSelector((state) => state.MyActivity.answerToDisplay);
+	const answerTotalPages = useSelector((state) => state.MyActivity.answerTotalPages);
+	const answerCurrentPage = useSelector((state) => state.MyActivity.answerCurrentPage);
+
+	const savedquestions = useSelector((state) => state.MyActivity.savedquestions);
+	const isLoadingSavedQuestions = useSelector((state) => state.MyActivity.isLoadingSavedQuestions);
+	const savedquestionToDisplay = useSelector((state) => state.MyActivity.savedquestionToDisplay);
+	const savedquestionTotalPages = useSelector((state) => state.MyActivity.savedquestionTotalPages);
+	const savedquestionCurrentPage = useSelector((state) => state.MyActivity.savedquestionCurrentPage);
 
 	// const [updatesreceived, setUpdatesReceived] = useState(0);
 	// const [answersposted, setAnswersPosted] = useState(0);
 	// const [answersaccepted, setAnswersAccepted] = useState(0);
 	// const [upvotesgiven, setUpvotesGiven] = useState(0);
 
-	const [tabselected, setTabSelected] = useState("questions");
+	// const [tabselected, setTabSelected] = useState("questions");
 
-	const [questions, setQuestions] = useState([]);
-	const [isLoadingQuestions, setIsLoadingQuestions] = useState(true);
-	const [questionToDisplay, setQuestionToDisplay] = useState([]);
-	const [questionTotalPages, setQuestionTotalPages] = useState(0);
-	const [questionCurrentPage, setQuestionCurrentPage] = useState(0);
+	// const [questions, setQuestions] = useState([]);
+	// const [isLoadingQuestions, setIsLoadingQuestions] = useState(true);
+	// const [questionToDisplay, setQuestionToDisplay] = useState([]);
+	// const [questionTotalPages, setQuestionTotalPages] = useState(0);
+	// const [questionCurrentPage, setQuestionCurrentPage] = useState(0);
 
-	const [answers, setAnswers] = useState([]);
-	const [isLoadingAnswers, setIsLoadingAnswers] = useState(true);
-	const [answersToDisplay, setAnswersToDisplay] = useState([]);
-	const [answerTotalPages, setAnswerTotalPages] = useState(0);
-	const [answerCurrentPage, setAnswerCurrentPage] = useState(0);
+	// const [answers, setAnswers] = useState([]);
+	// const [isLoadingAnswers, setIsLoadingAnswers] = useState(true);
+	// const [answersToDisplay, setAnswersToDisplay] = useState([]);
+	// const [answerTotalPages, setAnswerTotalPages] = useState(0);
+	// const [answerCurrentPage, setAnswerCurrentPage] = useState(0);
 
-	const [savedquestions, setSavedQuestions] = useState([]);
-	const [isLoadingSavedQuestions, setIsLoadingSavedQuestions] = useState(true);
-	const [savedQuestionToDisplay, setSavedQuestionToDisplay] = useState([]);
-	const [savedQuestionTotalPages, setSavedQuestionTotalPages] = useState(0);
-	const [savedQuestionCurrentPage, setSavedQuestionCurrentPage] = useState(0);
+	// const [savedquestions, setSavedQuestions] = useState([]);
+	// const [isLoadingSavedQuestions, setIsLoadingSavedQuestions] = useState(true);
+	// const [savedQuestionToDisplay, setSavedQuestionToDisplay] = useState([]);
+	// const [savedQuestionTotalPages, setSavedQuestionTotalPages] = useState(0);
+	// const [savedQuestionCurrentPage, setSavedQuestionCurrentPage] = useState(0);
 
 	//login info
-	const [firstname, setFirstname] = useState("");
-	const [lastname, setLastname] = useState("");
-	const [user_id, setUserID] = useState(0);
-	const [role, setRole] = useState("");
-	const [acquireData, setAcquireData] = useState(false);
+	const acquireData = useSelector((state) => state.Common.acquireData);
+	const userDetails = useSelector((state) => state.Common.userDetails);
+	const dispatch = useDispatch();
 
-	// function getUpdatesReceived() { }
+	// function getUpdatesReceived() {
+	// if (!acquireData) {
+	// 	return;
+	// }
+	// 	axios.get(`http://localhost:8000/responses/user/${userDetails.user_id}`)
+	// 		.then(function (response) {
+	// 			setUpdatesReceived(response.data.length);
+	// 		})
+	// 		.catch(function (error) {
+	// 			console.log(error);
+	// 		});
+	// }
 
-	// function getAnswersPosted() { }
+	// function getAnswersAccepted() {
+	// 	if (!acquireData) {
+	// 		return;
+	// 	}
+	// 	axios.get(`http://localhost:8000/responses/answersaccepted/${userDetails.user_id}`)
+	// 		.then(function (response) {
+	// 			console.log(response.data);
+	// 			setAnswersAccepted(response.data.length);
+	// 		})
+	// 		.catch(function (error) {
+	// 			console.log(error);
+	// 		});
+	// }
 
-	// function getAnswersAccepted() { }
-
-	// function getUpvotesGiven() { }
-
-	// login functions
-	function acquireUserData() {
-		var token = findCookie("token");
-
-		axios.get("http://localhost:8000/user/userData",
-			{
-				headers: { "Authorization": "Bearer " + token }
-			})
-			.then(response => {
-				var data = response.data;
-				setFirstname(data.first_name);
-				setLastname(data.last_name);
-				setUserID(data.user_id);
-				setRole(data.roles);
-
-				setAcquireData(true);
-			})
-			.catch((err) => {
-				console.log(err);
-				window.location.assign("/login");
-			});
-	}
-
-	function findCookie(name) {
-		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-		if (match) {
-			return (match[2]);
-		}
-		else {
-			return ("error");
-		}
-	}
+	// function getUpvotesGiven() {
+	// 	if (!acquireData) {
+	// 		return;
+	// 	}
+	// 	axios.get(`http://localhost:8000/vote/${userDetails.user_id}`)
+	// 		.then(function (response) {
+	// 			console.log(response.data);
+	// 			var totalVotes = response.data.post_votes.length + response.data.response_votes.length;
+	// 			setUpvotesGiven(totalVotes);
+	// 		})
+	// 		.catch(function (error) {
+	// 			console.log(error);
+	// 		});
+	// }
 
 	// Retrieve Tab Content Functions
 
@@ -111,220 +162,237 @@ const MyActivity = () => {
 			document.getElementById("questions").classList.remove("active");
 			document.getElementById("answers").classList.remove("active");
 		}
-		setTabSelected(tab);
+		dispatch(handleTabsSelection(tab));
 	}
 
-	function getQuestions() {
-		if (!acquireData) {
-			return;
-		}
-		toast.info("Retrieving Questions...");
+	// function getQuestions() {
+	// 	if (!acquireData) {
+	// 		return;
+	// 	}
+	// 	toast.info("Retrieving Questions...");
 
-		// axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
-		axios.get("http://localhost:8000/posts/user/" + user_id)
-			.then((data) => {
-				console.log(data.data);
-				var questions = data.data;
-				var questionDetails = [];
-				var totalQuestions = Math.ceil(questions.length / 4);
-				var dispQuestions = [];
+	// 	// axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
+	// 	axios.get("http://localhost:8000/posts/user/" + userDetails.user_id)
+	// 		.then((data) => {
+	// 			console.log(data.data);
+	// 			var questions = data.data;
+	// 			var questionDetails = [];
+	// 			var totalQuestions = Math.ceil(questions.length / 4);
+	// 			var dispQuestions = [];
 
-				for (let i = 0; i < questions.length; i++) {
-					var post = questions[i];
-					var post_shortTitle = "";
+	// 			for (let i = 0; i < questions.length; i++) {
+	// 				var post = questions[i];
+	// 				var post_shortTitle = "";
 
-					if (post.post_title.length > 30) {
-						post_shortTitle = post.post_title.substring(0, 30) + "...";
-					}
+	// 				if (post.post_title.length > 30) {
+	// 					post_shortTitle = post.post_title.substring(0, 30) + "...";
+	// 				}
 
-					// Calculates Time
-					var date = new Date(post.post_created_at);
-					var date_now = new Date();
+	// 				// Calculates Time
+	// 				var date = new Date(post.post_created_at);
+	// 				var date_now = new Date();
 
-					var seconds_between_dates = Math.floor((date_now - date) / 1000);
-					var minutes_between_dates = Math.floor((date_now - date) / (60 * 1000));
-					var hours_between_dates = Math.floor((date_now - date) / (60 * 60 * 1000));
-					var days_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 1000));
-					var weeks_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 7 * 1000));
+	// 				var seconds_between_dates = Math.floor((date_now - date) / 1000);
+	// 				var minutes_between_dates = Math.floor((date_now - date) / (60 * 1000));
+	// 				var hours_between_dates = Math.floor((date_now - date) / (60 * 60 * 1000));
+	// 				var days_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 1000));
+	// 				var weeks_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 7 * 1000));
 
-					var post_date_output;
-					if (seconds_between_dates < 60) {
-						post_date_output = `${seconds_between_dates} seconds ago`;
-					} else if (minutes_between_dates < 60) {
-						post_date_output = `${minutes_between_dates} minutes ago`;
-					}
-					else if (hours_between_dates < 24) {
-						post_date_output = `${hours_between_dates} hours ago`;
-					} else if (days_between_dates <= 7) {
-						if (days_between_dates == 1) {
-							post_date_output = `${days_between_dates} day ago`;
-						} else {
-							post_date_output = `${days_between_dates} days ago`;
-						}
-					} else {
-						post_date_output = `${weeks_between_dates} weeks ago`;
-					}
+	// 				var post_date_output;
+	// 				if (seconds_between_dates < 60) {
+	// 					post_date_output = `${seconds_between_dates} seconds ago`;
+	// 				} else if (minutes_between_dates < 60) {
+	// 					post_date_output = `${minutes_between_dates} minutes ago`;
+	// 				}
+	// 				else if (hours_between_dates < 24) {
+	// 					post_date_output = `${hours_between_dates} hours ago`;
+	// 				} else if (days_between_dates <= 7) {
+	// 					if (days_between_dates == 1) {
+	// 						post_date_output = `${days_between_dates} day ago`;
+	// 					} else {
+	// 						post_date_output = `${days_between_dates} days ago`;
+	// 					}
+	// 				} else {
+	// 					post_date_output = `${weeks_between_dates} weeks ago`;
+	// 				}
 
-					questionDetails.push({
-						post_id: `post_${post.post_id}`,
-						question_id: post.post_id,
-						post_votes: post.post_rating,
-						post_date: post_date_output,
-						post_title: post.post_title,
-						post_shortTitle: post_shortTitle,
-					});
+	// 				var question_responses = post.Responses;
+	// 				var answer_count = 0;
+	// 				var comment_count = 0;
 
-				}
+	// 				for (let i = 0; i < question_responses.length; i++) {
+	// 					var response = question_responses[i];
 
-				for (let i = 0; i < 4; i++) {
-					if (questionDetails[i] != undefined) {
-						dispQuestions.push(questionDetails[i]);
-					}
-				}
+	// 					if (response.ResponseType.response_type == "comment") {
+	// 						comment_count++;
+	// 					} else if (response.ResponseType.response_type == "answer") {
+	// 						answer_count++;
+	// 					}
+	// 				}
 
-				console.log(dispQuestions);
-				setQuestions(questionDetails);
-				setQuestionToDisplay(dispQuestions);
-				setQuestionTotalPages(totalQuestions);
-				setIsLoadingQuestions(false);
+	// 				questionDetails.push({
+	// 					post_id: post.post_id,
+	// 					question_id: post.post_id,
+	// 					post_votes: post.post_rating,
+	// 					post_date: post_date_output,
+	// 					post_title: post.post_title,
+	// 					post_shortTitle: post_shortTitle,
+	// 					post_answerCount: answer_count,
+	// 					post_commentCount: comment_count
+	// 				});
 
-				toast.success("Questions Successfully Loaded");
-			})
-			.catch((err) => {
-				console.log(err);
-				toast.error("Error Retrieving Questions");
-			});
-	}
+	// 			}
 
-	function getAnswers() {
-		if (!acquireData) {
-			return;
-		}
-		toast.info("Retrieving Answers...");
+	// 			for (let i = 0; i < 4; i++) {
+	// 				if (questionDetails[i] != undefined) {
+	// 					dispQuestions.push(questionDetails[i]);
+	// 				}
+	// 			}
 
-		axios.get("http://localhost:8000/answers/user/" + user_id)
-			.then((data) => {
-				console.log(data.data);
-				var answers = data.data;
-				var answerDetails = [];
-				var totalAnswers = Math.ceil(answers.length / 5);
-				var dispAnswers = [];
+	// 			console.log(dispQuestions);
+	// 			setQuestions(questionDetails);
+	// 			setQuestionToDisplay(dispQuestions);
+	// 			setQuestionTotalPages(totalQuestions);
+	// 			setIsLoadingQuestions(false);
 
-				for (let i = 0; i < answers.length; i++) {
-					var comment = answers[i];
-					var post_shortTitle = "";
+	// 			toast.success("Questions Successfully Loaded");
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 			toast.error("Error Retrieving Questions");
+	// 		});
+	// }
 
-					if (comment.Post.post_title.length > 30) {
-						post_shortTitle = comment.Post.post_title.substring(0, 30) + "...";
-					}
+	// function getAnswers() {
+	// 	if (!acquireData) {
+	// 		return;
+	// 	}
+	// 	toast.info("Retrieving Answers...");
 
-					answerDetails.push({
-						answer_id: i,
-						answer_username: comment.User.first_name,
-						answer_post_username: comment.User.first_name,
-						answer_title: comment.Post.post_title,
-						answer_post_shortTitle: post_shortTitle,
-						answer_value: comment.response
-					});
-				}
+	// 	axios.get("http://localhost:8000/answers/user/" + userDetails.user_id)
+	// 		.then((data) => {
+	// 			console.log(data.data);
+	// 			var answers = data.data;
+	// 			var answerDetails = [];
+	// 			var totalAnswers = Math.ceil(answers.length / 5);
+	// 			var dispAnswers = [];
 
-				for (let i = 0; i < 5; i++) {
-					if (answerDetails[i] != undefined) {
-						dispAnswers.push(answerDetails[i]);
-					}
-				}
+	// 			for (let i = 0; i < answers.length; i++) {
+	// 				var comment = answers[i];
+	// 				var post_shortTitle = "";
 
-				setAnswers(answerDetails);
-				setAnswersToDisplay(dispAnswers);
-				setAnswerTotalPages(totalAnswers);
-				setIsLoadingAnswers(false);
+	// 				if (comment.Post.post_title.length > 30) {
+	// 					post_shortTitle = comment.Post.post_title.substring(0, 30) + "...";
+	// 				}
 
-				toast.success("Answers Successfully Loaded");
-			})
-			.catch((err) => {
-				console.log(err);
-				toast.error("Error Retrieving Answers");
-			});
-	}
+	// 				answerDetails.push({
+	// 					answer_id: i,
+	// 					answer_username: comment.User.first_name,
+	// 					answer_post_username: comment.User.first_name,
+	// 					answer_title: comment.Post.post_title,
+	// 					answer_post_shortTitle: post_shortTitle,
+	// 					answer_value: comment.response
+	// 				});
+	// 			}
 
-	function getSavedQuestions() {
-		if (!acquireData) {
-			return;
-		}
-		toast.info("Retrieving Saved Questions...");
+	// 			for (let i = 0; i < 5; i++) {
+	// 				if (answerDetails[i] != undefined) {
+	// 					dispAnswers.push(answerDetails[i]);
+	// 				}
+	// 			}
 
-		axios.get("http://localhost:8000/posts/save/user/" + user_id)
-			.then((data) => {
-				console.log(data.data);
-				var savedQuestions = data.data;
-				var savedQuestionDetails = [];
-				var totalSavedQuestions = Math.ceil(savedQuestions.length / 4);
-				var dispSavedQuestions = [];
+	// 			setAnswers(answerDetails);
+	// 			setAnswersToDisplay(dispAnswers);
+	// 			setAnswerTotalPages(totalAnswers);
+	// 			setIsLoadingAnswers(false);
+	// 			setAnswersPosted(answers.length);
 
-				for (let i = 0; i < savedQuestions.length; i++) {
-					var post = savedQuestions[i];
-					var post_shortTitle = "";
+	// 			toast.success("Answers Successfully Loaded");
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 			toast.error("Error Retrieving Answers");
+	// 		});
+	// }
 
-					if (post.Post.post_title.length > 30) {
-						post_shortTitle = post.Post.post_title.substring(0, 30) + "...";
-					}
+	// function getSavedQuestions() {
+	// 	if (!acquireData) {
+	// 		return;
+	// 	}
+	// 	toast.info("Retrieving Saved Questions...");
 
-					// Calculates Time
-					var date = new Date(post.Post.post_created_at);
-					var date_now = new Date();
+	// 	axios.get("http://localhost:8000/posts/save/user/" + userDetails.user_id)
+	// 		.then((data) => {
+	// 			console.log(data.data);
+	// 			var savedQuestions = data.data;
+	// 			var savedQuestionDetails = [];
+	// 			var totalSavedQuestions = Math.ceil(savedQuestions.length / 4);
+	// 			var dispSavedQuestions = [];
 
-					var seconds_between_dates = Math.floor((date_now - date) / 1000);
-					var minutes_between_dates = Math.floor((date_now - date) / (60 * 1000));
-					var hours_between_dates = Math.floor((date_now - date) / (60 * 60 * 1000));
-					var days_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 1000));
-					var weeks_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 7 * 1000));
+	// 			for (let i = 0; i < savedQuestions.length; i++) {
+	// 				var post = savedQuestions[i];
+	// 				var post_shortTitle = "";
 
-					var post_date_output;
-					if (seconds_between_dates < 60) {
-						post_date_output = `${seconds_between_dates} seconds ago`;
-					} else if (minutes_between_dates < 60) {
-						post_date_output = `${minutes_between_dates} minutes ago`;
-					}
-					else if (hours_between_dates < 24) {
-						post_date_output = `${hours_between_dates} hours ago`;
-					} else if (days_between_dates <= 7) {
-						if (days_between_dates == 1) {
-							post_date_output = `${days_between_dates} day ago`;
-						} else {
-							post_date_output = `${days_between_dates} days ago`;
-						}
-					} else {
-						post_date_output = `${weeks_between_dates} weeks ago`;
-					}
+	// 				if (post.Post.post_title.length > 30) {
+	// 					post_shortTitle = post.Post.post_title.substring(0, 30) + "...";
+	// 				}
 
-					savedQuestionDetails.push({
-						post_id: `post_${post.Post.post_id}`,
-						question_id: post.Post.post_id,
-						post_votes: post.Post.post_rating,
-						post_date: post_date_output,
-						post_title: post.Post.post_title,
-						post_shortTitle: post_shortTitle
-					});
-				}
+	// 				// Calculates Time
+	// 				var date = new Date(post.Post.post_created_at);
+	// 				var date_now = new Date();
 
-				for (let i = 0; i < 4; i++) {
-					if (savedQuestionDetails[i] != undefined) {
-						dispSavedQuestions.push(savedQuestionDetails[i]);
-					}
-				}
+	// 				var seconds_between_dates = Math.floor((date_now - date) / 1000);
+	// 				var minutes_between_dates = Math.floor((date_now - date) / (60 * 1000));
+	// 				var hours_between_dates = Math.floor((date_now - date) / (60 * 60 * 1000));
+	// 				var days_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 1000));
+	// 				var weeks_between_dates = Math.floor((date_now - date) / (60 * 60 * 24 * 7 * 1000));
 
-				setSavedQuestions(savedQuestionDetails);
-				setSavedQuestionToDisplay(dispSavedQuestions);
-				setSavedQuestionTotalPages(totalSavedQuestions);
-				setIsLoadingSavedQuestions(false);
+	// 				var post_date_output;
+	// 				if (seconds_between_dates < 60) {
+	// 					post_date_output = `${seconds_between_dates} seconds ago`;
+	// 				} else if (minutes_between_dates < 60) {
+	// 					post_date_output = `${minutes_between_dates} minutes ago`;
+	// 				}
+	// 				else if (hours_between_dates < 24) {
+	// 					post_date_output = `${hours_between_dates} hours ago`;
+	// 				} else if (days_between_dates <= 7) {
+	// 					if (days_between_dates == 1) {
+	// 						post_date_output = `${days_between_dates} day ago`;
+	// 					} else {
+	// 						post_date_output = `${days_between_dates} days ago`;
+	// 					}
+	// 				} else {
+	// 					post_date_output = `${weeks_between_dates} weeks ago`;
+	// 				}
 
-				toast.success("Saved Questions Successfully Loaded");
-			})
-			.catch((err) => {
-				console.log(err);
-				toast.error("Error Retrieving Saved Questions");
-			});
-	}
+	// 				savedQuestionDetails.push({
+	// 					post_id: post.Post.post_id,
+	// 					question_id: post.Post.post_id,
+	// 					post_votes: post.Post.post_rating,
+	// 					post_date: post_date_output,
+	// 					post_title: post.Post.post_title,
+	// 					post_shortTitle: post_shortTitle
+	// 				});
+	// 			}
+
+	// 			for (let i = 0; i < 4; i++) {
+	// 				if (savedQuestionDetails[i] != undefined) {
+	// 					dispSavedQuestions.push(savedQuestionDetails[i]);
+	// 				}
+	// 			}
+
+	// 			setSavedQuestions(savedQuestionDetails);
+	// 			setSavedQuestionToDisplay(dispSavedQuestions);
+	// 			setSavedQuestionTotalPages(totalSavedQuestions);
+	// 			setIsLoadingSavedQuestions(false);
+
+	// 			toast.success("Saved Questions Successfully Loaded");
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 			toast.error("Error Retrieving Saved Questions");
+	// 		});
+	// }
 
 	// Pagination Functions
 
@@ -339,7 +407,7 @@ const MyActivity = () => {
 				}
 			}
 
-			setQuestionToDisplay(dispQuestions);
+			dispatch(populateDispQuestions(dispQuestions));
 
 		} else if (tabselected == "answers") {
 			var dispAnswers = [];
@@ -350,17 +418,17 @@ const MyActivity = () => {
 				}
 			}
 
-			setAnswersToDisplay(dispAnswers);
+			dispatch(populateDispAnswers(dispAnswers));
 		} else {
 			var dispSavedQuestions = [];
 
 			for (let i = 0; i < 4; i++) {
-				if (savedquestions[i + (savedQuestionCurrentPage * 4)] != undefined) {
-					dispSavedQuestions.push(savedquestions[i + (savedQuestionCurrentPage * 4)]);
+				if (savedquestions[i + (savedquestionCurrentPage * 4)] != undefined) {
+					dispSavedQuestions.push(savedquestions[i + (savedquestionCurrentPage * 4)]);
 				}
 			}
 
-			setSavedQuestionToDisplay(dispSavedQuestions);
+			dispatch(populateDispSavedQuestions(dispSavedQuestions));
 		}
 	}
 
@@ -368,16 +436,16 @@ const MyActivity = () => {
 		console.log("Next Page");
 		if (tabselected == "questions") {
 			if (questionCurrentPage + 1 < questionTotalPages) {
-				setQuestionCurrentPage(questionCurrentPage + 1);
+				dispatch(setQuestionsCurrentPage(questionCurrentPage + 1));
 			}
 
 		} else if (tabselected == "answers") {
 			if (answerCurrentPage + 1 < answerTotalPages) {
-				setAnswerCurrentPage(answerCurrentPage + 1);
+				dispatch(setAnswersCurrentPage(answerCurrentPage + 1));
 			}
 		} else {
-			if (savedQuestionCurrentPage + 1 < savedQuestionTotalPages) {
-				setSavedQuestionCurrentPage(savedQuestionCurrentPage + 1);
+			if (savedquestionCurrentPage + 1 < savedquestionTotalPages) {
+				dispatch(setSavedQuestionsCurrentPage(savedquestionCurrentPage + 1));
 			}
 		}
 
@@ -387,36 +455,38 @@ const MyActivity = () => {
 		console.log("Previous Page");
 		if (tabselected == "questions") {
 			if (questionCurrentPage > 0) {
-				setQuestionCurrentPage(questionCurrentPage - 1);
+				dispatch(setQuestionsCurrentPage(questionCurrentPage - 1));
 			}
 
 		} else if (tabselected == "answers") {
 			if (answerCurrentPage > 0) {
-				setAnswerCurrentPage(answerCurrentPage - 1);
+				dispatch(setAnswersCurrentPage(answerCurrentPage - 1));
 			}
 		} else {
-			if (savedQuestionCurrentPage > 0) {
-				setSavedQuestionCurrentPage(savedQuestionCurrentPage - 1);
+			if (savedquestionCurrentPage > 0) {
+				dispatch(setSavedQuestionsCurrentPage(savedquestionCurrentPage - 1));
 			}
 		}
 	}
 
 	// Retrieves Page Content
 
-	useEffect(() => acquireUserData(), []);
+	useEffect(() => getUserDetails(dispatch), []);
 
 	useEffect(() => {
-		getQuestions();
-		getAnswers();
-		getSavedQuestions();
-		console.log(baseUrl[0]);
+		getQuestions(dispatch, toast, userDetails.user_id, acquireData);
+		getAnswers(dispatch, toast, userDetails.user_id, acquireData);
+		getSavedQuestions(dispatch, toast, userDetails.user_id, acquireData);
+		getUpdatesReceived(dispatch, userDetails.user_id, acquireData);
+		getAnswersAccepted(dispatch, userDetails.user_id, acquireData);
+		getUpvotesGiven(dispatch, userDetails.user_id, acquireData);
 	}, [acquireData]);
 
 	// Changes Content Based on Tab Selected And Page Number
 
 	useEffect(() => {
 		getDisplayQuestions();
-	}, [questionCurrentPage, answerCurrentPage, savedQuestionCurrentPage]);
+	}, [questionCurrentPage, answerCurrentPage, savedquestionCurrentPage]);
 
 	return (
 		<React.Fragment>
@@ -431,21 +501,21 @@ const MyActivity = () => {
 						<div className="d-flex flex-row flex-lg-column">
 							<div className="flex-grow-1">
 								<div className="py-2">
-									<h5>{0}</h5>
+									<h5>{updatesReceived}</h5>
 									<p>updates received</p>
 								</div>
 								<div className="py-2">
-									<h5>{0}</h5>
+									<h5>{answersPosted}</h5>
 									<p>answers posted</p>
 								</div>
 							</div>
 							<div className="flex-grow-1">
 								<div className="py-2">
-									<h5>{0}</h5>
+									<h5>{answersAccepted}</h5>
 									<p>answers accepted</p>
 								</div>
 								<div className="py-2">
-									<h5>{0}</h5>
+									<h5>{upvotesGiven}</h5>
 									<p>upvotes given</p>
 								</div>
 							</div>
@@ -466,23 +536,25 @@ const MyActivity = () => {
 
 						<div className="tab-content mt-3">
 							{!isLoadingAnswers && tabselected == "answers" ? (
-								answersToDisplay.length > 0 ? (
-									answersToDisplay.map((data) => (
+								answerToDisplay.length > 0 ? (
+									answerToDisplay.map((data) => (
 										<Answer
 											key={data.answer_id}
+											post_id={data.post_id}
 											username={data.answer_username}
 											post_username={data.answer_post_username}
 											title={data.answer_title}
 											shortTitle={data.answer_post_shortTitle}
 											value={data.answer_value}
+											shortValue={data.answer_shortValue}
 										/>
 									))
 								) : (
 									<div className="text-center">No Answers At The Moment</div>
 								)
 							) : !isLoadingSavedQuestions && tabselected == "savedquestions" ? (
-								savedQuestionToDisplay.length > 0 ? (
-									savedQuestionToDisplay.map((data) => (
+								savedquestionToDisplay.length > 0 ? (
+									savedquestionToDisplay.map((data) => (
 										<Question
 											key={data.question_id}
 											id={data.post_id}
@@ -490,6 +562,8 @@ const MyActivity = () => {
 											date={data.post_date}
 											title={data.post_title}
 											shortTitle={data.post_shortTitle}
+											answerCount={data.post_answerCount}
+											commentCount={data.post_commentCount}
 										/>
 									))
 								) : (
@@ -505,6 +579,9 @@ const MyActivity = () => {
 											date={data.post_date}
 											title={data.post_title}
 											shortTitle={data.post_shortTitle}
+											answerCount={data.post_answerCount}
+											commentCount={data.post_commentCount}
+											user_id={data.post_user_id}
 										/>
 									))
 								) : (
@@ -520,15 +597,15 @@ const MyActivity = () => {
 							</div>
 							<div id="paginationNum" className="col-6 text-center">
 								{!isLoadingAnswers && tabselected == "answers" ? (
-									answersToDisplay.length > 0 ? (
+									answerToDisplay.length > 0 ? (
 										<p className="mx-auto my-2 text-dark">{answerCurrentPage + 1} of {answerTotalPages}</p>
 									) : (
 										<p className="mx-auto my-2 text-dark"></p>
 									)
 
 								) : !isLoadingSavedQuestions && tabselected == "savedquestions" ? (
-									savedQuestionToDisplay.length > 0 ? (
-										<p className="mx-auto my-2 text-dark">{savedQuestionCurrentPage + 1} of {savedQuestionTotalPages}</p>
+									savedquestionToDisplay.length > 0 ? (
+										<p className="mx-auto my-2 text-dark">{savedquestionCurrentPage + 1} of {savedquestionTotalPages}</p>
 									) : (
 										<p className="mx-auto my-2 text-dark"></p>
 									)
