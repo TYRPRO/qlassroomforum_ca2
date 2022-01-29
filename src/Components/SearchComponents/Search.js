@@ -17,6 +17,10 @@ const Search = () => {
 	const [similarsLst, setSimilars] = useState([]);
 	const [isLoadedSimilars, setIsLoadedSimilars] = useState(false);
 
+	const [CurrentPost, setCurrentPost] = useState([]);
+	const [CurrentPage, setCurrentPage] = useState(1);
+	const [MaxPage, setMaxPage] = useState();
+
 	function getParams() {
 		var queryParams = new URLSearchParams(window.location.search);
 
@@ -54,7 +58,13 @@ const Search = () => {
 			.then(response => {
 				var similars = arrangeSimilars(response.data);
 
+				// Setting All post data
 				setSimilars(similars);
+				// Setting Current post data
+				setCurrentPost(similars.slice(0, 10));
+				// Setting Maximum pages
+				setMaxPage(Math.ceil(similars.length / 10));
+				// Done Loading similar posts
 				setIsLoadedSimilars(true);
 			})
 			.catch((err) => {
@@ -63,15 +73,49 @@ const Search = () => {
 			});
 	}
 
+	const ChannelDataHandler = (ChannelFilterData) => {
+		var queryParams = new URLSearchParams(window.location.search);
+		axios.post("http://localhost:8000/posts/filter/similar?" + queryParams,
+			ChannelFilterData)
+			.then(res => {
+				// Resetting page to first page
+				setCurrentPage(1);
+				// Setting Maximum pages
+				setMaxPage(Math.ceil(res.data.length / 10));
+				// Seting post data
+				setSimilars(res.data);
+				// Setting Current post data
+				setCurrentPost(res.data.slice(0, 10));
+
+			}).catch(function (error) {
+				console.log(error);
+				console.log(error.response);
+			});
+	};
+
+	function NextPage() {
+		if (CurrentPage < MaxPage) {
+			setCurrentPost(similarsLst.slice(CurrentPage * 10, (CurrentPage * 10) + 10));
+			setCurrentPage(CurrentPage + 1);
+		}
+	}
+
+	function PrevPage() {
+		if (CurrentPage != 1) {
+			setCurrentPost(similarsLst.slice(((CurrentPage - 2) * 10), ((CurrentPage - 1) * 10)));
+			setCurrentPage(CurrentPage - 1);
+		}
+	}
+
 	useEffect(() => {
 		searchPosts();
 	}, []);
 	return (
 		<React.Fragment>
-			<div className="container-xxl my-md-4">
+			<div className="container-xxl my-md-10">
 				<div className="row">
-					<div className="col-lg-1"></div>
-					<div className="col-lg-10">
+					<Channel onFilterPost={ChannelDataHandler} hideSubject={false} />
+					<div className="col-lg-9">
 						<div id="resultheader">
 							<h5 className="mb-2 headers"> Displaying Search Results for "{getParams()}" </h5>
 						</div>
@@ -83,7 +127,7 @@ const Search = () => {
 									isLoadedSimilars == true ? (
 
 										similarsLst.length > 0 ? (
-											similarsLst.map((data) => (
+											CurrentPost.map((data) => (
 												<SearchPost
 													key={data.post_id}
 													post_id={data.post_id}
@@ -116,7 +160,11 @@ const Search = () => {
 								}
 							</div>
 						</div>
-
+						<div className="d-flex justify-content-between">
+							<div onClick={PrevPage} style={{ cursor: "pointer" }}><i className="fa fa-caret-left"></i><b className="PrevPage">Prev Page</b></div>
+							<p className="">{CurrentPage} out of {MaxPage}</p>
+							<div onClick={NextPage} style={{ cursor: "pointer" }}><b className="NextPage">Next Page</b><i className="fa fa-caret-right"></i></div>
+						</div>
 					</div>
 				</div>
 				<div className="col-lg-1"></div>
