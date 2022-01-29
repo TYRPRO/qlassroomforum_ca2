@@ -17,7 +17,7 @@ const override = css`
 const Profile = () =>{
 	return(
 		<React.Fragment>
-			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
+			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
 			<HashLoader color={"#a5c1e8"} loading={true} css={override} size={150} />
 		</React.Fragment>
 	);

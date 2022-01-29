@@ -76,7 +76,7 @@ const CreateUser = () => {
 
 	return (
 		<React.Fragment>
-			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
+			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
 			{/* <wc-toast></wc-toast> */}
 			<div className="container-xxl my-md-2">
 				<div className="row">
