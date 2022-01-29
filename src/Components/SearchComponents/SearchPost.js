@@ -16,7 +16,7 @@ const SearchPost = (props) => {
 	}
 
 	return (
-		<div className="post rounded mb-2 border-top border-bottom" id={"post_" + props.post_id}>
+		<div className="div-shadow rounded mb-2 bg-white" id={"post_" + props.post_id}>
 			<div className="row g-0">
 				<div className="col-10 bg-white p-3">
 					<div className="position-relative" onClick={() => redirect(props.post_id)}>

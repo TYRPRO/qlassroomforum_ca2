@@ -13,10 +13,15 @@ import avatar from "./img_avatar.png";
 //Component Creation
 const SideBar = () => {
 
+	function imgRedirect() {
+		window.location.assign("/login");
+	}
+
 	return (
 		<React.Fragment>
-			<div className="d-flex flex-column" id="layer1">
-				<div className="d-flex flex-column flex-grow-1">
+			<div className="d-flex flex-column" id="sidebarfiller"></div>
+			<div className="d-flex flex-column fixed-top" id="layer1">
+				<div className="d-flex flex-column">
 					<div className="mt-4 mx-auto text-center" id="home" tabIndex="0">
 						<span className="material-icons ms-0 me-1 text-light fs-2">laptop_chromebook</span>
 					</div>
@@ -24,7 +29,7 @@ const SideBar = () => {
 						<span className="material-icons ms-0 me-1 text-light fs-2">help_outline</span>
 					</div>
 					<div className="mt-auto mb-3 mx-auto text-center" id="profile">
-						<img src={avatar} className="img-thumbnail rounded-circle w-75" />
+						<img onClick={() => imgRedirect()} src={avatar} className="img-thumbnail rounded-circle w-75"/>
 					</div>
 				</div>
 			</div>

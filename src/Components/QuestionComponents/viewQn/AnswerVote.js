@@ -70,7 +70,7 @@ const AnswerVote = (props) => {
 				}
 			})
 			.catch((err) => {
-				console.log(err.response.data.message);
+				console.log(err);
 			});
 	}
 

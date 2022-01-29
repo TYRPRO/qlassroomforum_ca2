@@ -13,8 +13,11 @@
 
 #headerSearchBtn {
     background-color: #6997d6 !important;
+	font-family: 'Lato' sans-serif !important;
+	color: white !important;
 }
 
 #AddQuestion {
     background-color: #6997d6
 }
+

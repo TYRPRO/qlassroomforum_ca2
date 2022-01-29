@@ -6,7 +6,8 @@ const initialState = {
 	levelFilter: "",
 	unanswered: false,
 	currentPage: 1,
-	maxPage: 0
+	maxPage: 0,
+	subforumName: ""
 };
 
 const reducer = (state = initialState, action) => {
@@ -50,7 +51,11 @@ const reducer = (state = initialState, action) => {
 			...state,
 			maxPage: action.maxPage
 		};
-
+	case "SUBFORUM_SET_SUBFORUM_NAME":
+		return {
+			...state,
+			subforumName: action.subforumName
+		};
 	default:
 		return state;
 	}

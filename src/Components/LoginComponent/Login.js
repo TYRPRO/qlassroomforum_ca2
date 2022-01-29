@@ -13,7 +13,7 @@ import "./login.css";
 const Login = () => {
 	//Defining States
 	const baseUrl = [process.env.REACT_APP_BASEURL1, process.env.REACT_APP_BASEURL2];
-  
+
 	function login() {
 		const url = `http://localhost:8000/user/api/login`;
 		let email = document.getElementById("email").value;
@@ -24,35 +24,47 @@ const Login = () => {
 			password: pwd
 		};
 
-		axios.post(url, data)
-			.then((data) => {
-				if (data != null) {
-					//upload token to cookies
-					document.cookie = ("token=" + data.data.token + ";");
+		toast.promise(new Promise((resolve, reject) => {
+			axios.post(url, data)
+				.then((data) => {
+					if (data != null) {
+						//upload token to cookies
+						document.cookie = ("token=" + data.data.token + ";");
 
-					toast.success("Logging In...");
-					window.location.assign("/home");
-				} else {
-					console.log("Unknown error occured!");
-					toast.error("Unknown error occured!");
-				}
-			})
-			.catch((err) => {
-				toast.error(err.response.data.message);
-				console.log(err.response.data.message);
-			});
+						resolve(true);
+						window.location.assign("/home");
+					} else {
+						console.log("Unknown error occured!");
+						reject("Unknown error occured!");
+					}
+				})
+				.catch((err) => {
+					reject(err.response.data.message);
+				});
+		}),
+		{
+			pending: "Authenticating...",
+			success: "Authentication Successful!",
+			error: {
+				render({ data }) {
+					return `${data}`;
+				},
+			},
+		}
+		);
+		
+	
 	}
 
 	return (
 		<React.Fragment>
-			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
+			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
 			{/* <wc-toast></wc-toast> */}
 			<div className="container-xxl my-md-2">
 				<div className="row">
 					<div className="container-fluid mt-5 d-flex flex-row">
 						<div className="column rounded">
-							<div className="col-2"></div>
-							<div className="col-7 bg-white p-5">
+							<div className="col-lg-7 p-5">
 								<img className="mb-3 " id="Qlassroom_Logo" src={require("../../Common/images/QlassroomLogoWOBackground.png")}></img>
 								<h5 className="fw-bold pb-4" id="SignIn_Text">Sign in to your Account</h5>
 
@@ -78,7 +90,7 @@ const Login = () => {
 
 							</div>
 						</div>
-						<div className="column">
+						<div className="col-lg-6 d-none d-xl-block">
 							<img className="mb-3 " id="Qlassroom_Image" src={require("../../Common/images/login_image.png")}></img>
 						</div>
 					</div>

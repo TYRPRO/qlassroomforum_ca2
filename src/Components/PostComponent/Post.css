@@ -17,3 +17,11 @@
 	 padding-bottom : 5px;
 	 background-color: rgba(131, 248, 248, 0.753);
  }
+
+ .posts {
+	border-radius: 10em;
+	background-color: white;
+ }
+#voteText {
+	font-size: 10px;
+}

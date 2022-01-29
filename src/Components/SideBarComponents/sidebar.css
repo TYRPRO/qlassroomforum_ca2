@@ -1,3 +1,13 @@
+#sidebarfiller {
+	background-color: #4E4E4E;
+	width: 50px;
+	height: 100vh;
+}
+
+#layer1{
+	width: 50px;
+}
+
 #layer1>div {
 	background-color: #4E4E4E;
 	width: 50px;

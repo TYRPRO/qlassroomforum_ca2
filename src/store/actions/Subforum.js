@@ -35,40 +35,35 @@ export const setMaxPageNum = (maxPage) => {
 	};
 };
 
-export const getPosts = async (dispatch, subForumName, toast) => {
-	toast.promise(
-		new Promise((resolve, reject) => {
-			axios
-				.request({
-					method: "get",
-					url: `http://localhost:8000/posts/getAllFromSubforum/` + subForumName,
-					headers: {
-						"content-type": "application/json; charset=utf-8",
-					},
-				})
-				.then((data) => {
-					let postArr = data.data;
-					dispatch(populatePosts(postArr));
-					dispatch(setCurrentPageNum(1));
-					dispatch(setMaxPageNum((Math.ceil(postArr.length / 4))));
-					dispatch(populateCurrentPosts(postArr.slice(0, 4)));
-					resolve(true);
-				})
-				.catch((error) => {
-					reject(error.response.data.message);
-				});
-		}),
-		{
-			pending: "Fetching Posts...",
-			success: "Posts Fetched",
-			error: {
-				render({ data }) {
-					return `${data}`;
-				},
-			},
-		}
-	);
+export const setSubforumName = (subforumName) => {
+	return {
+		type: "SUBFORUM_SET_SUBFORUM_NAME",
+		subforumName
+	};
 };
+
+export const getPosts = async (dispatch, subForumId, toast) => {
+	axios
+		.request({
+			method: "get",
+			url: `http://localhost:8000/posts/getAllFromSubforum/` + subForumId,
+			headers: {
+				"content-type": "application/json; charset=utf-8",
+			},
+		})
+		.then((data) => {
+			let postArr = data.data;
+			dispatch(populatePosts(postArr));
+			dispatch(setCurrentPageNum(1));
+			dispatch(setMaxPageNum((Math.ceil(postArr.length / 4))));
+			dispatch(populateCurrentPosts(postArr.slice(0, 4)));
+			dispatch(setSubforumName(postArr[0].Subforum.subforum_name));
+		})
+		.catch((error) => {
+			toast.error(error.response.data.message);
+		});
+};
+
 
 export const filterPosts = async (dispatch, ChannelFilterData) => {
 	axios.post("http://localhost:8000/posts/filter/home",

@@ -31,10 +31,11 @@ import Subforum from "./Components/SubForumComponents/Subforum";
 import CreateSubforum from "./Components/SubForumComponents/CreateSubforum";
 import Home from "./Components/HomeComponents/Home";
 import EditQn from "./Components/QuestionComponents/EditQn";
+import Profile from "./Components/ProfileComponents/Profile";
 
-const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
+const composedTool = compose(applyMiddleware(thunk));
 
-const store = createStore(allReducers, applyMiddleware(thunk));
+const store = createStore(allReducers, composedTool);
 
 // login functions
 function checkLogin() {
@@ -94,6 +95,7 @@ ReactDOM.render(
 								<Route path="newforum" element={!checkLogin() ? <CreateSubforum /> : <Navigate replace to="/login" />} />
 								<Route path="/" element={<Navigate replace to="/home" />} />
 								<Route path="/posts/editQn/:post_id" element={!checkLogin() ? <EditQn /> : <Navigate replace to ="/login"/>} />
+								<Route path="/myprofile" element={!checkLogin() ? <Profile /> : <Navigate replace to ="/login"/>} />
 							</Routes>
 						</div>
 					</div>
