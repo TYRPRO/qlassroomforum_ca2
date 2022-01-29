@@ -47,6 +47,9 @@ function CreateQn() {
 	const [openDropdown, set_openDropdown] = useState(false);
 
 
+	const [titleError, set_titleError] = useState("");
+
+
 	useEffect(() => {
 		axios.get("https://testapi.qlassroom.ai/subject_grade")
 			.then(function (response) {
@@ -165,6 +168,9 @@ function CreateQn() {
 
 									<label className='mt-3 mb-1 fw-bold'>Question Title</label>
 									<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"Be specific and imagine you are asking a question to another person."}></input>
+									<div className="is-invalid text-danger">
+										{titleError}
+									</div>
 
 									<label htmlFor='qn_body' className='mt-4 mb-1 fw-bold '>Body</label>
 									<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody} placeholder={"Include all the information someone would need to answer your question"}></QuillEditor>
@@ -180,6 +186,7 @@ function CreateQn() {
 													{subjects.map((subject, index) => <option key={index} value={subject}>{subject}</option>)}
 												</select>
 											</div>
+
 										</div>
 										<div className="col-12 col-md-6">
 											<label className='mt-4 fw-bold'>Grade</label>
@@ -229,6 +236,16 @@ function CreateQn() {
 
 	function submitPost() {
 
+		let title_pattern = /^[a-zA-Z0-9#$.?! ()%,]*$/;
+		let title_accepted = title_pattern.test(qnTitle);
+		if (qnTitle.length > 85) {
+			title_accepted = false;
+		}
+
+		let purified_body = DOMPurify.sanitize(qnBody);
+
+
+
 		var subject_index = subjects.indexOf(selected_subject);
 		var subject_id = subject_ids[subject_index];
 		var tags = selected_tags;
@@ -240,43 +257,46 @@ function CreateQn() {
 				break;
 			}
 		}
-		console.log(grade_id);
 
 
-
-		var token = findCookie("token");
-		toast.promise(
-			new Promise((resolve, reject) => {
-				axios.post("http://localhost:8000/posts", {
-					title: qnTitle,
-					content: qnBody,
-					user_id: loggedInUser.user_id,
-					subforum_id: subject_id,
-					grade_id: grade_id,
-					tags: tags
-				}, {
-					headers: { authorization: "Bearer " + token }
-				}).then(function (response) {
-					setTimeout(() => {
-						window.location.href = `/posts/${response.data.post_id}`;
-					}, 2500);
-					resolve();
-					console.log(response);
-				}).catch(function (error) {
-					console.log(error);
-					reject();
-				});
-			}),
-			{
-				pending: "Creating Post...",
-				success: "Post Created! Redirecting...",
-				error: {
-					render({ data }) {
-						return `${data}`;
+		if (title_accepted) {
+			var token = findCookie("token");
+			toast.promise(
+				new Promise((resolve, reject) => {
+					axios.post("http://localhost:8000/posts", {
+						title: qnTitle,
+						content: purified_body,
+						user_id: loggedInUser.user_id,
+						subforum_id: subject_id,
+						grade_id: grade_id,
+						tags: tags
+					}, {
+						headers: { authorization: "Bearer " + token }
+					}).then(function (response) {
+						setTimeout(() => {
+							window.location.href = `/posts/${response.data.post_id}`;
+						}, 2500);
+						resolve();
+						console.log(response);
+					}).catch(function (error) {
+						console.log(error);
+						reject();
+					});
+				}),
+				{
+					pending: "Creating Post...",
+					success: "Post Created! Redirecting...",
+					error: {
+						render({ data }) {
+							return `${data}`;
+						},
 					},
-				},
-			}
-		);
+				}
+			);
+		} else {
+			set_titleError("Please enter a title that is less than 85 characters and contains only letters, numbers, and the following symbols: #$%.,?!()");
+		}
+
 	}
 
 	function findCookie(name) {
