@@ -30,6 +30,7 @@ import Search from "./Components/SearchComponents/Search";
 import Subforum from "./Components/SubForumComponents/Subforum";
 import CreateSubforum from "./Components/SubForumComponents/CreateSubforum";
 import Home from "./Components/HomeComponents/Home";
+import EditQn from "./Components/QuestionComponents/EditQn";
 
 const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
 
@@ -92,6 +93,7 @@ ReactDOM.render(
 								<Route path="subforum/:subForum" element={!checkLogin() ? <Subforum /> : <Navigate replace to="/login" />} />
 								<Route path="newforum" element={!checkLogin() ? <CreateSubforum /> : <Navigate replace to="/login" />} />
 								<Route path="/" element={<Navigate replace to="/home" />} />
+								<Route path="/posts/editQn/:post_id" element={!checkLogin() ? <EditQn /> : <Navigate replace to ="/login"/>} />
 							</Routes>
 						</div>
 					</div>

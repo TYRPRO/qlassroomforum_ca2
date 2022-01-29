@@ -106,7 +106,7 @@ function ViewQn() {
 		if (!acquireData || Object.keys(post_accepted_response).length === 0) {
 			return;
 		}
-		
+
 		toast.info("Retreiving answers...");
 
 		axios.get(`http://localhost:8000/responses/${post_id}`)
@@ -198,11 +198,11 @@ function ViewQn() {
 								<p className='mb-0 ms-4 align-middle'>Delete</p>
 							</button>
 						</div>
-						<div className="col-10 mt-2 mb-1">
+						<div className="col-9 mt-2 mb-1">
 
 
 							<div className='row mt-3'>
-								<div className='col-9'>
+								<div className='col-11'>
 									<div className='row'>
 										<QnVotes
 											key={"vote_" + post_id}
@@ -213,7 +213,7 @@ function ViewQn() {
 											{/* No worries, we do input validation for this innerhtml */}
 											<div className='col-12 d-flex align-items-center'>
 
-												<h1>{post_title}</h1>
+												<h4 className="fw-bold">{post_title}</h4>
 												<div className='flex-grow-1'></div>
 
 												<div>
@@ -255,13 +255,24 @@ function ViewQn() {
 											<div className='d-flex'>
 												{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
 											</div>
-											<div className='row text-primary'>
+
+											{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
+											{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
+											{addComment ?
+												<div className=' input-group'>
+													<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
+													<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
+												</div>
+												:
+												null
+											}
+											<div className='row text-primary mt-2'>
 												<div className='col-3'>
 													<div className='d-inline-block toolbar-btn px-2'>
 														<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center '>
 
 															<ReplyIcon></ReplyIcon>
-															<p className='px-2 py-2 mb-0'>Comment</p>
+															<p className='px-2 py-1 mb-0'>Comment</p>
 														</div>
 													</div>
 
@@ -272,86 +283,66 @@ function ViewQn() {
 														<div className='d-flex flex-row align-items-center '>
 
 															<ModeCommentIcon></ModeCommentIcon>
-															<p className='px-2 py-2 mb-0'>Answer</p>
+															<p className='px-2 py-1 mb-0'>Answer</p>
 														</div>
 													</div>
 												</div>
 												<div className='col-3'></div>
 												<div className='col-3 '>
-													{/* <div className='container p-1 postedBySection rounded'>
-													<small className='mb-0 text-secondary'>Posted by</small>
-													<div className=' row g-0'>
-														<div className='col-3 py-1'>
-															<div className='min-profile-pic bg-secondary'>
-
-															</div>
-														</div>
-														<div className='col-9'>
-															<p className='mb-0'>Name</p>
-															<p className='mb-0'>Points ###</p>
-														</div>
-													</div>
-												</div> */}
 													{!(loggedInUser.user_id === fk_user_id) ? (
 														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
-															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">REPORT</p>
+															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">Report</p>
 														</div>
 													) : (
 														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
-															<p className='mb-0'>EDIT</p>
-															<p className='mb-0 ms-3'>DELETE</p>
+															<p className='mb-0'>Edit</p>
+															<p className='mb-0 ms-3'>Delete</p>
 														</div>
 													)}
 												</div>
 
 											</div>
-											{addComment ?
-												<div className=' input-group'>
-													<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
-													<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
-												</div>
-												:
-												null
-											}
+
 										</div>
 
 
 									</div>
-									{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
-									{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
+									<hr></hr>
+
+								</div>
+								<div className='mt-1'>
+									<p className='mb-3'>{answers.length} Answers</p>
+									<div>
+										{answers.map((answer, index) =>
+											<Answer
+												refreshAnswers={refreshAnswersFunction}
+												isRemoved={isRemoved}
+												isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
+												key={index}
+												answer={answer}
+												index={index}
+												setAsAcceptedAnswer={setAsAcceptedAnswer}
+											/>)}
+									</div>
+									<div>
+										<p>Your Answer</p>
+										<div className="col-11">
+											<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
+											<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
+										</div>
+
+									</div>
+
 
 								</div>
 							</div >
-							<hr></hr>
-							<div className='mt-1'>
-								<p className='mb-3'>{answers.length} Answers</p>
-								<div>
-									{answers.map((answer, index) =>
-										<Answer
-											refreshAnswers={refreshAnswersFunction}
-											isRemoved={isRemoved}
-											isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
-											key={index}
-											answer={answer}
-											index={index}
-											setAsAcceptedAnswer={setAsAcceptedAnswer}
-										/>)}
-								</div>
-								<div>
-									<p>Your Answer</p>
-									<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
-									<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
-								</div>
 
-
-							</div>
-							<div className='col-3'>
-								<div className=' container'>
-									WIP
-								</div>
-							</div>
 						</div >
-
+						<div className='col-1 border-start'>
+							<div className=' container'>
+								WIP
+							</div>
+						</div>
 					</div >
 
 				</div >
