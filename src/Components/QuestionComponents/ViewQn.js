@@ -275,7 +275,7 @@ function ViewQn() {
 													{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
 												</div>
 
-												{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
+												{(postComments.length > 0 ? <hr className='mb-1 hr-color'></hr> : null)}
 												{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
 												{addComment ?
 													<div className=' input-group'>
@@ -288,38 +288,39 @@ function ViewQn() {
 												<div className='row text-primary mt-2'>
 													<div className='col-2'>
 														<div className='d-inline-block toolbar-btn px-2'>
-															<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center '>
+															<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center cursor-pointer'>
 
 																<ReplyIcon></ReplyIcon>
 																<p className='px-2 mb-0'>Comment</p>
 															</div>
 														</div>
+
+
+													</div>
+													<div className='col-2 '>
+														<div className='d-inline-block toolbar-btn px-2'>
+															<div className='d-flex flex-row align-items-center cursor-pointer'>
+
+																<ModeCommentIcon></ModeCommentIcon>
+																<p className='px-2 mb-0'>Answer</p>
+															</div>
+														</div>
+													</div>
+													<div className='col-5'></div>
+													<div className='col-3 '>
+														{!(loggedInUser.user_id === fk_user_id) ? (
+															<div className=' text-secondary d-flex flex-row-reverse align-items-center h-100'>
+																<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">REPORT</p>
+															</div>
+														) : (
+															<div className=' text-secondary d-flex  flex-row-reverse align-items-center h-100'>
+																<a href={`http://localhost:3000/posts/editQn/${post_id}`} className=' text-decoration-none mb-0 text-secondary fw-bold'>EDIT</a>
+																<button className=' text-decoration-none mb-0 me-3 text-secondary fw-bold'>DELETE</button>
+															</div>
+														)}
 													</div>
 
 												</div>
-												<div className='col-2 '>
-													<div className='d-inline-block toolbar-btn px-2'>
-														<div className='d-flex flex-row align-items-center '>
-
-															<ModeCommentIcon></ModeCommentIcon>
-															<p className='px-2 mb-0'>Answer</p>
-														</div>
-													</div>
-												</div>
-												<div className='col-5'></div>
-												<div className='col-3 '>
-													{!(loggedInUser.user_id === fk_user_id) ? (
-														<div className=' text-secondary d-flex flex-row-reverse align-items-center h-100'>
-															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">REPORT</p>
-														</div>
-													) : (
-														<div className=' text-secondary d-flex  flex-row-reverse align-items-center h-100'>
-															<a href={`http://localhost:3000/posts/editQn/${post_id}`} className=' text-decoration-none mb-0 text-secondary fw-bold'>EDIT</a>
-															<button className=' text-decoration-none mb-0 me-3 text-secondary fw-bold'>DELETE</button>
-														</div>
-													)}
-												</div>
-
 											</div>
 
 
@@ -461,25 +462,36 @@ function ViewQn() {
 	function setAsAcceptedAnswer(index, response_id, post_id) {
 
 		if (!(post_accepted_response.response_id === response_id)) {
+			toast.promise(new Promise((resolve, reject) => {
+				axios.put("http://localhost:8000/posts/correctAnswer",
+					{
+						answer_id: response_id,
+						post_id: post_id
+					})
+					.then(res => {
+						console.log(res.data);
 
-			axios.put("http://localhost:8000/posts/correctAnswer",
-				{
-					answer_id: response_id,
-					post_id: post_id
-				})
-				.then(res => {
-					console.log(res.data);
-
-					setActiveIndex(index);
-					setIsRemoved(false);
-					set_post_accepted_response({ answer_is_accepted: true, response_id: response_id });
-					setIsAccepted(true);
-					toast.success("Answer Accepted!");
-				})
-				.catch((err) => {
-					console.log(err);
-					toast.error("Error Setting Answer as Correct Answer");
-				});
+						setActiveIndex(index);
+						setIsRemoved(false);
+						set_post_accepted_response({ answer_is_accepted: true, response_id: response_id });
+						setIsAccepted(true);
+						resolve(true);
+					})
+					.catch((err) => {
+						console.log(err);
+						reject("Error Setting Answer as Correct Answer");
+					});
+			},
+			{
+				pending: "Setting Answer As Correct Answer...",
+				success: "Answer Set As Correct Answer!",
+				error: {
+					render({ data }) {
+						return `${data}`;
+					},
+				},
+			}
+			));
 		} else {
 			console.log("Already Accepted");
 			toast.error("Answer Already Accepted!");
