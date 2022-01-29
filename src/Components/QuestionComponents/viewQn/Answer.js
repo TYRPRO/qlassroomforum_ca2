@@ -14,22 +14,23 @@ function Answer(props) {
 	const [loggedInUser, set_loggedInUser] = useState({});
 
 	var answer_info = props.answer;
+	console.log(answer_info);
 
 	useEffect(() => acquireUserData(), []);
 
 	return (
 		<div className="qn-answer">
 			<div className="row">
-				<AnswerVote response_id={answer_info.response_id} post_id={answer_info.fk_post_id}/>
+				<AnswerVote response_id={answer_info.response_id} post_id={answer_info.fk_post_id} />
 				<div className="col-10">
+
 					<button className={
 						props.isAlrdAccepted ?
 							props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
 								: ("btn btn-outline-success btn-sm text-center")
 							: props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
 								: ("btn btn-outline-secondary btn-sm text-center")
-					}
-					onClick={() => props.setAsAcceptedAnswer(props.index, answer_info.response_id, answer_info.fk_post_id)} >
+					} onClick={() => props.setAsAcceptedAnswer(props.index, answer_info.response_id, answer_info.fk_post_id)} >
 						<span className="material-icons-outlined">mark_chat_read</span> {
 							props.isAlrdAccepted ?
 								props.isRemoved ? ("Set as Answer Accepted")
@@ -38,6 +39,19 @@ function Answer(props) {
 									: ("Set as Answer Accepted")
 						}
 					</button>
+					<div className='d-flex flex-row mt-2'>
+						<div className='min-profile-pic bg-secondary'>
+
+						</div>
+						<p className='ms-2'>
+							first last
+						</p>
+						<p className="fw-light text-secondary mx-2">•</p>
+						<p>
+							post_created_at
+						</p>
+					</div>
+
 					<p className='qn-content' dangerouslySetInnerHTML={{ __html: answer_info.response }}></p>
 					<div className="row">
 						<div className="col-7"></div>
@@ -111,7 +125,7 @@ function Answer(props) {
 	}
 
 	function submitAnswerComment() {
-		
+
 		var token = findCookie("token");
 		var response_type = "comment";
 

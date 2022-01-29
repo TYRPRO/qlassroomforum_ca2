@@ -81,8 +81,13 @@ function ViewQn() {
 				set_first_name(data.User.first_name);
 				set_last_name(data.User.last_name);
 
+
+				console.log(data);
 				let tempArr = [];
 				tags.map((tag) => tempArr.push(tag));
+
+				tempArr[0] = data.Subforum.subforum_name;
+				tempArr[1] = data.Grade.grade_name;
 				for (let i = 0; i < data.PostLabels.length; i++) {
 					tempArr.push(data.PostLabels[i].Label.label_name);
 				}
@@ -191,8 +196,8 @@ function ViewQn() {
 			<div className="container-fluid">
 				<div className='container'>
 					<div className='row'>
-						<div className='col-2  border-end'>
-							<button className=' ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
+						<div className='col-1  border-end'>
+							{/* <button className=' ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
 								<ArrowBackIosNewIcon sx={{ fontSize: 23 }} />
 								<p className='mb-0 ms-4 align-middle'>Back</p>
 							</button>
@@ -203,9 +208,9 @@ function ViewQn() {
 							<button className='ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
 								<DeleteIcon sx={{ fontSize: 23 }} />
 								<p className='mb-0 ms-4 align-middle'>Delete</p>
-							</button>
+							</button> */}
 						</div>
-						<div className="col-9 mt-2 mb-1">
+						<div className="col-10 mt-2 mb-1">
 
 
 							<div className='row mt-3'>
@@ -301,9 +306,9 @@ function ViewQn() {
 															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">Report</p>
 														</div>
 													) : (
-														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
-															<p className='mb-0'>Edit</p>
-															<p className='mb-0 ms-3'>Delete</p>
+														<div className=' text-secondary d-flex  flex-row-reverse align-items-center h-100'>
+															<a href={`http://localhost:3000/posts/editQn/${post_id}`} className=' text-decoration-none mb-0 text-secondary'>EDIT</a>
+															<button className=' text-decoration-none mb-0 me-3 text-secondary'>DELETE</button>
 														</div>
 													)}
 												</div>
@@ -346,9 +351,6 @@ function ViewQn() {
 
 						</div >
 						<div className='col-1 border-start'>
-							<div className=' container'>
-								WIP
-							</div>
 						</div>
 					</div >
 
