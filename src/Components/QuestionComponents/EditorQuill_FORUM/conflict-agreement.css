@@ -22,12 +22,12 @@
 
 }
 
-.ql-editor:focus {
+.quill:focus-within {
 	color: #212529;
-	background-color: #fff;
-	border-color: #86b7fe;
+	background-color: #fff !important;
+	border-color: #86b7fe !important;
 	outline: 0;
-	box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+	box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
 }
 
 .ql-editing {
