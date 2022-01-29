@@ -164,33 +164,35 @@ function CreateQn() {
 								<div className="form-group">
 
 									<label className='mt-3 mb-1 fw-bold'>Question Title</label>
-									{/* <div className=' form-text mt-0'>
-										Be specific and imagine you are asking a question to another person.
-									</div> */}
 									<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"Be specific and imagine you are asking a question to another person."}></input>
 
 									<label htmlFor='qn_body' className='mt-4 mb-1 fw-bold '>Body</label>
 									<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody} placeholder={"Include all the information someone would need to answer your question"}></QuillEditor>
 
-									<label className="mt-4 fw-bold">Subject</label>
-									<div className='form-text mt-0'>
-										Select the subject of your question.
-									</div>
-									<div>
-										<select className=' form-select' onChange={(event) => handleSelectedSubjectChange(event.target.value)}>
-											{subjects.map((subject, index) => <option key={index} value={subject}>{subject}</option>)}
-										</select>
-									</div>
-
-									<label className='mt-4 fw-bold'>Grade</label>
-									<div className='form-text mt-0'>
-										Select the grade level that best fits your question.
-									</div>
-									<div>
-										<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
-											<option disabled={true} value={"disabled"}>Please select a grade:</option>
-											{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
-										</select>
+									<div className="row">
+										<div className="col-12 col-md-6">
+											<label className="mt-4 fw-bold">Subject</label>
+											<div className='form-text mt-0'>
+												Select the subject of your question.
+											</div>
+											<div>
+												<select className=' form-select' onChange={(event) => handleSelectedSubjectChange(event.target.value)}>
+													{subjects.map((subject, index) => <option key={index} value={subject}>{subject}</option>)}
+												</select>
+											</div>
+										</div>
+										<div className="col-12 col-md-6">
+											<label className='mt-4 fw-bold'>Grade</label>
+											<div className='form-text mt-0'>
+												Select the grade level that best fits your question.
+											</div>
+											<div>
+												<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
+													<option disabled={true} value={"disabled"}>Please select a grade:</option>
+													{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
+												</select>
+											</div>
+										</div>
 									</div>
 
 									<label className='mt-4 fw-bold'>Tags</label>
@@ -211,7 +213,10 @@ function CreateQn() {
 
 							</form>
 						</div>
-						<button onClick={submitPost} className='btn btn-primary shadow-sm mt-4'>Post Question</button>
+						<div className="d-flex flex-row">
+							<div className="flex-grow-1"></div>
+							<button onClick={submitPost} className='btn btn-primary shadow-sm mt-4'>Post question</button>
+						</div>
 					</div>
 					<div className='col-lg-2'>
 					</div>
