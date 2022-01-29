@@ -156,13 +156,23 @@ function CreateQn() {
 			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
 			<div className="container">
 				<div className='row'>
+					<div className="col-lg-2"></div>
 					<div className='col-12 col-lg-8'>
 						<h3 className='mt-4 mb-3'>Ask a Question</h3>
-						<div className=' bg-white py-3 px-4 shadow-sm border'>
+						<div className=''>
 							<form>
 								<div className="form-group">
 
-									<label>Subject</label>
+									<label className='mt-3 mb-1 fw-bold'>Question Title</label>
+									{/* <div className=' form-text mt-0'>
+										Be specific and imagine you are asking a question to another person.
+									</div> */}
+									<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"Be specific and imagine you are asking a question to another person."}></input>
+
+									<label htmlFor='qn_body' className='mt-4 mb-1 fw-bold '>Body</label>
+									<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody} placeholder={"Include all the information someone would need to answer your question"}></QuillEditor>
+
+									<label className="mt-4 fw-bold">Subject</label>
 									<div className='form-text mt-0'>
 										Select the subject of your question.
 									</div>
@@ -172,11 +182,10 @@ function CreateQn() {
 										</select>
 									</div>
 
-									<label className='mt-3'>Grade</label>
+									<label className='mt-4 fw-bold'>Grade</label>
 									<div className='form-text mt-0'>
 										Select the grade level that best fits your question.
 									</div>
-
 									<div>
 										<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
 											<option disabled={true} value={"disabled"}>Please select a grade:</option>
@@ -184,26 +193,7 @@ function CreateQn() {
 										</select>
 									</div>
 
-									<label className='mt-3'>Question Title</label>
-									<div className=' form-text mt-0'>
-										Be specific and imagine you are asking a question to another person.
-									</div>
-									<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"e.g. Find the intercept between y=2x and 12=2y+x. "}></input>
-
-									<label htmlFor='qn_body' className='mt-2'>Body</label>
-									<div className=' form-text mt-0'>
-										Include all the information someone would need to answer your question
-									</div>
-									<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody}></QuillEditor>
-									{/* <TextEditor storeInput={set_qnBody} /> */}
-									{/* <div value={qnBody} ref={qn_body_textarea} contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
-								</div> */}
-
-
-
-
-
-									<label className='mt-3'>Tags</label>
+									<label className='mt-4 fw-bold'>Tags</label>
 									<div className=' form-text mt-0'>
 										Add some tags to help others find your question.
 									</div>
@@ -221,13 +211,9 @@ function CreateQn() {
 
 							</form>
 						</div>
-						<button onClick={submitPost} className='btn btn-primary shadow-sm mt-4'>Review your question</button>
+						<button onClick={submitPost} className='btn btn-primary shadow-sm mt-4'>Post Question</button>
 					</div>
-					<div className='col-lg-4'>
-						<h5 >Left</h5>
-						<MathJaxContext config={config}>
-							<MathJax>{"`(10)/(4x) approx 2^(12)`"}</MathJax>
-						</MathJaxContext>
+					<div className='col-lg-2'>
 					</div>
 				</div>
 			</div>

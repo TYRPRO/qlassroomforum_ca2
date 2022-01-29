@@ -103,7 +103,6 @@ function Answer(props) {
 					last_name: data.last_name,
 					role: data.roles,
 				});
-				console.log("logged in user eing set");
 			})
 			.catch((err) => {
 				console.log(err);
