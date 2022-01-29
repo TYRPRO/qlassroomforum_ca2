@@ -81,8 +81,6 @@ function ViewQn() {
 				set_first_name(data.User.first_name);
 				set_last_name(data.User.last_name);
 
-
-				console.log(data);
 				let tempArr = [];
 				tags.map((tag) => tempArr.push(tag));
 
@@ -196,7 +194,7 @@ function ViewQn() {
 			<div className="container-fluid">
 				<div className='container'>
 					<div className='row'>
-						<div className='col-1  border-end'>
+						<div className='col-1 '>
 							{/* <button className=' ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
 								<ArrowBackIosNewIcon sx={{ fontSize: 23 }} />
 								<p className='mb-0 ms-4 align-middle'>Back</p>
@@ -237,7 +235,7 @@ function ViewQn() {
 																	{bookmarkHover ? "Bookmarked" : ""}
 																</button>
 															) : (
-																<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-secondary anim-enter-active'>
+																<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-secondary anim-enter-active text-nowrap'>
 																	<BookmarkBorderIcon sx={{ fontSize: 26 }} />
 																	{bookmarkHover ? "Bookmark this question?" : ""}
 																</button>
@@ -251,24 +249,24 @@ function ViewQn() {
 											</div>
 
 
-											<div className='d-flex flex-row'>
+											<div className='d-flex flex-row align-items-center'>
 												<div className='min-profile-pic bg-secondary'>
 
 												</div>
-												<p className='ms-2'>
+												<small className='ms-2 fw-bold'>
 													{first_name} {last_name}
-												</p>
-												<p className="fw-light text-secondary mx-2">•</p>
-												<p>
-													{post_created_at}
-												</p>
+												</small>
+												{/* <p className="fw-light text-secondary mx-2">•</p> */}
+												<small className="text-secondary mx-2">
+													about {post_created_at}
+												</small>
 											</div>
 											<p className='qn-content mt-3' dangerouslySetInnerHTML={{ __html: post_content }}></p>
 											<div className='d-flex'>
 												{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
 											</div>
 
-											{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
+											{(postComments.length > 0 ? <hr className='mb-1 hr-color'></hr> : null)}
 											{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
 											{addComment ?
 												<div className=' input-group'>
@@ -279,36 +277,36 @@ function ViewQn() {
 												null
 											}
 											<div className='row text-primary mt-2'>
-												<div className='col-3'>
+												<div className='col-2'>
 													<div className='d-inline-block toolbar-btn px-2'>
 														<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center '>
 
 															<ReplyIcon></ReplyIcon>
-															<p className='px-2 py-1 mb-0'>Comment</p>
+															<p className='px-2 mb-0'>Comment</p>
 														</div>
 													</div>
 
 
 												</div>
-												<div className='col-3 '>
+												<div className='col-2 '>
 													<div className='d-inline-block toolbar-btn px-2'>
 														<div className='d-flex flex-row align-items-center '>
 
 															<ModeCommentIcon></ModeCommentIcon>
-															<p className='px-2 py-1 mb-0'>Answer</p>
+															<p className='px-2 mb-0'>Answer</p>
 														</div>
 													</div>
 												</div>
-												<div className='col-3'></div>
+												<div className='col-5'></div>
 												<div className='col-3 '>
 													{!(loggedInUser.user_id === fk_user_id) ? (
-														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
-															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">Report</p>
+														<div className=' text-secondary d-flex flex-row-reverse align-items-center h-100'>
+															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">REPORT</p>
 														</div>
 													) : (
 														<div className=' text-secondary d-flex  flex-row-reverse align-items-center h-100'>
-															<a href={`http://localhost:3000/posts/editQn/${post_id}`} className=' text-decoration-none mb-0 text-secondary'>EDIT</a>
-															<button className=' text-decoration-none mb-0 me-3 text-secondary'>DELETE</button>
+															<a href={`http://localhost:3000/posts/editQn/${post_id}`} className=' text-decoration-none mb-0 text-secondary fw-bold'>EDIT</a>
+															<button className=' text-decoration-none mb-0 me-3 text-secondary fw-bold'>DELETE</button>
 														</div>
 													)}
 												</div>
@@ -319,9 +317,10 @@ function ViewQn() {
 
 
 									</div>
-									<hr></hr>
+
 
 								</div>
+								<hr className="mt-3"></hr>
 								<div className='mt-1'>
 									<p className='mb-3'>{answers.length} Answers</p>
 									<div>
@@ -350,7 +349,7 @@ function ViewQn() {
 							</div >
 
 						</div >
-						<div className='col-1 border-start'>
+						<div className='col-1'>
 						</div>
 					</div >
 

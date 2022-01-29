@@ -6,6 +6,7 @@ import axios from "axios";
 
 import AnswerComment from "./AnswerComments";
 import AnswerVote from "./AnswerVote";
+import parseTime from "../../../helperFunctions/parseTime";
 
 function Answer(props) {
 
@@ -39,21 +40,10 @@ function Answer(props) {
 									: ("Set as Answer Accepted")
 						}
 					</button>
-					<div className='d-flex flex-row mt-2'>
-						<div className='min-profile-pic bg-secondary'>
 
-						</div>
-						<p className='ms-2'>
-							first last
-						</p>
-						<p className="fw-light text-secondary mx-2">•</p>
-						<p>
-							post_created_at
-						</p>
-					</div>
 
-					<p className='qn-content' dangerouslySetInnerHTML={{ __html: answer_info.response }}></p>
-					<div className="row">
+					<p className='qn-content mt-2' dangerouslySetInnerHTML={{ __html: answer_info.response }}></p>
+					{/* <div className="row">
 						<div className="col-7"></div>
 						<div className='col-5'>
 							<div className='p-1 postedBySection rounded'>
@@ -72,20 +62,27 @@ function Answer(props) {
 								</div>
 							</div>
 						</div>
-
+					</div> */}
+					<div className='d-flex flex-row mt-2 align-items-center'>
+						<div className='min-profile-pic bg-secondary'></div>
+						<small className='ms-2 mb-0 fw-bold'>
+							{answer_info.User.first_name}
+						</small>
+						{/* <p className="fw-light text-secondary mx-2 mb-0">•</p> */}
+						<small className="mb-0 mx-2 text-secondary">
+							about {parseTime(answer_info.response_created_at)}
+						</small>
 					</div>
-					{answer_info.comments ? (answer_info.comments.length > 0 ? <hr className='mb-1'></hr> : null) : null}
+					{answer_info.comments ? (answer_info.comments.length > 0 ? <hr className='mb-1 hr-color'></hr> : null) : null}
 					{answer_info.comments ? (answer_info.comments.map((comment, index) => <AnswerComment key={index} comment={comment} />)) : null}
 					{addComment ?
-						<div className=' input-group'>
+						<div className=' input-group mt-2'>
 							<input onChange={(e) => { set_answerComment(e.target.value); }} value={answerComment} className='form-control' placeholder='Comment on this answer?'></input>
 							<button onClick={submitAnswerComment} className='btn btn-outline-secondary'>Submit</button>
 						</div>
 						:
-						<button className='btn btn-light text-primary' onClick={() => set_AddComment(true)}>Add Comment</button>
+						<button className='btn btn-light text-primary mt-1' onClick={() => set_AddComment(true)}>Add Comment</button>
 					}
-
-
 				</div>
 			</div>
 			<hr></hr>
