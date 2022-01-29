@@ -17,3 +17,7 @@
 	 padding-bottom : 5px;
 	 background-color: rgba(131, 248, 248, 0.753);
  }
+
+#voteText {
+	font-size: 10px;
+}
