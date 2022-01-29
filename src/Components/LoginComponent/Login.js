@@ -64,8 +64,7 @@ const Login = () => {
 				<div className="row">
 					<div className="container-fluid mt-5 d-flex flex-row">
 						<div className="column rounded">
-							<div className="col-2"></div>
-							<div className="col-7 bg-white p-5">
+							<div className="col-lg-7 p-5">
 								<img className="mb-3 " id="Qlassroom_Logo" src={require("../../Common/images/QlassroomLogoWOBackground.png")}></img>
 								<h5 className="fw-bold pb-4" id="SignIn_Text">Sign in to your Account</h5>
 
@@ -91,7 +90,7 @@ const Login = () => {
 
 							</div>
 						</div>
-						<div className="column">
+						<div className="col-lg-6 d-none d-xl-block">
 							<img className="mb-3 " id="Qlassroom_Image" src={require("../../Common/images/login_image.png")}></img>
 						</div>
 					</div>

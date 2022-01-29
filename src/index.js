@@ -32,7 +32,7 @@ import CreateSubforum from "./Components/SubForumComponents/CreateSubforum";
 import Home from "./Components/HomeComponents/Home";
 import EditQn from "./Components/QuestionComponents/EditQn";
 
-const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
+const composedTool = compose(applyMiddleware(thunk));
 
 const store = createStore(allReducers, composedTool);
 
