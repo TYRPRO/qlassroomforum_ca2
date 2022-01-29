@@ -148,7 +148,6 @@ function ViewQn() {
 					}
 				}
 
-				console.log(post_comments);
 
 				for (let i = 0; i < post_answer_comments.length; i++) {
 					for (let j = 0; j < post_answers.length; j++) {
@@ -162,7 +161,23 @@ function ViewQn() {
 					}
 				}
 
-				console.log(post_accepted_response);
+				for (let i = 0; i < post_comments.length; i++) {
+
+					if (i == post_comments.length - 1) {
+						break;
+					}
+
+					var date1 = new Date(post_comments[i].response_created_at);
+					var date2 = new Date(post_comments[i + 1].response_created_at);
+					if (date2.getTime() < date1.getTime()) {
+						var tmp = post_comments[i];
+						post_comments[i] = post_comments[i + 1];
+						post_comments[i + 1] = tmp;
+
+						i = -1;
+					}
+				}
+
 
 				var acceptedAnswer;
 				for (let i = 0; i < post_answers.length; i++) {
@@ -178,7 +193,7 @@ function ViewQn() {
 						break;
 					}
 					if (post_answers[i].response_votes_count < post_answers[i + 1].response_votes_count) {
-						var tmp = post_answers[i];
+						let tmp = post_answers[i];
 						post_answers[i] = post_answers[i + 1];
 						post_answers[i + 1] = tmp;
 						i = -1;
@@ -202,24 +217,11 @@ function ViewQn() {
 
 	return (
 		<React.Fragment>
-			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
+			<ToastContainer position="top-center" style={{ width: "28vw" }} autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
 			<div className="container-fluid">
 				<div className='container'>
 					<div className='row'>
-						<div className='col-2 '>
-							{/* <button className=' ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
-								<ArrowBackIosNewIcon sx={{ fontSize: 23 }} />
-								<p className='mb-0 ms-4 align-middle'>Back</p>
-							</button>
-							<button className='ms-4 mt-3 ps-1  py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
-								<EditIcon sx={{ fontSize: 23 }} />
-								<p className='mb-0 ms-4 align-middle'>Edit</p>
-							</button>
-							<button className='ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
-								<DeleteIcon sx={{ fontSize: 23 }} />
-								<p className='mb-0 ms-4 align-middle'>Delete</p>
-							</button> */}
-						</div>
+						<div className='col-2 '></div>
 						<div className="col-8 mt-2 mb-1">
 
 							{(isLoadingPosts && isLoadingComments) ? <HashLoader color={"#a5c1e8"} loading={isLoadingPosts} css={override} size={150} /> :
@@ -322,31 +324,28 @@ function ViewQn() {
 
 												</div>
 											</div>
-
-
-										</div>
-										<hr className="mt-3"></hr>
-
+								</div>
+								<hr className="mt-3"></hr>
+								<div className='mt-1'>
+									<p className='mb-3'>{answers.length} Answers</p>
+									<div>
+										{answers.map((answer, index) =>
+											<Answer
+												toastify={toast}
+												refreshAnswers={refreshAnswersFunction}
+												isRemoved={isRemoved}
+												isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
+												key={index}
+												answer={answer}
+												index={index}
+												setAsAcceptedAnswer={setAsAcceptedAnswer}
+											/>)}
 									</div>
-									<div className='mt-1'>
-										<p className='mb-3'>{answers.length} Answers</p>
-										<div>
-											{answers.map((answer, index) =>
-												<Answer
-													refreshAnswers={refreshAnswersFunction}
-													isRemoved={isRemoved}
-													isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
-													key={index}
-													answer={answer}
-													index={index}
-													setAsAcceptedAnswer={setAsAcceptedAnswer}
-												/>)}
-										</div>
-										<div>
-											<p>Your Answer</p>
-											<div className="col-11">
-												<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
-												<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
+									<div>
+										<p>Your Answer</p>
+										<div className="col-11">
+											<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
+											<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
 											</div>
 
 										</div>
@@ -431,8 +430,8 @@ function ViewQn() {
 		}, {
 			headers: { authorization: "Bearer " + token }
 		}).then(function (response) {
-			console.log(response);
 			set_refreshAnswers(!refreshAnswers);
+			set_answer_input("");
 		}).catch(function (error) {
 			console.log(error);
 		});
@@ -441,22 +440,37 @@ function ViewQn() {
 
 	function submitPostComment() {
 
+		let comment_pattern = /^[a-zA-Z0-9#$.?! ()%,]*$/;
+		let comment_accepted = comment_pattern.test(postComment);
+
+		if (postComment.length < 1 || postComment.length > 85) {
+			comment_accepted = false;
+		}
+
+
 		var token = findCookie("token");
 		var response_type = "comment";
 
-		axios.post("http://localhost:8000/responses/", {
-			user_id: loggedInUser.user_id,
-			post_id: post_id,
-			response_type: response_type,
-			response: postComment
-		}, {
-			headers: { authorization: "Bearer " + token }
-		}).then(function (response) {
-			console.log(response);
-			refreshAnswersFunction();
-		}).catch(function (error) {
-			console.log(error);
-		});
+		if (comment_accepted) {
+			axios.post("http://localhost:8000/responses/", {
+				user_id: loggedInUser.user_id,
+				post_id: post_id,
+				response_type: response_type,
+				response: postComment
+			}, {
+				headers: { authorization: "Bearer " + token }
+			}).then(function (response) {
+				console.log(response);
+				set_postComment("");
+				set_AddComment(false);
+				refreshAnswersFunction();
+			}).catch(function (error) {
+				console.log(error);
+			});
+		} else {
+			toast.error("Comment must be less than 85 characters long and contain only letters, numbers, and the following symbols: $#.?! ()%,");
+		}
+
 	}
 
 	function setAsAcceptedAnswer(index, response_id, post_id) {

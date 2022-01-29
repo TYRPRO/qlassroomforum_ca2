@@ -13,11 +13,37 @@ function Answer(props) {
 	const [addComment, set_AddComment] = useState(false);
 	const [answerComment, set_answerComment] = useState("");
 	const [loggedInUser, set_loggedInUser] = useState({});
+	const [answerComments, set_AnswerComments] = useState([]);
 
 	var answer_info = props.answer;
 	console.log(answer_info);
 
 	useEffect(() => acquireUserData(), []);
+
+	useEffect(() => {
+		if (answer_info.comments) {
+			var answer_comments = answer_info.comments;
+			for (let i = 0; i < answer_comments.length; i++) {
+
+				if (i == answer_comments.length - 1) {
+					break;
+				}
+
+				var date1 = new Date(answer_comments[i].response_created_at);
+				var date2 = new Date(answer_comments[i + 1].response_created_at);
+				if (date2.getTime() < date1.getTime()) {
+					let tmp = answer_comments[i];
+					answer_comments[i] = answer_comments[i + 1];
+					answer_comments[i + 1] = tmp;
+
+					i = -1;
+				}
+			}
+			set_AnswerComments(answer_comments);
+		}
+
+	}, [answer_info]);
+
 
 	return (
 		<div className="qn-answer">
@@ -73,8 +99,8 @@ function Answer(props) {
 							about {parseTime(answer_info.response_created_at)}
 						</small>
 					</div>
-					{answer_info.comments ? (answer_info.comments.length > 0 ? <hr className='mb-1 hr-color'></hr> : null) : null}
-					{answer_info.comments ? (answer_info.comments.map((comment, index) => <AnswerComment key={index} comment={comment} />)) : null}
+					{answerComments ? (answerComments.length > 0 ? <hr className='mb-1 hr-color'></hr> : null) : null}
+					{answerComments ? (answerComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)) : null}
 					{addComment ?
 						<div className=' input-group mt-2'>
 							<input onChange={(e) => { set_answerComment(e.target.value); }} value={answerComment} className='form-control' placeholder='Comment on this answer?'></input>
@@ -123,23 +149,41 @@ function Answer(props) {
 
 	function submitAnswerComment() {
 
+
+		let comment_pattern = /^[a-zA-Z0-9#$.?! ()%,]*$/;
+		let comment_accepted = comment_pattern.test(answerComment);
+
+		if (answerComment.length < 1 || answerComment.length > 85) {
+			comment_accepted = false;
+		}
+
 		var token = findCookie("token");
 		var response_type = "comment";
 
-		axios.post("http://localhost:8000/responses/", {
-			user_id: loggedInUser.user_id,
-			post_id: answer_info.fk_post_id,
-			parent_response_id: answer_info.response_id,
-			response_type: response_type,
-			response: answerComment
-		}, {
-			headers: { "Authorization": "Bearer " + token }
-		}).then(function (response) {
-			console.log(response);
-			props.refreshAnswers();
-		}).catch(function (error) {
-			console.log(error);
-		});
+
+		if (comment_accepted) {
+			axios.post("http://localhost:8000/responses/", {
+				user_id: loggedInUser.user_id,
+				post_id: answer_info.fk_post_id,
+				parent_response_id: answer_info.response_id,
+				response_type: response_type,
+				response: answerComment
+			}, {
+				headers: { "Authorization": "Bearer " + token }
+			}).then(function (response) {
+				console.log(response);
+				set_answerComment("");
+				set_AddComment(false);
+				props.refreshAnswers();
+			}).catch(function (error) {
+				console.log(error);
+			});
+		}
+		else {
+			props.toastify.error("Comment must be less than 85 characters long and contain only letters, numbers, and the following symbols: $#.?! ()%,");
+
+		}
+
 	}
 }
 

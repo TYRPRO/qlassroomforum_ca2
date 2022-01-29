@@ -16,6 +16,7 @@ import QuillEditor from "./EditorQuill_FORUM/EditorQuill";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 function EditQn() {
 	const config = {
@@ -42,6 +43,8 @@ function EditQn() {
 
 	const [acquireData, setAcquireData] = useState(false);
 	const [loggedInUser, set_loggedInUser] = useState({});
+
+	const [titleError, set_titleError] = useState("");
 
 
 
@@ -169,11 +172,6 @@ function EditQn() {
 								}
 							}
 						}
-						console.log(data[0]);
-						console.log(data[23]);
-
-						console.log(temp_shown_tags);
-						console.log(temp_selected_tags);
 						set_tags(data);
 						set_shown_tags(temp_shown_tags);
 						set_selected_tags(temp_selected_tags);
@@ -232,6 +230,9 @@ function EditQn() {
 
 									<label className='mt-3 mb-1 fw-bold'>Question Title</label>
 									<input onChange={handleChange_qnTitle} value={qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"e.g. Find the intercept between y=2x and 12=2y+x. "}></input>
+									<div className="is-invalid text-danger">
+										{titleError}
+									</div>
 
 									<label htmlFor='qn_body' className='mt-4 mb-1 fw-bold'>Body</label>
 									<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody} placeholder={"Be specific and imagine you are asking a question to another person."}></QuillEditor>
@@ -258,7 +259,7 @@ function EditQn() {
 												<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
 													<option disabled={true} value={"disabled"}>Please select a grade:</option>
 													{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
-												</select>					
+												</select>
 											</div>
 										</div>
 									</div>
@@ -288,10 +289,10 @@ function EditQn() {
 							</form>
 						</div>
 						<div className="d-flex flex-row">
-							<button onClick={() => { location.reload(); }} className="btn btn-primary shadow-sm mt-4 ms-3">Undo edits</button>
+							<button onClick={() => { location.reload(); }} className="btn btn-primary shadow-sm">Undo edits</button>
 							<div className="flex-grow-1"></div>
 
-							<button onClick={submitPostEdit} className='btn btn-primary shadow-sm mt-4'>Post question</button>
+							<button onClick={submitPostEdit} className='btn btn-primary shadow-sm mt-4'>Edit question</button>
 						</div>
 
 					</div>
@@ -305,6 +306,18 @@ function EditQn() {
 
 	function submitPostEdit() {
 
+	
+		let title_pattern = /^[a-zA-Z0-9#$.?! ()%,]*$/;
+		let title_accepted = title_pattern.test(qnTitle);
+		console.log(title_accepted);
+		if (qnTitle.length > 85) {
+			title_accepted = false;
+		}
+		console.log(title_accepted);
+
+		let purified_body = DOMPurify.sanitize(qnBody);
+
+
 		var subject_index = subjects.indexOf(selected_subject);
 		var subject_id = subject_ids[subject_index];
 		var tags = selected_tags;
@@ -316,43 +329,48 @@ function EditQn() {
 				break;
 			}
 		}
-		console.log(grade_id);
 
 		var token = findCookie("token");
 
-		toast.promise(
-			new Promise((resolve, reject) => {
-				axios.put("http://localhost:8000/posts", {
-					title: qnTitle,
-					content: qnBody,
-					user_id: loggedInUser.user_id,
-					subforum_id: subject_id,
-					grade_id: grade_id,
-					tags: tags,
-					post_id: post_id
-				}, {
-					headers: { authorization: "Bearer " + token }
-				}).then(function (response) {
-					// setTimeout(() => {
-					// 	window.location.href = `/posts/${post_id}`;
-					// }, 2500);
-					resolve();
-					console.log(response);
-				}).catch(function (error) {
-					console.log(error);
-					reject();
-				});
-			}),
-			{
-				pending: "Editing Post...",
-				success: "Post Edited! Redirecting...",
-				error: {
-					render({ data }) {
-						return `${data}`;
+		if (title_accepted) {
+			toast.promise(
+				new Promise((resolve, reject) => {
+					axios.put("http://localhost:8000/posts", {
+						title: qnTitle,
+						content: purified_body,
+						user_id: loggedInUser.user_id,
+						subforum_id: subject_id,
+						grade_id: grade_id,
+						tags: tags,
+						post_id: post_id
+					}, {
+						headers: { authorization: "Bearer " + token }
+					}).then(function (response) {
+						setTimeout(() => {
+							window.location.href = `/posts/${post_id}`;
+						}, 2500);
+						resolve();
+						console.log(response);
+					}).catch(function (error) {
+						console.log(error);
+						reject();
+					});
+				}),
+				{
+					pending: "Editing Post...",
+					success: "Post Edited! Redirecting...",
+					error: {
+						render({ data }) {
+							return `${data}`;
+						},
 					},
-				},
-			}
-		);
+				}
+			);
+		}
+		else {
+			set_titleError("Please enter a title that is less than 85 characters and contains only letters, numbers, and the following symbols: #$%.,?!()");
+		}
+
 
 
 
