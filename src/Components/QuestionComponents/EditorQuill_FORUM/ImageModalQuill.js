@@ -12,6 +12,7 @@ import "./conflict-agreement.css";
 
 const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => {
 
+	// eslint-disable-next-line no-unused-vars
 	const [selectedFile, set_selectedFile] = useState(value);
 	const [imageURL, set_imageURL] = useState("");
 	const [fileIsValid, setFileIsValid] = useState(false);
