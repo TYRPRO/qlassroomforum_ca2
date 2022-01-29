@@ -30,6 +30,7 @@ function ViewQn() {
 	const [post_title, set_post_title] = useState("");
 	const [fk_user_id, set_fk_user_id] = useState("");
 	const [first_name, set_first_name] = useState("");
+	const [last_name, set_last_name] = useState("");
 	const [post_content, set_post_content] = useState("");
 	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
 
@@ -77,10 +78,14 @@ function ViewQn() {
 					answer_is_accepted: data.post_is_answered,
 					response_id: data.fk_response_id
 				});
-				set_first_name(data.User.last_name);
+				set_first_name(data.User.first_name);
+				set_last_name(data.User.last_name);
 
 				let tempArr = [];
 				tags.map((tag) => tempArr.push(tag));
+
+				tempArr[0] = data.Subforum.subforum_name;
+				tempArr[1] = data.Grade.grade_name;
 				for (let i = 0; i < data.PostLabels.length; i++) {
 					tempArr.push(data.PostLabels[i].Label.label_name);
 				}
@@ -148,33 +153,38 @@ function ViewQn() {
 
 				console.log(post_accepted_response);
 
+				var acceptedAnswer;
 				for (let i = 0; i < post_answers.length; i++) {
 					var postAnswer = post_answers[i];
 
 					if (post_accepted_response.answer_is_accepted && post_accepted_response.response_id === postAnswer.response_id) {
-						var acceptedAnswer = post_answers.splice(i, 1);
-						post_answers.unshift(acceptedAnswer[0]);
+						acceptedAnswer = post_answers.splice(i, 1);
 						console.log(acceptedAnswer);
 					}
 				}
+				for (let i = 0; i < post_answers.length; i++) {
+					if (i == post_answers.length - 1) {
+						break;
+					}
+					if (post_answers[i].response_votes_count < post_answers[i + 1].response_votes_count) {
+						var tmp = post_answers[i];
+						post_answers[i] = post_answers[i + 1];
+						post_answers[i + 1] = tmp;
+						i = -1;
+					}
+				}
+
+				if (acceptedAnswer) {
+					post_answers.unshift(acceptedAnswer[0]);
+				}
 
 
-				console.log(post_answers);
 
 				set_answers(post_answers);
 				set_postComments(post_comments);
 
 			});
 	}, [refreshAnswers, acquireData, post_accepted_response]);
-	// useEffect(() => {
-	// 	axios.get(`http://localhost:8000/answers/posts/${post_id}`)
-	// 		.then(function (response) {
-	// 			var data = response.data
-	// 			set_answers(data);
-	// 		}).catch(function (error) {
-	// 			console.log(error);
-	// 		})
-	// }, [refreshAnswers])
 
 	useEffect(() => formatAnswers(), [isAccepted]);
 
@@ -184,8 +194,8 @@ function ViewQn() {
 			<div className="container-fluid">
 				<div className='container'>
 					<div className='row'>
-						<div className='col-2  border-end'>
-							<button className=' ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
+						<div className='col-2 '>
+							{/* <button className=' ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
 								<ArrowBackIosNewIcon sx={{ fontSize: 23 }} />
 								<p className='mb-0 ms-4 align-middle'>Back</p>
 							</button>
@@ -196,9 +206,9 @@ function ViewQn() {
 							<button className='ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
 								<DeleteIcon sx={{ fontSize: 23 }} />
 								<p className='mb-0 ms-4 align-middle'>Delete</p>
-							</button>
+							</button> */}
 						</div>
-						<div className="col-9 mt-2 mb-1">
+						<div className="col-8 mt-2 mb-1">
 
 
 							<div className='row mt-3'>
@@ -210,7 +220,7 @@ function ViewQn() {
 											post_id={post_id}
 										/>
 										<div className='col-11'>
-											{/* No worries, we do input validation for this innerhtml */}
+											{/* we do input validation for this innerhtml */}
 											<div className='col-12 d-flex align-items-center'>
 
 												<h4 className="fw-bold">{post_title}</h4>
@@ -225,7 +235,7 @@ function ViewQn() {
 																	{bookmarkHover ? "Bookmarked" : ""}
 																</button>
 															) : (
-																<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-secondary anim-enter-active'>
+																<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-secondary anim-enter-active text-nowrap'>
 																	<BookmarkBorderIcon sx={{ fontSize: 26 }} />
 																	{bookmarkHover ? "Bookmark this question?" : ""}
 																</button>
@@ -239,24 +249,24 @@ function ViewQn() {
 											</div>
 
 
-											<div className='d-flex flex-row'>
+											<div className='d-flex flex-row align-items-center'>
 												<div className='min-profile-pic bg-secondary'>
 
 												</div>
-												<p className='ms-2'>
-													{first_name}
-												</p>
-												<p className="fw-light text-secondary mx-2">•</p>
-												<p>
-													{post_created_at}
-												</p>
+												<small className='ms-2 fw-bold'>
+													{first_name} {last_name}
+												</small>
+												{/* <p className="fw-light text-secondary mx-2">•</p> */}
+												<small className="text-secondary mx-2">
+													about {post_created_at}
+												</small>
 											</div>
 											<p className='qn-content mt-3' dangerouslySetInnerHTML={{ __html: post_content }}></p>
 											<div className='d-flex'>
 												{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
 											</div>
 
-											{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
+											{(postComments.length > 0 ? <hr className='mb-1 hr-color'></hr> : null)}
 											{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
 											{addComment ?
 												<div className=' input-group'>
@@ -267,36 +277,36 @@ function ViewQn() {
 												null
 											}
 											<div className='row text-primary mt-2'>
-												<div className='col-3'>
+												<div className='col-2'>
 													<div className='d-inline-block toolbar-btn px-2'>
 														<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center '>
 
 															<ReplyIcon></ReplyIcon>
-															<p className='px-2 py-1 mb-0'>Comment</p>
+															<p className='px-2 mb-0'>Comment</p>
 														</div>
 													</div>
 
 
 												</div>
-												<div className='col-3 '>
+												<div className='col-2 '>
 													<div className='d-inline-block toolbar-btn px-2'>
 														<div className='d-flex flex-row align-items-center '>
 
 															<ModeCommentIcon></ModeCommentIcon>
-															<p className='px-2 py-1 mb-0'>Answer</p>
+															<p className='px-2 mb-0'>Answer</p>
 														</div>
 													</div>
 												</div>
-												<div className='col-3'></div>
+												<div className='col-5'></div>
 												<div className='col-3 '>
 													{!(loggedInUser.user_id === fk_user_id) ? (
-														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
-															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">Report</p>
+														<div className=' text-secondary d-flex flex-row-reverse align-items-center h-100'>
+															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">REPORT</p>
 														</div>
 													) : (
-														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
-															<p className='mb-0'>Edit</p>
-															<p className='mb-0 ms-3'>Delete</p>
+														<div className=' text-secondary d-flex  flex-row-reverse align-items-center h-100'>
+															<a href={`http://localhost:3000/posts/editQn/${post_id}`} className=' text-decoration-none mb-0 text-secondary fw-bold'>EDIT</a>
+															<button className=' text-decoration-none mb-0 me-3 text-secondary fw-bold'>DELETE</button>
 														</div>
 													)}
 												</div>
@@ -307,9 +317,10 @@ function ViewQn() {
 
 
 									</div>
-									<hr></hr>
+
 
 								</div>
+								<hr className="mt-3"></hr>
 								<div className='mt-1'>
 									<p className='mb-3'>{answers.length} Answers</p>
 									<div>
@@ -338,10 +349,7 @@ function ViewQn() {
 							</div >
 
 						</div >
-						<div className='col-1 border-start'>
-							<div className=' container'>
-								WIP
-							</div>
+						<div className='col-2'>
 						</div>
 					</div >
 
@@ -401,17 +409,19 @@ function ViewQn() {
 
 	function submitAnswer() {
 
-		// Temp User ID
-		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
+
+		var token = findCookie("token");
 		var answer_content = DOMPurify.sanitize(answer_input);
 		var response_type = "answer";
 
 
 		axios.post("http://localhost:8000/responses/", {
-			user_id: user_id,
+			user_id: loggedInUser.user_id,
 			post_id: post_id,
 			response_type: response_type,
 			response: answer_content
+		}, {
+			headers: { authorization: "Bearer " + token }
 		}).then(function (response) {
 			console.log(response);
 			set_refreshAnswers(!refreshAnswers);
@@ -422,15 +432,17 @@ function ViewQn() {
 	}
 
 	function submitPostComment() {
-		// Temp User ID
-		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
+
+		var token = findCookie("token");
 		var response_type = "comment";
 
 		axios.post("http://localhost:8000/responses/", {
-			user_id: user_id,
+			user_id: loggedInUser.user_id,
 			post_id: post_id,
 			response_type: response_type,
 			response: postComment
+		}, {
+			headers: { authorization: "Bearer " + token }
 		}).then(function (response) {
 			console.log(response);
 			refreshAnswersFunction();
@@ -522,8 +534,6 @@ function ViewQn() {
 				toast.error("Error Removing Bookmark");
 			});
 		}
-
-
 	}
 
 }
