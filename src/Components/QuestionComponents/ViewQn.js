@@ -22,6 +22,16 @@ import { useNavigate } from "react-router-dom";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 
+import { css } from "@emotion/react";
+import HashLoader from "react-spinners/HashLoader";
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+  top: 32vh;
+`;
+
 
 function ViewQn() {
 
@@ -56,6 +66,9 @@ function ViewQn() {
 
 	const [acquireData, setAcquireData] = useState(false);
 
+	const [isLoadingPosts, setIsLoadingPosts] = useState(true);
+	const [isLoadingComments, setIsLoadingComments] = useState(true);
+
 	const navigate = useNavigate();
 
 	useEffect(() => acquireUserData(), []);
@@ -64,7 +77,6 @@ function ViewQn() {
 		if (!acquireData) {
 			return;
 		}
-		toast.info("Retreiving post...");
 
 		axios.get(`http://localhost:8000/posts/${post_id}`)
 			.then(function (response) {
@@ -96,6 +108,7 @@ function ViewQn() {
 
 				var parsedTime = parseTime(data.post_created_at);
 				set_post_created_at(parsedTime);
+				setIsLoadingPosts(false);
 
 			}).catch(function (error) {
 				console.log(error);
@@ -106,8 +119,6 @@ function ViewQn() {
 		if (!acquireData || Object.keys(post_accepted_response).length === 0) {
 			return;
 		}
-
-		toast.info("Retreiving answers...");
 
 		axios.get(`http://localhost:8000/responses/${post_id}`)
 			.then(function (response) {
@@ -163,6 +174,7 @@ function ViewQn() {
 
 				set_answers(post_answers);
 				set_postComments(post_comments);
+				setIsLoadingComments(false);
 
 			});
 	}, [refreshAnswers, acquireData, post_accepted_response]);
@@ -200,143 +212,143 @@ function ViewQn() {
 						</div>
 						<div className="col-9 mt-2 mb-1">
 
+							{(isLoadingPosts && isLoadingComments) ? <HashLoader color={"#a5c1e8"} loading={isLoadingPosts} css={override} size={150} /> :
+								<div className='row mt-3'>
+									<div className='col-11'>
+										<div className='row'>
+											<QnVotes
+												key={"vote_" + post_id}
+												user_id={fk_user_id}
+												post_id={post_id}
+											/>
+											<div className='col-11'>
+												{/* No worries, we do input validation for this innerhtml */}
+												<div className='col-12 d-flex align-items-center'>
 
-							<div className='row mt-3'>
-								<div className='col-11'>
-									<div className='row'>
-										<QnVotes
-											key={"vote_" + post_id}
-											user_id={fk_user_id}
-											post_id={post_id}
-										/>
-										<div className='col-11'>
-											{/* No worries, we do input validation for this innerhtml */}
-											<div className='col-12 d-flex align-items-center'>
+													<h4 className="fw-bold">{post_title}</h4>
+													<div className='flex-grow-1'></div>
 
-												<h4 className="fw-bold">{post_title}</h4>
-												<div className='flex-grow-1'></div>
+													<div>
+														{
+															!(loggedInUser.user_id === fk_user_id) ?
+																(isBookmarked ? (
+																	<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-success anim-enter-active'>
+																		<BookmarkIcon sx={{ fontSize: 26 }} />
+																		{bookmarkHover ? "Bookmarked" : ""}
+																	</button>
+																) : (
+																	<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-secondary anim-enter-active'>
+																		<BookmarkBorderIcon sx={{ fontSize: 26 }} />
+																		{bookmarkHover ? "Bookmark this question?" : ""}
+																	</button>
+																))
+																: ("")
+														}
 
-												<div>
-													{
-														!(loggedInUser.user_id === fk_user_id) ?
-															(isBookmarked ? (
-																<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-success anim-enter-active'>
-																	<BookmarkIcon sx={{ fontSize: 26 }} />
-																	{bookmarkHover ? "Bookmarked" : ""}
-																</button>
-															) : (
-																<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-secondary anim-enter-active'>
-																	<BookmarkBorderIcon sx={{ fontSize: 26 }} />
-																	{bookmarkHover ? "Bookmark this question?" : ""}
-																</button>
-															))
-															: ("")
-													}
-
-												</div>
-
-
-											</div>
-
-
-											<div className='d-flex flex-row'>
-												<div className='min-profile-pic bg-secondary'>
-
-												</div>
-												<p className='ms-2'>
-													{first_name}
-												</p>
-												<p className="fw-light text-secondary mx-2">•</p>
-												<p>
-													{post_created_at}
-												</p>
-											</div>
-											<p className='qn-content mt-3' dangerouslySetInnerHTML={{ __html: post_content }}></p>
-											<div className='d-flex'>
-												{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
-											</div>
-
-											{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
-											{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
-											{addComment ?
-												<div className=' input-group'>
-													<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
-													<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
-												</div>
-												:
-												null
-											}
-											<div className='row text-primary mt-2'>
-												<div className='col-3'>
-													<div className='d-inline-block toolbar-btn px-2'>
-														<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center '>
-
-															<ReplyIcon></ReplyIcon>
-															<p className='px-2 py-1 mb-0'>Comment</p>
-														</div>
 													</div>
 
 
 												</div>
-												<div className='col-3 '>
-													<div className='d-inline-block toolbar-btn px-2'>
-														<div className='d-flex flex-row align-items-center '>
 
-															<ModeCommentIcon></ModeCommentIcon>
-															<p className='px-2 py-1 mb-0'>Answer</p>
+
+												<div className='d-flex flex-row'>
+													<div className='min-profile-pic bg-secondary'>
+
+													</div>
+													<p className='ms-2'>
+														{first_name}
+													</p>
+													<p className="fw-light text-secondary mx-2">•</p>
+													<p>
+														{post_created_at}
+													</p>
+												</div>
+												<p className='qn-content mt-3' dangerouslySetInnerHTML={{ __html: post_content }}></p>
+												<div className='d-flex'>
+													{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
+												</div>
+
+												{(postComments.length > 0 ? <hr className='mb-1'></hr> : null)}
+												{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
+												{addComment ?
+													<div className=' input-group'>
+														<input onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
+														<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
+													</div>
+													:
+													null
+												}
+												<div className='row text-primary mt-2'>
+													<div className='col-3'>
+														<div className='d-inline-block toolbar-btn px-2'>
+															<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center '>
+
+																<ReplyIcon></ReplyIcon>
+																<p className='px-2 py-1 mb-0'>Comment</p>
+															</div>
+														</div>
+
+
+													</div>
+													<div className='col-3 '>
+														<div className='d-inline-block toolbar-btn px-2'>
+															<div className='d-flex flex-row align-items-center '>
+
+																<ModeCommentIcon></ModeCommentIcon>
+																<p className='px-2 py-1 mb-0'>Answer</p>
+															</div>
 														</div>
 													</div>
-												</div>
-												<div className='col-3'></div>
-												<div className='col-3 '>
-													{!(loggedInUser.user_id === fk_user_id) ? (
-														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
-															<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">Report</p>
-														</div>
-													) : (
-														<div className=' text-secondary d-flex flex-row align-items-center h-100'>
-															<p className='mb-0'>Edit</p>
-															<p className='mb-0 ms-3'>Delete</p>
-														</div>
-													)}
+													<div className='col-3'></div>
+													<div className='col-3 '>
+														{!(loggedInUser.user_id === fk_user_id) ? (
+															<div className=' text-secondary d-flex flex-row align-items-center h-100'>
+																<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">Report</p>
+															</div>
+														) : (
+															<div className=' text-secondary d-flex flex-row align-items-center h-100'>
+																<p className='mb-0'>Edit</p>
+																<p className='mb-0 ms-3'>Delete</p>
+															</div>
+														)}
+													</div>
+
 												</div>
 
+											</div>
+
+
+										</div>
+										<hr></hr>
+
+									</div>
+									<div className='mt-1'>
+										<p className='mb-3'>{answers.length} Answers</p>
+										<div>
+											{answers.map((answer, index) =>
+												<Answer
+													refreshAnswers={refreshAnswersFunction}
+													isRemoved={isRemoved}
+													isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
+													key={index}
+													answer={answer}
+													index={index}
+													setAsAcceptedAnswer={setAsAcceptedAnswer}
+												/>)}
+										</div>
+										<div>
+											<p>Your Answer</p>
+											<div className="col-11">
+												<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
+												<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
 											</div>
 
 										</div>
 
 
 									</div>
-									<hr></hr>
-
-								</div>
-								<div className='mt-1'>
-									<p className='mb-3'>{answers.length} Answers</p>
-									<div>
-										{answers.map((answer, index) =>
-											<Answer
-												refreshAnswers={refreshAnswersFunction}
-												isRemoved={isRemoved}
-												isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
-												key={index}
-												answer={answer}
-												index={index}
-												setAsAcceptedAnswer={setAsAcceptedAnswer}
-											/>)}
-									</div>
-									<div>
-										<p>Your Answer</p>
-										<div className="col-11">
-											<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
-											<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
-										</div>
-
-									</div>
-
-
-								</div>
-							</div >
-
+								</div >
+							}
 						</div >
 						<div className='col-1 border-start'>
 							<div className=' container'>
@@ -440,7 +452,6 @@ function ViewQn() {
 	}
 
 	function setAsAcceptedAnswer(index, response_id, post_id) {
-		toast.info("Setting as Accepted Answer...");
 
 		if (!(post_accepted_response.response_id === response_id)) {
 

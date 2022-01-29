@@ -279,7 +279,7 @@ function CreateQn() {
 					console.log(response);
 				}).catch(function (error) {
 					console.log(error);
-					reject();
+					reject(error.response.data.message);
 				});
 			}),
 			{

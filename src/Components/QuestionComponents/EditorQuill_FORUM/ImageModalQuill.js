@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useCallback } from "react";
 import { Button, Modal } from "semantic-ui-react";
 import CloseIcon from "@mui/icons-material/Close";
@@ -22,7 +23,7 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 			setFileIsValid(true);
 			set_imageURL(res.data.media_url);
 
-		}).catch(err => {
+		}).catch(() => {
 			setFileIsValid(false);
 		});
 	}

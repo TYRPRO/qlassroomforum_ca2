@@ -34,7 +34,7 @@ import EditQn from "./Components/QuestionComponents/EditQn";
 
 const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
 
-const store = createStore(allReducers, applyMiddleware(thunk));
+const store = createStore(allReducers, composedTool);
 
 // login functions
 function checkLogin() {

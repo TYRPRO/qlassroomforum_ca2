@@ -172,8 +172,8 @@ const Channel = (props) => {
 							<br />
 							<label>Grade</label>
 							<div>
-								<select className="SelectGrade" defaultValue={HasSubject == false && "default"} id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event) => GradeChange(event)}>
-									<option value="default" selected={!HasSubject ? true : false}>Select All Grades</option>
+								<select className="SelectGrade" value={HasSubject == false ? "default" : SelectedGrade} id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event) => GradeChange(event)}>
+									<option value="default">Select All Grades</option>
 									{Grades.map((data) => (
 										<option key={data.grade_id} value={data.grade_id} >{data.grade_name}</option>
 									))}

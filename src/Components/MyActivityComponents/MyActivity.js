@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; //npm i axios
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { css } from "@emotion/react";
+import HashLoader from "react-spinners/HashLoader";
 
 //File Imports (CSS/Images)
 import "./activity.css";
@@ -12,6 +14,13 @@ import "./activity.css";
 import Question from "./MyActivityQuestions";
 import Answer from "./MyActivityAnswers";
 // import SavedQuestion from "./MyActivitySavedQuestions";
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+  top: 15vh;
+`;
 
 //Component Creation
 const MyActivity = () => {
@@ -118,7 +127,6 @@ const MyActivity = () => {
 		if (!acquireData) {
 			return;
 		}
-		toast.info("Retrieving Questions...");
 
 		// axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
 		axios.get("http://localhost:8000/posts/user/" + user_id)
@@ -188,7 +196,6 @@ const MyActivity = () => {
 				setQuestionTotalPages(totalQuestions);
 				setIsLoadingQuestions(false);
 
-				toast.success("Questions Successfully Loaded");
 			})
 			.catch((err) => {
 				console.log(err);
@@ -200,7 +207,6 @@ const MyActivity = () => {
 		if (!acquireData) {
 			return;
 		}
-		toast.info("Retrieving Answers...");
 
 		axios.get("http://localhost:8000/answers/user/" + user_id)
 			.then((data) => {
@@ -239,7 +245,6 @@ const MyActivity = () => {
 				setAnswerTotalPages(totalAnswers);
 				setIsLoadingAnswers(false);
 
-				toast.success("Answers Successfully Loaded");
 			})
 			.catch((err) => {
 				console.log(err);
@@ -251,7 +256,6 @@ const MyActivity = () => {
 		if (!acquireData) {
 			return;
 		}
-		toast.info("Retrieving Saved Questions...");
 
 		axios.get("http://localhost:8000/posts/save/user/" + user_id)
 			.then((data) => {
@@ -318,7 +322,6 @@ const MyActivity = () => {
 				setSavedQuestionTotalPages(totalSavedQuestions);
 				setIsLoadingSavedQuestions(false);
 
-				toast.success("Saved Questions Successfully Loaded");
 			})
 			.catch((err) => {
 				console.log(err);
@@ -465,7 +468,7 @@ const MyActivity = () => {
 						</ul>
 
 						<div className="tab-content mt-3">
-							{!isLoadingAnswers && tabselected == "answers" ? (
+							{isLoadingAnswers ? <HashLoader color={"#a5c1e8"} loading={isLoadingAnswers} css={override} size={150} /> : tabselected == "answers" ? (
 								answersToDisplay.length > 0 ? (
 									answersToDisplay.map((data) => (
 										<Answer
@@ -480,7 +483,7 @@ const MyActivity = () => {
 								) : (
 									<div className="text-center">No Answers At The Moment</div>
 								)
-							) : !isLoadingSavedQuestions && tabselected == "savedquestions" ? (
+							) : isLoadingSavedQuestions ? <HashLoader color={"#a5c1e8"} loading={isLoadingSavedQuestions} css={override} size={150} /> : tabselected == "savedquestions" ? (
 								savedQuestionToDisplay.length > 0 ? (
 									savedQuestionToDisplay.map((data) => (
 										<Question
@@ -495,7 +498,7 @@ const MyActivity = () => {
 								) : (
 									<div className="text-center">No Saved Questions At The Moment</div>
 								)
-							) : !isLoadingQuestions && (
+							) : isLoadingQuestions ? <HashLoader color={"#a5c1e8"} loading={isLoadingQuestions} css={override} size={150} /> : (
 								questionToDisplay.length > 0 ? (
 									questionToDisplay.map((data) => (
 										<Question
@@ -514,6 +517,7 @@ const MyActivity = () => {
 							}
 						</div>
 
+						{(!isLoadingAnswers && tabselected == "answers" || !isLoadingSavedQuestions && tabselected == "savedquestions" || !isLoadingQuestions) &&
 						<div id="pagination" className="w-100 my-3 row">
 							<div className="col-3 text-center">
 								<button className="mx-auto my-2" onClick={() => handlePagePrevious()}><i className='fas fa-arrow-left me-2'></i>BACK</button>
@@ -546,6 +550,7 @@ const MyActivity = () => {
 								<button className="mx-auto my-2" onClick={() => handlePageNext()}>NEXT<i className='fas fa-arrow-right ms-2'></i></button>
 							</div>
 						</div>
+						}
 					</div>
 				</div>
 			</div>
