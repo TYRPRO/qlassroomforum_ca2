@@ -94,7 +94,7 @@ const CreateSubforum = () => {
 
 	return (
 		<React.Fragment>
-			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
+			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
 			<div className="container-xxl p-3">
 				<div className="row">
 					<div className=" col-lg-8">

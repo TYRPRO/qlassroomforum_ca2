@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 import "./Post.css";
 import "../../Common/common.css";
@@ -15,11 +16,14 @@ const Post = (props) => {
 		Posts: PropTypes.array
 	};
 
+	
+
 	// Missing items
 	// Line 19 to add Voting component
 	// Line 26 to replace span for profile picture
 	// Line 43 to add answer component
 	// Line 19 optional to remove math.random function for key, used it to test pagination
+
 
 	function redirect(post_id) {
 		window.location.href = `/posts/${post_id}`;
@@ -128,7 +132,7 @@ const Post = (props) => {
 							</div>
 							<Toolbar />
 						</div>
-						<div className="col-lg-2 d-flex p-2" onClick={() => redirect(data.post_id)}><AnswersPill answers={data.post_answers_count} isAnswered={data.post_is_answered}/> </div>
+						<div className="col-lg-2 d-flex p-2" onClick={() => redirect(data.post_id)}><AnswersPill answers={data.Responses.length} isAnswered={data.post_is_answered}/> </div>
 					</div>
 				</div>
 			))

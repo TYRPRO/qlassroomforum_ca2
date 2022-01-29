@@ -55,7 +55,7 @@ const Subforum = () => {
 
 	return (
 		<React.Fragment>
-			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
+			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
 			<div className="row m-2 container">
 				<div className="container-fluid">
 					<div className='container position-relative'>

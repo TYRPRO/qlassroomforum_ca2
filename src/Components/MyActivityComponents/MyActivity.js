@@ -186,7 +186,7 @@ const MyActivity = () => {
 
 	return (
 		<React.Fragment>
-			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
+			<ToastContainer position="top-center" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
 			<div className="d-flex flex-row flex-grow-1 justify-content-center" id="myactivity">
 				<div className="flex-fill d-flex flex-row flex-wrap">
 					<div className="ms-lg-0 mt-4 ms-5 w-25 me-5 d-flex flex-column flex-grow-1 flex-lg-grow-0">
