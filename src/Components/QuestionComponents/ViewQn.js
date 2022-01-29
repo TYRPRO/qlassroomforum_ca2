@@ -194,7 +194,7 @@ function ViewQn() {
 			<div className="container-fluid">
 				<div className='container'>
 					<div className='row'>
-						<div className='col-1 '>
+						<div className='col-2 '>
 							{/* <button className=' ms-4 mt-3 ps-1 py-2 w-75 btn btn-secondary d-flex align-items-center ' onClick={() => navigate(-1)}>
 								<ArrowBackIosNewIcon sx={{ fontSize: 23 }} />
 								<p className='mb-0 ms-4 align-middle'>Back</p>
@@ -208,7 +208,7 @@ function ViewQn() {
 								<p className='mb-0 ms-4 align-middle'>Delete</p>
 							</button> */}
 						</div>
-						<div className="col-10 mt-2 mb-1">
+						<div className="col-8 mt-2 mb-1">
 
 
 							<div className='row mt-3'>
@@ -349,7 +349,7 @@ function ViewQn() {
 							</div >
 
 						</div >
-						<div className='col-1'>
+						<div className='col-2'>
 						</div>
 					</div >
 
