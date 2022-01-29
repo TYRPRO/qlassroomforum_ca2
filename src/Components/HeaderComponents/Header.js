@@ -68,7 +68,7 @@ const Header = () => {
 					<div id="readitNavbar" className="collapse navbar-collapse">
 						<form className="flex-grow-1 me-5 ms-5 mb-0" onSubmit={runSearch}>
 							<div className="input-group">
-								<input className="form-control h-100 " type="text" placeholder="Search for more question" aria-label="Search" id="Search" />
+								<input className="form-control" type="text" placeholder="Search for more question" aria-label="Search" id="Search" />
 								<button className="btn bg-white" type="submit" id="headerSearchBtn" onClick={() => runSearch}>
 									<i className="fas fa-search text-white"></i>
 								</button>
