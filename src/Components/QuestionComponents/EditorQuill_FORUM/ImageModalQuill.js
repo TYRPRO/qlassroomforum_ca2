@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useCallback } from "react";
 import { Button, Modal } from "semantic-ui-react";
 import CloseIcon from "@mui/icons-material/Close";

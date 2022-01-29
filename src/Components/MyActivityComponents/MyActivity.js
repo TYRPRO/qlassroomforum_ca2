@@ -21,6 +21,8 @@ import {
 } from "../../store/actions/MyActivity";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { css } from "@emotion/react";
+import HashLoader from "react-spinners/HashLoader";
 
 //File Imports (CSS/Images)
 import "./activity.css";
@@ -29,6 +31,13 @@ import "./activity.css";
 import Question from "./MyActivityQuestions";
 import Answer from "./MyActivityAnswers";
 // import SavedQuestion from "./MyActivitySavedQuestions";
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+  top: 15vh;
+`;
 
 //Component Creation
 const MyActivity = () => {
@@ -222,7 +231,7 @@ const MyActivity = () => {
 						</ul>
 
 						<div className="tab-content mt-3">
-							{!isLoadingAnswers && tabselected == "answers" ? (
+							{isLoadingAnswers ? <HashLoader color={"#a5c1e8"} loading={isLoadingAnswers} css={override} size={150} /> : tabselected == "answers" ? (
 								answerToDisplay.length > 0 ? (
 									answerToDisplay.map((data) => (
 										<Answer
@@ -239,7 +248,7 @@ const MyActivity = () => {
 								) : (
 									<div className="text-center">No Answers At The Moment</div>
 								)
-							) : !isLoadingSavedQuestions && tabselected == "savedquestions" ? (
+							) : isLoadingSavedQuestions ? <HashLoader color={"#a5c1e8"} loading={isLoadingSavedQuestions} css={override} size={150} /> : tabselected == "savedquestions" ? (
 								savedquestionToDisplay.length > 0 ? (
 									savedquestionToDisplay.map((data) => (
 										<Question
@@ -256,7 +265,7 @@ const MyActivity = () => {
 								) : (
 									<div className="text-center">No Saved Questions At The Moment</div>
 								)
-							) : !isLoadingQuestions && (
+							) : isLoadingQuestions ? <HashLoader color={"#a5c1e8"} loading={isLoadingQuestions} css={override} size={150} /> : (
 								questionToDisplay.length > 0 ? (
 									questionToDisplay.map((data) => (
 										<Question
@@ -278,6 +287,7 @@ const MyActivity = () => {
 							}
 						</div>
 
+						{(!isLoadingAnswers && tabselected == "answers" || !isLoadingSavedQuestions && tabselected == "savedquestions" || !isLoadingQuestions) &&
 						<div id="pagination" className="w-100 my-3 row">
 							<div className="col-3 text-center">
 								<button className="mx-auto my-2" onClick={() => handlePagePrevious()}><i className='fas fa-arrow-left me-2'></i>BACK</button>
@@ -310,6 +320,7 @@ const MyActivity = () => {
 								<button className="mx-auto my-2" onClick={() => handlePageNext()}>NEXT<i className='fas fa-arrow-right ms-2'></i></button>
 							</div>
 						</div>
+						}
 					</div>
 				</div>
 			</div>
