@@ -28,10 +28,11 @@ const Post = (props) => {
 		let extractedContent = "";
 		let skip = false;
 		for (let i = 0; i < post_content.length; i++) {
-			if (post_content[i] == "<") {
+			if (post_content.slice(i, i + 10) == "<img src=\"") {
+				i += 9;
 				skip = true;
 			}
-			else if (post_content[i] == ">") {
+			else if (post_content[i] == ">" && skip == true) {
 				skip = false;
 			}
 			else if (!skip == true) {
@@ -50,7 +51,6 @@ const Post = (props) => {
 			if (post_content.slice(i, i + 10) == "<img src=\"") {
 				i += 9;
 				record = true;
-				console.log("True recorded");
 			}
 			else if (post_content[i] == "\"" && record == true) {
 				record = false;
@@ -67,7 +67,7 @@ const Post = (props) => {
 	return <div>
 		{props.Posts.length >= 1 ?
 			props.Posts.map((data) => (
-				<div key={data.post_id + Math.random(1000)} className="post rounded mb-2 border-top border-bottom" id={"post_" + data.post_id}>
+				<div key={data.post_id + Math.random(1000)} className="posts rounded mb-2" id={"post_" + data.post_id}>
 					<div className="row g-0">
 						<PostVotes
 							key={"vote_" + data.post_id}
@@ -90,7 +90,7 @@ const Post = (props) => {
 									<p className="fw-light text-secondary mx-1">•</p>
 									<p className="text-secondary" id={"post_" + data.post_id + "_time"}>{parseTime(data.post_created_at)}</p>
 								</div>
-								<p className="mt-2 PostBody">{extractContent(data.post_content)}</p>
+								<p className="mt-2 PostBody" dangerouslySetInnerHTML={{__html:extractContent(data.post_content)}}></p>
 								<div id={"post_media_" + data.post_id} className="d-flex flex-row mediaDiv pb-3">
 									{extractImages(data.post_content).map((image_url, index) => {
 										if (index < 2) {

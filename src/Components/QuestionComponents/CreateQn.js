@@ -38,6 +38,7 @@ function CreateQn() {
 	const [shown_tags, set_shown_tags] = useState([]);
 	const [selected_tags, set_selected_tags] = useState([]);
 
+	const [loggedInUser, set_loggedInUser] = useState({});
 
 	//  Rich Text Editor Stores selected text.
 	const [selected, set_selected] = useState(null);
@@ -79,6 +80,7 @@ function CreateQn() {
 				console.log(error);
 
 			});
+		acquireUserData();
 	}, []);
 
 
@@ -120,38 +122,25 @@ function CreateQn() {
 						break;
 					}
 				}
-				// axios.get(`https://testapi.qlassroom.ai/topics?subject_id=${subject_id}&grade_id=${grade_id}`).then(function (response) {
-				// 	var data = response.data.topics;
-				// 	if (data[0].label_name === "Topics") {
-				// 		data.splice(0, 1);
-				// 	}
 
-				// 	console.log(data);
-				// 	var temp_shown_tags = [];
-				// 	for (let i = 0; i < data.length; i++) {
-				// 		temp_shown_tags.push(data[i]);
-				// 	}
+				if (subject_id && grade_id) {
+					axios.get(`http://localhost:8000/label/${subject_id}/${grade_id}`).then(function (response) {
+						var data = response.data;
+						if (data[0].label_name === "Topics") {
+							data.splice(0, 1);
+						}
 
-				// 	set_tags(data);
-				// 	set_shown_tags(temp_shown_tags);
-				// 	set_selected_tags([]);
-				// });
-				axios.get(`http://localhost:8000/label/${subject_id}/${grade_id}`).then(function (response) {
-					var data = response.data;
-					if (data[0].label_name === "Topics") {
-						data.splice(0, 1);
-					}
+						console.log(data);
+						var temp_shown_tags = [];
+						for (let i = 0; i < data.length; i++) {
+							temp_shown_tags.push(data[i]);
+						}
 
-					console.log(data);
-					var temp_shown_tags = [];
-					for (let i = 0; i < data.length; i++) {
-						temp_shown_tags.push(data[i]);
-					}
-
-					set_tags(data);
-					set_shown_tags(temp_shown_tags);
-					set_selected_tags([]);
-				});
+						set_tags(data);
+						set_shown_tags(temp_shown_tags);
+						set_selected_tags([]);
+					});
+				}
 			}
 
 		} catch (err) {
@@ -167,50 +156,48 @@ function CreateQn() {
 			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="dark" pauseOnFocusLoss draggable pauseOnHover />
 			<div className="container">
 				<div className='row'>
+					<div className="col-lg-2"></div>
 					<div className='col-12 col-lg-8'>
 						<h3 className='mt-4 mb-3'>Ask a Question</h3>
-						<div className=' bg-white py-3 px-4 shadow-sm border'>
+						<div className=''>
 							<form>
 								<div className="form-group">
 
-									<label>Subject</label>
-									<div className='form-text mt-0'>
-									Select the subject of your question.
-									</div>
-									<div>
-										<select className=' form-select' onChange={(event) => handleSelectedSubjectChange(event.target.value)}>
-											{subjects.map((subject, index) => <option key={index} value={subject}>{subject}</option>)}
-										</select>
+									<label className='mt-3 mb-1 fw-bold'>Question Title</label>
+									<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"Be specific and imagine you are asking a question to another person."}></input>
+
+									<label htmlFor='qn_body' className='mt-4 mb-1 fw-bold '>Body</label>
+									<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody} placeholder={"Include all the information someone would need to answer your question"}></QuillEditor>
+
+									<div className="row">
+										<div className="col-12 col-md-6">
+											<label className="mt-4 fw-bold">Subject</label>
+											<div className='form-text mt-0'>
+												Select the subject of your question.
+											</div>
+											<div>
+												<select className=' form-select' onChange={(event) => handleSelectedSubjectChange(event.target.value)}>
+													{subjects.map((subject, index) => <option key={index} value={subject}>{subject}</option>)}
+												</select>
+											</div>
+										</div>
+										<div className="col-12 col-md-6">
+											<label className='mt-4 fw-bold'>Grade</label>
+											<div className='form-text mt-0'>
+												Select the grade level that best fits your question.
+											</div>
+											<div>
+												<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
+													<option disabled={true} value={"disabled"}>Please select a grade:</option>
+													{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
+												</select>
+											</div>
+										</div>
 									</div>
 
-									<label className='mt-3'>Grade</label>
-									<div className='form-text mt-0'>
-									Select the grade level that best fits your question.
-									</div>
-									<div>
-										<select className=' form-select' value={selected_grade} onChange={(event) => set_selected_grade(event.target.value)}>
-											<option disabled={true} value={"disabled"}>Please select a grade:</option>
-											{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
-										</select>						Be specific and imagine you are asking a question to another person.
-									</div>
-									<input onChange={handleChange_qnTitle} type="text" name='qn_title' className=' form-control' placeholder={"e.g. Find the intercept between y=2x and 12=2y+x. "}></input>
-
-									<label htmlFor='qn_body' className='mt-2'>Body</label>
+									<label className='mt-4 fw-bold'>Tags</label>
 									<div className=' form-text mt-0'>
-									Include all the information someone would need to answer your question
-									</div>
-									<QuillEditor customToolbarId={"testing"} handleContentChange={set_qnBody} contentHTML={qnBody}></QuillEditor>
-									{/* <TextEditor storeInput={set_qnBody} /> */}
-									{/* <div value={qnBody} ref={qn_body_textarea} contentEditable='true' id='qn_body_textarea' className='form-control d-inline-block' style={{ overflow: 'scroll', resize: 'vertical', wordBreak: 'break-word', minHeight: '12vh' }}>
-								</div> */}
-
-
-
-
-
-									<label className='mt-3'>Tags</label>
-									<div className=' form-text mt-0'>
-									Add some tags to help others find your question.
+										Add some tags to help others find your question.
 									</div>
 									<div className='form-control d-flex flex-wrap' tabIndex={0} onClick={() => set_openDropdown(openDropdown ? false : true)}>
 
@@ -226,18 +213,17 @@ function CreateQn() {
 
 							</form>
 						</div>
-						<button onClick={submitPost} className='btn btn-primary shadow-sm mt-4'>Review your question</button>
+						<div className="d-flex flex-row">
+							<div className="flex-grow-1"></div>
+							<button onClick={submitPost} className='btn btn-primary shadow-sm mt-4'>Post question</button>
+						</div>
 					</div>
-					<div className='col-lg-4'>
-						<h5 >Left</h5>
-						<MathJaxContext config={config}>
-							<MathJax>{"`(10)/(4x) approx 2^(12)`"}</MathJax>
-						</MathJaxContext>
+					<div className='col-lg-2'>
 					</div>
 				</div>
 			</div>
 		</React.Fragment>
-		
+
 
 	);
 
@@ -258,28 +244,27 @@ function CreateQn() {
 
 
 
-		// Temporary user_id;
-		var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
-
-
+		var token = findCookie("token");
 		toast.promise(
 			new Promise((resolve, reject) => {
 				axios.post("http://localhost:8000/posts", {
 					title: qnTitle,
 					content: qnBody,
-					user_id: user_id,
+					user_id: loggedInUser.user_id,
 					subforum_id: subject_id,
 					grade_id: grade_id,
 					tags: tags
+				}, {
+					headers: { authorization: "Bearer " + token }
 				}).then(function (response) {
-					setTimeout(() => {	
+					setTimeout(() => {
 						window.location.href = `/posts/${response.data.post_id}`;
 					}, 2500);
 					resolve();
 					console.log(response);
 				}).catch(function (error) {
 					console.log(error);
-					reject();
+					reject(error.response.data.message);
 				});
 			}),
 			{
@@ -292,9 +277,37 @@ function CreateQn() {
 				},
 			}
 		);
+	}
 
+	function findCookie(name) {
+		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+		if (match) {
+			return (match[2]);
+		}
+		else {
+			return ("error");
+		}
+	}
+	function acquireUserData() {
+		var token = findCookie("token");
 
-		
+		axios.get("http://localhost:8000/user/userData",
+			{
+				headers: { "Authorization": "Bearer " + token }
+			})
+			.then(response => {
+				var data = response.data;
+				set_loggedInUser({
+					user_id: data.user_id,
+					first_name: data.first_name,
+					last_name: data.last_name,
+					role: data.roles,
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+				window.location.assign("/login");
+			});
 	}
 
 	function addTagSelect(tag) {
@@ -326,7 +339,7 @@ function CreateQn() {
 				tag_object = selected_tags[i];
 			} else {
 				temp_selected_tags.push(selected_tags[i]);
-				
+
 			}
 		}
 

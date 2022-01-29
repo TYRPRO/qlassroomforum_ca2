@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useCallback } from "react";
 import { Button, Modal } from "semantic-ui-react";
 import CloseIcon from "@mui/icons-material/Close";
@@ -11,6 +12,7 @@ import "./conflict-agreement.css";
 
 const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => {
 
+	// eslint-disable-next-line no-unused-vars
 	const [selectedFile, set_selectedFile] = useState(value);
 	const [imageURL, set_imageURL] = useState("");
 	const [fileIsValid, setFileIsValid] = useState(false);
@@ -22,7 +24,7 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 			setFileIsValid(true);
 			set_imageURL(res.data.media_url);
 
-		}).catch(err => {
+		}).catch(() => {
 			setFileIsValid(false);
 		});
 	}

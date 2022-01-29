@@ -13,3 +13,7 @@
 .disable-pointer-events{
 	pointer-events: none;
 }
+
+.small-text {
+	font-size: 0.9em;
+}

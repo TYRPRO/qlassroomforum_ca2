@@ -4,7 +4,7 @@ import "../../Common/common.css";
 const notAnsweredClassess = "d-flex align-items-center p-2 rounded-pill cursor-pointer user-select-none  btn-sm text-center";
 const hasAnswers = notAnsweredClassess;
 const answeredClasses = notAnsweredClassess + " border bg-light-green";
-const unansweredText = "text-center align-middle px-3";
+const unansweredText = "text-center align-middle px-3 small-text";
 
 const AnswersPill = (props) => {
 	const answers = props.answers;

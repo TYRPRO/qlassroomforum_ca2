@@ -18,6 +18,14 @@
 	 background-color: rgba(131, 248, 248, 0.753);
  }
 
+ .posts:hover {
+	box-shadow: 0 0 11px rgba(5, 96, 156, 0.301);
+ }
+
+ .posts {
+	border-radius: 10em;
+	background-color: white;
+ }
 #voteText {
 	font-size: 10px;
 }
