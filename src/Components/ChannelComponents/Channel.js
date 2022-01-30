@@ -33,7 +33,7 @@ const Channel = (props) => {
 	// Get Subjects/Subforum 
 	function GetSubjects() {
 		// Call backend to get all subjects
-		axios.get("http://localhost:8000/subforum")
+		axios.get("https://qlassroombackend.herokuapp.com/subforum")
 			.then(res => {
 				setSubjects(res.data);
 			})
@@ -45,7 +45,7 @@ const Channel = (props) => {
 	// Get Grades
 	function GetGrades() {
 		// Call backend to get all grades
-		axios.get("http://localhost:8000/grade")
+		axios.get("https://qlassroombackend.herokuapp.com/grade")
 			.then(res => {
 				setGrades(res.data);
 			})

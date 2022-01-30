@@ -20,7 +20,7 @@ const PostVotes = (props) => {
 	function acquireUserData() {
 		var token = findCookie("token");
 
-		axios.get("http://localhost:8000/user/userData",
+		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
 			{
 				headers: { "Authorization": "Bearer " + token }
 			})
@@ -53,7 +53,7 @@ const PostVotes = (props) => {
 		if (acquireData != true) {
 			return;
 		}
-		axios.get("http://localhost:8000/vote/post_rating?user_id=" +
+		axios.get("https://qlassroombackend.herokuapp.com/vote/post_rating?user_id=" +
 			user_id + "&post_id=" + props.post_id)
 			.then(response => {
 				var data = response.data;
@@ -94,7 +94,7 @@ const PostVotes = (props) => {
 
 	function VoteCount() {
 		setVoteCount(0);
-		axios.get("http://localhost:8000/vote/posts/" + props.post_id)
+		axios.get("https://qlassroombackend.herokuapp.com/vote/posts/" + props.post_id)
 			.then(response => {
 				var data = response.data;
 				for (var i = 0; i < data.length; i++) {
@@ -117,7 +117,7 @@ const PostVotes = (props) => {
 			setUpvote(false);
 			setVoteCount(votecount - 1);
 
-			axios.delete("http://localhost:8000/vote/post_rating",
+			axios.delete("https://qlassroombackend.herokuapp.com/vote/post_rating",
 				{
 					data:{					
 						user_id: user_id,
@@ -146,7 +146,7 @@ const PostVotes = (props) => {
 				setVoteCount(votecount + 1);
 			}
 
-			axios.post("http://localhost:8000/vote/post_rating",
+			axios.post("https://qlassroombackend.herokuapp.com/vote/post_rating",
 				{					
 					user_id: user_id,
 					post_id: props.post_id,
@@ -172,7 +172,7 @@ const PostVotes = (props) => {
 			setDownvote(false);
 			setVoteCount(votecount + 1);
 
-			axios.delete("http://localhost:8000/vote/post_rating",
+			axios.delete("https://qlassroombackend.herokuapp.com/vote/post_rating",
 				{
 					data:{					
 						user_id: user_id,
@@ -201,7 +201,7 @@ const PostVotes = (props) => {
 				setVoteCount(votecount - 1);
 			}
 
-			axios.post("http://localhost:8000/vote/post_rating",
+			axios.post("https://qlassroombackend.herokuapp.com/vote/post_rating",
 				{					
 					user_id: user_id,
 					post_id: props.post_id,

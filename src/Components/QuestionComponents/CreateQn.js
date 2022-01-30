@@ -127,7 +127,7 @@ function CreateQn() {
 				}
 
 				if (subject_id && grade_id) {
-					axios.get(`http://localhost:8000/label/${subject_id}/${grade_id}`).then(function (response) {
+					axios.get(`https://qlassroombackend.herokuapp.com/label/${subject_id}/${grade_id}`).then(function (response) {
 						var data = response.data;
 						if (data[0].label_name === "Topics") {
 							data.splice(0, 1);
@@ -261,7 +261,7 @@ function CreateQn() {
 			var token = findCookie("token");
 			toast.promise(
 				new Promise((resolve, reject) => {
-					axios.post("http://localhost:8000/posts", {
+					axios.post("https://qlassroombackend.herokuapp.com/posts", {
 						title: qnTitle,
 						content: purified_body,
 						user_id: loggedInUser.user_id,
@@ -308,7 +308,7 @@ function CreateQn() {
 	function acquireUserData() {
 		var token = findCookie("token");
 
-		axios.get("http://localhost:8000/user/userData",
+		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
 			{
 				headers: { "Authorization": "Bearer " + token }
 			})

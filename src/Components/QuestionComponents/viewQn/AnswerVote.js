@@ -20,7 +20,7 @@ const AnswerVote = (props) => {
 	function acquireUserData() {
 		var token = findCookie("token");
 
-		axios.get("http://localhost:8000/user/userData",
+		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
 			{
 				headers: { "Authorization": "Bearer " + token }
 			})
@@ -53,7 +53,7 @@ const AnswerVote = (props) => {
 		if (acquireData != true) {
 			return;
 		}
-		axios.get("http://localhost:8000/vote/response_rating?user_id=" +
+		axios.get("https://qlassroombackend.herokuapp.com/vote/response_rating?user_id=" +
 			user_id + "&response_id=" + props.response_id)
 			.then(response => {
 				var data = response.data;
@@ -95,7 +95,7 @@ const AnswerVote = (props) => {
 	function VoteCount() {
 		console.log("Counting vote for response_id: " + props.response_id);
 		setVoteCount(0);
-		axios.get("http://localhost:8000/vote/responses/" + props.response_id)
+		axios.get("https://qlassroombackend.herokuapp.com/vote/responses/" + props.response_id)
 			.then(response => {
 				var data = response.data;
 				for (var i = 0; i < data.length; i++) {
@@ -118,7 +118,7 @@ const AnswerVote = (props) => {
 			setUpvote(false);
 			setVoteCount(votecount - 1);
 
-			axios.delete("http://localhost:8000/vote/response_rating",
+			axios.delete("https://qlassroombackend.herokuapp.com/vote/response_rating",
 				{
 					data:{					
 						user_id: user_id,
@@ -147,7 +147,7 @@ const AnswerVote = (props) => {
 				setVoteCount(votecount + 1);
 			}
 
-			axios.post("http://localhost:8000/vote/response_rating",
+			axios.post("https://qlassroombackend.herokuapp.com/vote/response_rating",
 				{					
 					user_id: user_id,
 					response_id: props.response_id,
@@ -173,7 +173,7 @@ const AnswerVote = (props) => {
 			setDownvote(false);
 			setVoteCount(votecount + 1);
 
-			axios.delete("http://localhost:8000/vote/response_rating",
+			axios.delete("https://qlassroombackend.herokuapp.com/vote/response_rating",
 				{
 					data:{					
 						user_id: user_id,
@@ -202,7 +202,7 @@ const AnswerVote = (props) => {
 				setVoteCount(votecount - 1);
 			}
 
-			axios.post("http://localhost:8000/vote/response_rating",
+			axios.post("https://qlassroombackend.herokuapp.com/vote/response_rating",
 				{					
 					user_id: user_id,
 					response_id: props.response_id,

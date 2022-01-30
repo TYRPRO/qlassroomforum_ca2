@@ -59,7 +59,7 @@ const Home = () => {
 	}
 	const ChannelDataHandler = (ChannelFilterData) => {
 		setIsLoadingFilteredPosts(true);
-		axios.post("http://localhost:8000/posts/filter/home",
+		axios.post("https://qlassroombackend.herokuapp.com/posts/filter/home",
 			ChannelFilterData)
 			.then(res => {
 				// Resetting page to first page

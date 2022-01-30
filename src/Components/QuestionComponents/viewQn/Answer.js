@@ -128,7 +128,7 @@ function Answer(props) {
 	function acquireUserData() {
 
 		var token = findCookie("token");
-		axios.get("http://localhost:8000/user/userData",
+		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
 			{
 				headers: { "Authorization": "Bearer " + token }
 			})
@@ -165,7 +165,7 @@ function Answer(props) {
 			props.toast.promise(
 				new Promise((resolve, reject) => {
 
-					axios.post("http://localhost:8000/responses/", {
+					axios.post("https://qlassroombackend.herokuapp.com/responses/", {
 						user_id: loggedInUser.user_id,
 						post_id: answer_info.fk_post_id,
 						parent_response_id: answer_info.response_id,

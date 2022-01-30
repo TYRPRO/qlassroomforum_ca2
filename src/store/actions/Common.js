@@ -24,7 +24,7 @@ export const getUserDetails = async (dispatch) => {
 	var match = document.cookie.match(new RegExp("(^| )token=([^;]+)"));
 	if (match) {
 		var token = match[2];
-		axios.get("http://localhost:8000/user/userData",
+		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
 			{
 				headers: { "Authorization": "Bearer " + token }
 			})
@@ -56,7 +56,7 @@ export const getUserProfilePic = async (dispatch) => {
 		axios
 			.request({
 				method: "get",
-				url: `http://localhost:8000/user/profile/`,
+				url: `https://qlassroombackend.herokuapp.com/user/profile/`,
 				headers: {
 					"content-type": "application/json; charset=utf-8",
 					"Authorization": "Bearer " + token

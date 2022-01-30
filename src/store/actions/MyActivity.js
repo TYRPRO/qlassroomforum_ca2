@@ -150,7 +150,7 @@ export const getUpdatesReceived = async (dispatch, user_id, acquireData) => {
 	if (!acquireData) {
 		return;
 	}
-	axios.get(`http://localhost:8000/responses/user/${user_id}`)
+	axios.get(`https://qlassroombackend.herokuapp.com/responses/user/${user_id}`)
 		.then(function (response) {
 			dispatch(setUpdatesReceived(response.data.length));
 		})
@@ -164,7 +164,7 @@ export const getAnswersAccepted = async (dispatch, user_id, acquireData) => {
 	if (!acquireData) {
 		return;
 	}
-	axios.get(`http://localhost:8000/responses/answersaccepted/${user_id}`)
+	axios.get(`https://qlassroombackend.herokuapp.com/responses/answersaccepted/${user_id}`)
 		.then(function (response) {
 			console.log(response.data);
 			dispatch(setAnswersAccepted(response.data.length));
@@ -179,7 +179,7 @@ export const getUpvotesGiven = async (dispatch, user_id, acquireData) => {
 	if (!acquireData) {
 		return;
 	}
-	axios.get(`http://localhost:8000/vote/${user_id}`)
+	axios.get(`https://qlassroombackend.herokuapp.com/vote/${user_id}`)
 		.then(function (response) {
 			console.log(response.data);
 			var totalVotes = response.data.post_votes.length + response.data.response_votes.length;
@@ -197,8 +197,8 @@ export const getQuestions = async (dispatch, toast, user_id, acquireData) => {
 	}
 
 
-	// axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
-	axios.get("http://localhost:8000/posts/user/" + user_id)
+	// axios.get("https://qlassroombackend.herokuapp.com/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
+	axios.get("https://qlassroombackend.herokuapp.com/posts/user/" + user_id)
 		.then((data) => {
 			console.log(data.data);
 			var questions = data.data;
@@ -296,7 +296,7 @@ export const getAnswers = async (dispatch, toast, user_id, acquireData) => {
 	}
 
 
-	axios.get("http://localhost:8000/answers/user/" + user_id)
+	axios.get("https://qlassroombackend.herokuapp.com/answers/user/" + user_id)
 		.then((data) => {
 			console.log(data.data);
 			var answers = data.data;
@@ -355,7 +355,7 @@ export const getSavedQuestions = async (dispatch, toast, user_id, acquireData) =
 	}
 
 
-	axios.get("http://localhost:8000/posts/save/user/" + user_id)
+	axios.get("https://qlassroombackend.herokuapp.com/posts/save/user/" + user_id)
 		.then((data) => {
 			console.log(data.data);
 			var savedQuestions = data.data;

@@ -41,7 +41,7 @@ const store = createStore(allReducers, composedTool);
 function checkLogin() {
 	var token = findCookie("token");
 	if (token) {
-		axios.get("http://localhost:8000/user/userData",
+		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
 			{
 				headers: { "Authorization": "Bearer " + token }
 			})
