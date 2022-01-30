@@ -1,5 +1,5 @@
 // Module Imports
-import React from "react";
+import React, { useEffect } from "react";
 import {
 	Link
 } from "react-router-dom";
@@ -10,12 +10,22 @@ import "react-toastify/dist/ReactToastify.css";
 import "./sidebar.css";
 import avatar from "./img_avatar.png";
 
+import {getUserProfilePic} from "../../store/actions/Common";
+import { useSelector, useDispatch} from "react-redux";
+
 //Component Creation
-const SideBar = () => {
+const SideBar = () => {	
+	const profile_pic = useSelector((state)=>state.Common.profile_pic);
+	const isLoadingImage = useSelector((state)=>state.Common.isLoadingImage);
+	const dispatch = useDispatch();
 
 	function imgRedirect() {
-		window.location.assign("/login");
+		window.location.assign("/myprofile");
 	}
+
+	useEffect(()=>(
+		getUserProfilePic(dispatch)
+	),[]);
 
 	return (
 		<React.Fragment>
@@ -29,7 +39,7 @@ const SideBar = () => {
 						<span className="material-icons ms-0 me-1 text-light fs-2">help_outline</span>
 					</div>
 					<div className="mt-auto mb-3 mx-auto text-center" id="profile">
-						<img onClick={() => imgRedirect()} src={avatar} className="img-thumbnail rounded-circle w-75"/>
+						{isLoadingImage ? <img onClick={() => imgRedirect()} src={avatar} className="img-thumbnail rounded-circle w-75"/> : <img onClick={() => imgRedirect()} src={profile_pic} className="img-thumbnail rounded-circle w-75"/>}
 					</div>
 				</div>
 			</div>

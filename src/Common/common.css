@@ -15,7 +15,11 @@
 }
 
 .small-text {
-	font-size: 0.9em;
+	font-size: 0.8em;
+}
+
+.small-icon {
+	font-size: 1.2em;
 }
 
 .div-shadow:hover {

@@ -33,14 +33,13 @@ import Home from "./Components/HomeComponents/Home";
 import EditQn from "./Components/QuestionComponents/EditQn";
 import Profile from "./Components/ProfileComponents/Profile";
 
-const composedTool = compose(applyMiddleware(thunk));
+const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
 
 const store = createStore(allReducers, composedTool);
 
 // login functions
 function checkLogin() {
 	var token = findCookie("token");
-
 	if (token) {
 		axios.get("http://localhost:8000/user/userData",
 			{

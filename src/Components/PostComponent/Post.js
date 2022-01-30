@@ -132,7 +132,7 @@ const Post = (props) => {
 							</div>
 							<Toolbar />
 						</div>
-						<div className="col-lg-2 d-flex p-2" onClick={() => redirect(data.post_id)}><AnswersPill answers={data.Responses.length} isAnswered={data.post_is_answered}/> </div>
+						<div className="col-lg-2 d-flex p-2 justify-content-center" onClick={() => redirect(data.post_id)}><AnswersPill answers={data.Responses.length} isAnswered={data.post_is_answered}/> </div>
 					</div>
 				</div>
 			))

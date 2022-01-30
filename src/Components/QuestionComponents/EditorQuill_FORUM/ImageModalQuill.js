@@ -36,7 +36,7 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 				set_selectedFile(file);
 
 				new Compressor(file, {
-					quality: 0.6,
+					quality: 0.4,
 
 					// The compression process is asynchronous,
 					// which means you have to access the `result` in the `success` hook function.
