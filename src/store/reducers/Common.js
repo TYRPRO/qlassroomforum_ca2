@@ -1,6 +1,8 @@
 const initialState = {
 	acquireData: false,
-	userDetails: {}
+	userDetails: {},
+	profile_pic: "",
+	isLoadingImage: true
 };
 
 const reducer = (state = initialState, action) => {
@@ -10,6 +12,16 @@ const reducer = (state = initialState, action) => {
 			...state,
 			acquireData: true,
 			userDetails: action.userDetails,
+		};
+	case "UPDATE_PROFILE_PIC":
+		return {
+			...state,
+			profile_pic: action.profile_pic,
+		};
+	case "PROFILE_PIC_LOADED":
+		return {
+			...state,
+			isLoadingImage: false
 		};
 	default:
 		return state;

@@ -7,6 +7,19 @@ export const populateUserDetails = (userDetails) => {
 	};
 };
 
+export const changeProfilePic = (profile_pic) => {
+	return{
+		type: "UPDATE_PROFILE_PIC",
+		profile_pic
+	};
+};
+
+export const profilePicLoaded = () => {
+	return{
+		type: "PROFILE_PIC_LOADED"
+	};
+};
+
 export const getUserDetails = async (dispatch) => {
 	var match = document.cookie.match(new RegExp("(^| )token=([^;]+)"));
 	if (match) {
@@ -34,5 +47,31 @@ export const getUserDetails = async (dispatch) => {
 	else {
 		return ("error");
 	}
+};
 
+export const getUserProfilePic = async (dispatch) => {
+	var match = document.cookie.match(new RegExp("(^| )token=([^;]+)"));
+	if (match) {
+		var token = match[2];
+		axios
+			.request({
+				method: "get",
+				url: `http://localhost:8000/user/profile/`,
+				headers: {
+					"content-type": "application/json; charset=utf-8",
+					"Authorization": "Bearer " + token
+				},
+			})
+			.then((data) => {
+				let profile = data.data;
+				dispatch(changeProfilePic(profile.UserProfile.profile_pic));
+				dispatch(profilePicLoaded());
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+	else {
+		return ("error");
+	}
 };
