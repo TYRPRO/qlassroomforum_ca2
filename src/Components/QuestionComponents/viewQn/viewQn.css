@@ -1,19 +1,20 @@
 .toolbar-btn {
+	color: #39739d;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     padding: .35rem .65rem;
     border-radius: .25rem;
 }
 
 .toolbar-btn:hover {
-    color: #fff;
-    background-color: #0b5ed7;
+    color: #fff !important;
+    background-color: #0b5ed7 !important;
     border-color: #0a58ca;
 }
 
 .toolbar-btn:active {
-    color: #fff;
-    background-color: #0a58ca;
-    border-color: #0a53be;
+    color: #fff !important;
+    background-color: #0a58ca !important;
+    border-color: #0a53be !important;
 }
 
 .min-profile-pic {
@@ -47,4 +48,8 @@ button>span{
 
 .hr-color {
 	color: #a8abad
+}
+
+.hue-light-blue {
+	color: #39739d
 }

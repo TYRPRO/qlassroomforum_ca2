@@ -103,7 +103,7 @@ function Answer(props) {
 					{answerComments ? (answerComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)) : null}
 					{addComment ?
 						<div className=' input-group mt-2'>
-							<input onChange={(e) => { set_answerComment(e.target.value); }} value={answerComment} className='form-control' placeholder='Comment on this answer?'></input>
+							<input autoFocus onChange={(e) => { set_answerComment(e.target.value); }} value={answerComment} className='form-control' placeholder='Comment on this answer?'></input>
 							<button onClick={submitAnswerComment} className='btn btn-outline-secondary'>Submit</button>
 						</div>
 						:
@@ -162,22 +162,38 @@ function Answer(props) {
 
 
 		if (comment_accepted) {
-			axios.post("http://localhost:8000/responses/", {
-				user_id: loggedInUser.user_id,
-				post_id: answer_info.fk_post_id,
-				parent_response_id: answer_info.response_id,
-				response_type: response_type,
-				response: answerComment
-			}, {
-				headers: { "Authorization": "Bearer " + token }
-			}).then(function (response) {
-				console.log(response);
-				set_answerComment("");
-				set_AddComment(false);
-				props.refreshAnswers();
-			}).catch(function (error) {
-				console.log(error);
-			});
+			props.toast.promise(
+				new Promise((resolve, reject) => {
+
+					axios.post("http://localhost:8000/responses/", {
+						user_id: loggedInUser.user_id,
+						post_id: answer_info.fk_post_id,
+						parent_response_id: answer_info.response_id,
+						response_type: response_type,
+						response: answerComment
+					}, {
+						headers: { "Authorization": "Bearer " + token }
+					}).then(function (response) {
+						console.log(response);
+						set_answerComment("");
+						set_AddComment(false);
+						props.refreshAnswers();
+						resolve();
+					}).catch(function (error) {
+						console.log(error);
+						reject(error.response.data.err);
+					});
+				}),
+				{
+					pending: "Posting Comment...",
+					success: "Comment Created!",
+					error: {
+						render({ data }) {
+							return `${data}`;
+						},
+					},
+				}
+			);
 		}
 		else {
 			props.toastify.error("Comment must be less than 85 characters long and contain only letters, numbers, and the following symbols: $#.?! ()%,");
