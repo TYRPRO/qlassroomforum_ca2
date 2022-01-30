@@ -1,20 +1,18 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React from "react";
 import axios from "axios";
 import ReactDOM from "react-dom";
 import "./index.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import {
 	BrowserRouter,
 	Routes,
 	Route,
-	Link,
 	Navigate
 } from "react-router-dom";
 
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import allReducers from "./store/reducers/index";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
@@ -33,7 +31,7 @@ import Home from "./Components/HomeComponents/Home";
 import EditQn from "./Components/QuestionComponents/EditQn";
 import Profile from "./Components/ProfileComponents/Profile";
 
-const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
+//const composedTool = compose(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk));
 
 const store = createStore(allReducers, applyMiddleware(thunk));
 
