@@ -145,7 +145,7 @@ const ProfileEdit = (props) => {
 						</div>
 					</form>
 					<div className="d-flex flex-row">
-						<button onClick={() => { location.reload(); }} className="btn btn-primary shadow-sm mt-4">Undo edits</button>
+						<button onClick={() => { window.location.reload() }} className="btn btn-primary shadow-sm mt-4">Undo edits</button>
 						<div className="flex-grow-1"></div>
 						<button onClick={()=>{submitProfileEdits();}} className='btn btn-success shadow-sm mt-4'>Save changes</button>
 					</div>

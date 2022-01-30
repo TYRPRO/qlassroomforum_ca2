@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -17,7 +18,6 @@ import ImageModalQuill from "./ImageModalQuill";
 import Tooltip from "@mui/material/Tooltip";
 // eslint-disable-next-line no-unused-vars
 window.katex = katex;
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 const EditorQuill = ({
 	customToolbarId,
