@@ -78,46 +78,58 @@ function ViewQn() {
 		if (!acquireData) {
 			return;
 		}
+		toast.promise(
+			new Promise((resolve, reject) => {
+				axios.get(`http://localhost:8000/posts/${post_id}`)
+					.then(function (response) {
+						var data = response.data;
+						console.log(data);
+						set_post_title(data.post_title);
+						set_fk_user_id(data.fk_user_id);
+						set_post_content(data.post_content);
+						set_post_accepted_response({
+							answer_is_accepted: data.post_is_answered,
+							response_id: data.fk_response_id
+						});
+						set_first_name(data.User.first_name);
+						set_last_name(data.User.last_name);
 
-		axios.get(`http://localhost:8000/posts/${post_id}`)
-			.then(function (response) {
-				var data = response.data;
-				console.log(data);
-				set_post_title(data.post_title);
-				set_fk_user_id(data.fk_user_id);
-				set_post_content(data.post_content);
-				set_post_accepted_response({
-					answer_is_accepted: data.post_is_answered,
-					response_id: data.fk_response_id
-				});
-				set_first_name(data.User.first_name);
-				set_last_name(data.User.last_name);
+						let tempArr = [];
+						tags.map((tag) => tempArr.push(tag));
 
-				let tempArr = [];
-				tags.map((tag) => tempArr.push(tag));
+						tempArr[0] = data.Subforum.subforum_name;
+						tempArr[1] = data.Grade.grade_name;
+						for (let i = 0; i < data.PostLabels.length; i++) {
+							tempArr.push(data.PostLabels[i].Label.label_name);
+						}
+						set_tags(tempArr);
 
-				tempArr[0] = data.Subforum.subforum_name;
-				tempArr[1] = data.Grade.grade_name;
-				for (let i = 0; i < data.PostLabels.length; i++) {
-					tempArr.push(data.PostLabels[i].Label.label_name);
-				}
-				set_tags(tempArr);
+						for (let i = 0; i < data.SavedPosts.length; i++) {
+							var savePostData = data.SavedPosts[i];
 
-				for (let i = 0; i < data.SavedPosts.length; i++) {
-					var savePostData = data.SavedPosts[i];
+							if (savePostData.fk_user_id === loggedInUser.user_id) {
+								setIsBookmarked(true);
+							}
+						}
 
-					if (savePostData.fk_user_id === loggedInUser.user_id) {
-						setIsBookmarked(true);
+						var parsedTime = parseTime(data.post_created_at);
+						set_post_created_at(parsedTime);
+						setIsLoadingPosts(false);
+						resolve();
+
+					}).catch(function (error) {
+						console.log(error);
+						reject(error.response.data.err);
+					});
+			}),
+			{
+				error: {
+					render({ data }) {
+						return `${data}`;
 					}
 				}
-
-				var parsedTime = parseTime(data.post_created_at);
-				set_post_created_at(parsedTime);
-				setIsLoadingPosts(false);
-
-			}).catch(function (error) {
-				console.log(error);
-			});
+			}
+		);
 	}, [acquireData]);
 
 	useEffect(() => {
@@ -224,128 +236,135 @@ function ViewQn() {
 						<div className='col-2 '></div>
 						<div className="col-8 mt-2 mb-1">
 
-							{(isLoadingPosts && isLoadingComments) ? <HashLoader color={"#a5c1e8"} loading={isLoadingPosts} css={override} size={150} /> :
-								<><div className='row mt-3'>
-									<div className='col-11'>
-										<div className='row'>
-											<QnVotes
-												key={"vote_" + post_id}
-												user_id={fk_user_id}
-												post_id={post_id} />
+							{
+								(isLoadingPosts && isLoadingComments) ? <HashLoader color={"#a5c1e8"} loading={isLoadingPosts} css={override} size={150} /> :
+									<>
+										<div className='row mt-3'>
 											<div className='col-11'>
-												{/* No worries, we do input validation for this innerhtml */}
-												<div className='col-12 d-flex align-items-center'>
+												<div className='row'>
+													<QnVotes
+														key={"vote_" + post_id}
+														user_id={fk_user_id}
+														post_id={post_id} />
+													<div className='col-11'>
+														{/* No worries, we do input validation for this innerhtml */}
+														<div className='col-12 d-flex align-items-center'>
 
-													<h4 className="fw-bold">{post_title}</h4>
-													<div className='flex-grow-1'></div>
+															<h4 className="fw-bold">{post_title}</h4>
+															<div className='flex-grow-1'></div>
 
-													<div>
-														{!(loggedInUser.user_id === fk_user_id) ?
-															(isBookmarked ? (
-																<button onMouseEnter={() => { set_bookmarkHover(true); } } onMouseLeave={() => { set_bookmarkHover(false); } } onClick={() => { bookmarkPost(); } } className='text-success anim-enter-active'>
-																	<BookmarkIcon sx={{ fontSize: 26 }} />
-																	{bookmarkHover ? "Bookmarked" : ""}
-																</button>
-															) : (
-																<button onMouseEnter={() => { set_bookmarkHover(true); } } onMouseLeave={() => { set_bookmarkHover(false); } } onClick={() => { bookmarkPost(); } } className='text-secondary anim-enter-active'>
-																	<BookmarkBorderIcon sx={{ fontSize: 26 }} />
-																	{bookmarkHover ? "Bookmark this question?" : ""}
-																</button>
-															))
-															: ("")}
-													</div>
-												</div>
-
-
-												<div className='d-flex flex-row align-items-center'>
-													<div className='min-profile-pic bg-secondary'>
-
-													</div>
-													<small className='ms-2 fw-bold'>
-														{first_name} {last_name}
-													</small>
-													{/* <p className="fw-light text-secondary mx-2">•</p> */}
-													<small className="text-secondary mx-2">
-														about {post_created_at}
-													</small>
-												</div>
-												<p className='qn-content mt-3' dangerouslySetInnerHTML={{ __html: post_content }}></p>
-												<div className='d-flex'>
-													{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
-												</div>
-
-												{(postComments.length > 0 ? <hr className='mb-1 hr-color'></hr> : null)}
-												{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
-												{addComment ?
-													<div className=' input-group'>
-														<input onChange={(e) => { set_postComment(e.target.value); } } value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
-														<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
-													</div>
-													:
-													null}
-												<div className='row text-primary mt-2'>
-													<div className='col-2'>
-														<div className='d-inline-block toolbar-btn px-2'>
-															<div onClick={() => { set_AddComment(!addComment); } } className='d-flex flex-row align-items-center cursor-pointer'>
-
-																<ReplyIcon></ReplyIcon>
-																<p className='px-2 mb-0'>Comment</p>
+															<div>
+																{!(loggedInUser.user_id === fk_user_id) ?
+																	(isBookmarked ? (
+																		<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-success anim-enter-active'>
+																			<BookmarkIcon sx={{ fontSize: 26 }} />
+																			{bookmarkHover ? "Bookmarked" : ""}
+																		</button>
+																	) : (
+																		<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-secondary anim-enter-active'>
+																			<BookmarkBorderIcon sx={{ fontSize: 26 }} />
+																			{bookmarkHover ? "Bookmark this question?" : ""}
+																		</button>
+																	))
+																	: ("")}
 															</div>
 														</div>
 
 
-													</div>
-													<div className='col-2 '>
-														<div className='d-inline-block toolbar-btn px-2'>
-															<div className='d-flex flex-row align-items-center cursor-pointer'>
+														<div className='d-flex flex-row align-items-center'>
+															<div className='min-profile-pic bg-secondary'>
 
-																<ModeCommentIcon></ModeCommentIcon>
-																<p className='px-2 mb-0'>Answer</p>
 															</div>
+															<small className='ms-2 fw-bold'>
+																{first_name} {last_name}
+															</small>
+															{/* <p className="fw-light text-secondary mx-2">•</p> */}
+															<small className="text-secondary mx-2">
+																about {post_created_at}
+															</small>
+														</div>
+														<p className='qn-content mt-3' dangerouslySetInnerHTML={{ __html: post_content }}></p>
+														<div className='d-flex'>
+															{tags.map((tag, index) => <Tag key={index} tag={tag}></Tag>)}
+														</div>
+
+														{(postComments.length > 0 ? <hr className='mb-1 hr-color'></hr> : null)}
+														{postComments.map((comment, index) => <AnswerComment key={index} comment={comment} />)}
+														{addComment ?
+															<div className=' input-group'>
+																<input autoFocus onChange={(e) => { set_postComment(e.target.value); }} value={postComment} className='form-control' placeholder='Comment on this answer?'></input>
+																<button onClick={submitPostComment} className='btn btn-outline-secondary'>Submit</button>
+															</div>
+															:
+															null}
+														<div className='row mt-2'>
+															<div className='col-3'>
+
+																<div className='d-inline-block toolbar-btn px-2'>
+																	<div onClick={() => { set_AddComment(!addComment); }} className='d-flex flex-row align-items-center cursor-pointer'>
+
+																		<ReplyIcon></ReplyIcon>
+																		<p className='px-2 mb-0 '>Comment</p>
+																	</div>
+																</div>
+
+
+															</div>
+															<div className='col-3 '>
+																{/* <a href="#user_input_section"> */}
+																<div onClick={() => { window.location.hash = "#user_input_section"; }} className='d-inline-block toolbar-btn px-2'>
+																	<div className='d-flex flex-row align-items-center cursor-pointer'>
+
+																		<ModeCommentIcon></ModeCommentIcon>
+																		<p className='px-2 mb-0 '>Answer</p>
+																	</div>
+																</div>
+																{/* </a> */}
+															</div>
+															<div className='col-6 '>
+																{!(loggedInUser.user_id === fk_user_id) ? (
+																	<div className=' text-secondary d-flex flex-row-reverse align-items-center h-100'>
+																		<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">REPORT</p>
+																	</div>
+																) : (
+																	<div className=' text-secondary d-flex  flex-row-reverse align-items-center h-100'>
+																		<a href={`http://localhost:3000/posts/editQn/${post_id}`} className=' text-decoration-none mb-0 text-secondary fw-bold'>EDIT</a>
+																		<button className=' text-decoration-none mb-0 me-3 text-secondary fw-bold'>DELETE</button>
+																	</div>
+																)}
+															</div>
+
 														</div>
 													</div>
-													<div className='col-5'></div>
-													<div className='col-3 '>
-														{!(loggedInUser.user_id === fk_user_id) ? (
-															<div className=' text-secondary d-flex flex-row-reverse align-items-center h-100'>
-																<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">REPORT</p>
-															</div>
-														) : (
-															<div className=' text-secondary d-flex  flex-row-reverse align-items-center h-100'>
-																<a href={`http://localhost:3000/posts/editQn/${post_id}`} className=' text-decoration-none mb-0 text-secondary fw-bold'>EDIT</a>
-																<button className=' text-decoration-none mb-0 me-3 text-secondary fw-bold'>DELETE</button>
-															</div>
-														)}
-													</div>
-
 												</div>
 											</div>
 										</div>
-									</div>
-								</div><hr className="mt-3"></hr><div className='mt-1'>
-									<p className='mb-3'>{answers.length} Answers</p>
-									<div>
-										{answers.map((answer, index) => <Answer
-											toastify={toast}
-											refreshAnswers={refreshAnswersFunction}
-											isRemoved={isRemoved}
-											isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
-											key={index}
-											answer={answer}
-											index={index}
-											setAsAcceptedAnswer={setAsAcceptedAnswer} />)}
-									</div>
-									<div>
-										<p>Your Answer</p>
-										<div className="col-11">
-											<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
-											<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
+										<hr className="mt-3"></hr>
+										<div className='mt-1'>
+											<p className='mb-3'>{answers.length} Answers</p>
+											<div>
+												{answers.map((answer, index) => <Answer
+													toastify={toast}
+													refreshAnswers={refreshAnswersFunction}
+													isRemoved={isRemoved}
+													isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
+													key={index}
+													answer={answer}
+													index={index}
+													setAsAcceptedAnswer={setAsAcceptedAnswer} />)}
+											</div>
+											<div id="user_input_section">
+												<p>Your Answer</p>
+												<div className="col-11">
+													<EditorQuill customToolbarId={"editor_toolbar"} contentHTML={answer_input} handleContentChange={set_answer_input}></EditorQuill>
+													<button onClick={submitAnswer} className='btn btn-primary my-2'>Post Your Answer</button>
 
+												</div>
+
+
+											</div>
 										</div>
-
-
-									</div>
-								</div></>
+									</>
 							}
 						</div >
 						<div className='col-2'>
@@ -415,19 +434,35 @@ function ViewQn() {
 		var response_type = "answer";
 
 
-		axios.post("http://localhost:8000/responses/", {
-			user_id: loggedInUser.user_id,
-			post_id: post_id,
-			response_type: response_type,
-			response: answer_content
-		}, {
-			headers: { authorization: "Bearer " + token }
-		}).then(function (response) {
-			set_refreshAnswers(!refreshAnswers);
-			set_answer_input("");
-		}).catch(function (error) {
-			console.log(error);
-		});
+		toast.promise(
+			new Promise((resolve, reject) => {
+				axios.post("http://localhost:8000/responses/", {
+					user_id: loggedInUser.user_id,
+					post_id: post_id,
+					response_type: response_type,
+					response: answer_content
+				}, {
+					headers: { authorization: "Bearer " + token }
+				}).then(function (response) {
+					set_refreshAnswers(!refreshAnswers);
+					set_answer_input("");
+					resolve();
+				}).catch(function (error) {
+					console.log(error);
+					reject(error.response.data.err);
+				});
+			}),
+			{
+				pending: "Posting Answer...",
+				success: "Answer Created!",
+				error: {
+					render({ data }) {
+						return `${data}`;
+					},
+				},
+			}
+		);
+
 
 	}
 
@@ -445,21 +480,37 @@ function ViewQn() {
 		var response_type = "comment";
 
 		if (comment_accepted) {
-			axios.post("http://localhost:8000/responses/", {
-				user_id: loggedInUser.user_id,
-				post_id: post_id,
-				response_type: response_type,
-				response: postComment
-			}, {
-				headers: { authorization: "Bearer " + token }
-			}).then(function (response) {
-				console.log(response);
-				set_postComment("");
-				set_AddComment(false);
-				refreshAnswersFunction();
-			}).catch(function (error) {
-				console.log(error);
-			});
+
+			toast.promise(
+				new Promise((resolve, reject) => {
+					axios.post("http://localhost:8000/responses/", {
+						user_id: loggedInUser.user_id,
+						post_id: post_id,
+						response_type: response_type,
+						response: postComment
+					}, {
+						headers: { authorization: "Bearer " + token }
+					}).then(function (response) {
+						console.log(response);
+						set_postComment("");
+						set_AddComment(false);
+						refreshAnswersFunction();
+						resolve();
+					}).catch(function (error) {
+						console.log(error);
+						reject(error.response.data.err);
+					});
+				}),
+				{
+					pending: "Posting Comment...",
+					success: "Comment Created!",
+					error: {
+						render({ data }) {
+							return `${data}`;
+						},
+					},
+				}
+			);
 		} else {
 			toast.error("Comment must be less than 85 characters long and contain only letters, numbers, and the following symbols: $#.?! ()%,");
 		}
@@ -561,6 +612,10 @@ function ViewQn() {
 		}
 	}
 
+	function focusElement(id) {
+		let element = document.getElementById(id);
+		element.focus();
+	}
 }
 
 export default ViewQn;
