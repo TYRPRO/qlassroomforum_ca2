@@ -92,7 +92,7 @@ ReactDOM.render(
 								<Route path="/search" element={!checkLogin() ? <Search /> : <Navigate replace to="/login" />} />
 								<Route path="subforum/:subForum" element={!checkLogin() ? <Subforum /> : <Navigate replace to="/login" />} />
 								<Route path="newforum" element={!checkLogin() ? <CreateSubforum /> : <Navigate replace to="/login" />} />
-								<Route path="/" element={<Navigate replace to="/home" />} />
+								<Route path="/" element={<Navigate replace to="/login" />} />
 								<Route path="/posts/editQn/:post_id" element={!checkLogin() ? <EditQn /> : <Navigate replace to ="/login"/>} />
 								<Route path="/myprofile" element={!checkLogin() ? <Profile /> : <Navigate replace to ="/login"/>} />
 							</Routes>
