@@ -10,7 +10,7 @@ import "./chat.css";
 const baseUrl = "https://qlassroombackend.herokuapp.com/";
 //const baseUrl = "https://qlassroomforum.herokuapp.com/";
 
-const socket = io.connect(baseUrl);
+//const socket = io.connect(baseUrl);
 
 const Chat = () => {
 	const userDetails = useSelector((state) => state.Common.userDetails.user_id);
@@ -38,7 +38,7 @@ const Chat = () => {
 
 	return <div>
 		{!showchat ?
-			<div className="ChatCircle" onClick={setShowchat}><BsFillChatLeftDotsFill className="ChatCircleIcon" size={30} onClick={JoinRoom} /></div>
+			<div className="ChatCircle" ><BsFillChatLeftDotsFill className="ChatCircleIcon" size={30} /></div>
 			:
 			<Chatbox socket={socket} roomid={roomid} username={userDetails} closeChat={CloseChat} />
 		}
