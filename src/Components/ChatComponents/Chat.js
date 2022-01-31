@@ -26,7 +26,7 @@ const Chat = () => {
 			roomid: roomid,
 			username: userDetails,
 		};
-		socket.emit("join", data);
+		//socket.emit("join", data);
 
 	}
 
@@ -40,7 +40,7 @@ const Chat = () => {
 		{!showchat ?
 			<div className="ChatCircle" ><BsFillChatLeftDotsFill className="ChatCircleIcon" size={30} /></div>
 			:
-			<Chatbox socket={socket} roomid={roomid} username={userDetails} closeChat={CloseChat} />
+			<Chatbox roomid={roomid} username={userDetails} closeChat={CloseChat} />
 		}
 	</div>;
 };
