@@ -296,7 +296,7 @@ function EditQn() {
 							</form>
 						</div>
 						<div className="d-flex flex-row">
-							<button onClick={() => { location.reload(); }} className="btn btn-primary shadow-sm mt-4">Undo edits</button>
+							<button onClick={() => { window.location.reload(); }} className="btn btn-primary shadow-sm mt-4">Undo edits</button>
 							<div className="flex-grow-1"></div>
 
 							<button onClick={submitPostEdit} className='btn btn-primary shadow-sm mt-4'>Edit question</button>
