@@ -154,7 +154,7 @@ function Answer(props) {
 			props.toast.promise(
 				new Promise((resolve, reject) => {
 
-					axios.post("http://localhost:8000/responses/", {
+					axios.post("https://qlassroombackend.herokuapp.com/responses/", {
 						user_id: userDetails.user_id,
 						post_id: answer_info.fk_post_id,
 						parent_response_id: answer_info.response_id,

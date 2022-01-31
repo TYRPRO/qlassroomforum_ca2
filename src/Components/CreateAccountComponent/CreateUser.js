@@ -15,7 +15,7 @@ const CreateUser = () => {
 	//Defining States
 
 	function addUser() {
-		const url = "http://localhost:8000/user/signup";
+		const url = "https://qlassroombackend.herokuapp.com/user/signup";
 
 		// data extraction
 		toast.info("Adding new user...");

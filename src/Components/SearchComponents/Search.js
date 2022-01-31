@@ -51,7 +51,7 @@ const Search = () => {
 		var queryParams = new URLSearchParams(window.location.search);
 
 		//similar search
-		axios.get(`http://localhost:8000/posts/SimilarSearch?` + queryParams,
+		axios.get(`https://qlassroombackend.herokuapp.com/posts/SimilarSearch?` + queryParams,
 			{
 				contentType: "application/json; charset=utf-8"
 			})
@@ -75,7 +75,7 @@ const Search = () => {
 
 	const ChannelDataHandler = (ChannelFilterData) => {
 		var queryParams = new URLSearchParams(window.location.search);
-		axios.post("http://localhost:8000/posts/filter/similar?" + queryParams,
+		axios.post("https://qlassroombackend.herokuapp.com/posts/filter/similar?" + queryParams,
 			ChannelFilterData)
 			.then(res => {
 				// Resetting page to first page

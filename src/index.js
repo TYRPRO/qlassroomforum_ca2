@@ -45,7 +45,7 @@ function checkLogin() {
 		return false;
 	}
 	else {
-		axios.get("http://localhost:8000/user/userData",
+		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
 			{
 				headers: { "Authorization": "Bearer " + token }
 			})

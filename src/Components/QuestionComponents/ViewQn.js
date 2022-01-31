@@ -84,7 +84,7 @@ function ViewQn() {
 		}
 		toast.promise(
 			new Promise((resolve, reject) => {
-				axios.get(`http://localhost:8000/posts/${post_id}`)
+				axios.get(`https://qlassroombackend.herokuapp.com/posts/${post_id}`)
 					.then(function (response) {
 						var data = response.data;
 						set_post_title(data.post_title);
@@ -143,7 +143,7 @@ function ViewQn() {
 			return;
 		}
 
-		axios.get(`http://localhost:8000/responses/${post_id}`)
+		axios.get(`https://qlassroombackend.herokuapp.com/responses/${post_id}`)
 			.then(function (response) {
 				var data = response.data;
 				var post_answers = [];
@@ -415,7 +415,7 @@ function ViewQn() {
 
 		toast.promise(
 			new Promise((resolve, reject) => {
-				axios.post("http://localhost:8000/responses/", {
+				axios.post("https://qlassroombackend.herokuapp.com/responses/", {
 					user_id: userDetails.user_id,
 					post_id: post_id,
 					response_type: response_type,
@@ -461,7 +461,7 @@ function ViewQn() {
 
 			toast.promise(
 				new Promise((resolve, reject) => {
-					axios.post("http://localhost:8000/responses/", {
+					axios.post("https://qlassroombackend.herokuapp.com/responses/", {
 						user_id: userDetails.user_id,
 						post_id: post_id,
 						response_type: response_type,
@@ -498,7 +498,7 @@ function ViewQn() {
 
 		if (!(post_accepted_response.response_id === response_id)) {
 			toast.promise(new Promise((resolve, reject) => {
-				axios.put("http://localhost:8000/posts/correctAnswer",
+				axios.put("https://qlassroombackend.herokuapp.com/posts/correctAnswer",
 					{
 						answer_id: response_id,
 						post_id: post_id
@@ -554,7 +554,7 @@ function ViewQn() {
 		if (!isBookmarked) {
 			toast.info("Bookmarking Post...");
 
-			axios.post("http://localhost:8000/posts/save", {
+			axios.post("https://qlassroombackend.herokuapp.com/posts/save", {
 				user_id: user_id,
 				post_id: post_id,
 			}, {
@@ -568,7 +568,7 @@ function ViewQn() {
 		} else {
 			toast.info("Removing Bookmark...");
 
-			axios.delete("http://localhost:8000/posts/remove", {
+			axios.delete("https://qlassroombackend.herokuapp.com/posts/remove", {
 				data: {
 					user_id: user_id,
 					post_id: post_id,

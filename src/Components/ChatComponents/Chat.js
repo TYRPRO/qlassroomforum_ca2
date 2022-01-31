@@ -7,7 +7,7 @@ import { BsFillChatLeftDotsFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 //import { getUserDetails } from "../../store/actions/Common";
 import "./chat.css";
-const baseUrl = "http://localhost:8001/";
+const baseUrl = "https://qlassroombackend.herokuapp.com/";
 //const baseUrl = "https://qlassroomforum.herokuapp.com/";
 
 const socket = io.connect(baseUrl);

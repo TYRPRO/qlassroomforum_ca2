@@ -27,7 +27,7 @@ const Report = () => {
 		var queryParams = new URLSearchParams(window.location.search);
 		var post_id = queryParams.get("post_id");
 
-		axios.post("http://localhost:8000/report/report",
+		axios.post("https://qlassroombackend.herokuapp.com/report/report",
 			{
 				report_content: report_content,
 				fk_post_id: post_id,

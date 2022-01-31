@@ -26,7 +26,7 @@ export const getUserDetails = async (dispatch) => {
 		var token = match[2];
 		axios.request({
 			method: "get",
-			url: "http://localhost:8000/user/userData",
+			url: "https://qlassroombackend.herokuapp.com/user/userData",
 			headers: {
 				"content-type": "application/json; charset=utf-8",
 				"Authorization": "Bearer " + token
@@ -60,7 +60,7 @@ export const getUserProfilePic = async (dispatch) => {
 		axios
 			.request({
 				method: "get",
-				url: `http://localhost:8000/user/profile/`,
+				url: `https://qlassroombackend.herokuapp.com/user/profile/`,
 				headers: {
 					"content-type": "application/json; charset=utf-8",
 					"Authorization": "Bearer " + token

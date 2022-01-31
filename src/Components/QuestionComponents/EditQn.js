@@ -108,7 +108,7 @@ function EditQn() {
 			return;
 		}
 
-		axios.get(`http://localhost:8000/posts/${post_id}`)
+		axios.get(`https://qlassroombackend.herokuapp.com/posts/${post_id}`)
 			.then(function (response) {
 				var data = response.data;
 
@@ -155,7 +155,7 @@ function EditQn() {
 
 
 				if (subject_id && grade_id) {
-					var URL = `http://localhost:8000/label/${subject_id}/${grade_id}`;
+					var URL = `https://qlassroombackend.herokuapp.com/label/${subject_id}/${grade_id}`;
 					axios.get(URL).then(function (response) {
 						var data = response.data;
 						if (data[0].label_name === "Topics") {
@@ -343,7 +343,7 @@ function EditQn() {
 		if (title_accepted && grade_id != "") {
 			toast.promise(
 				new Promise((resolve, reject) => {
-					axios.put("http://localhost:8000/posts", {
+					axios.put("https://qlassroombackend.herokuapp.com/posts", {
 						title: qnTitle,
 						content: purified_body,
 						user_id: userDetails.user_id,

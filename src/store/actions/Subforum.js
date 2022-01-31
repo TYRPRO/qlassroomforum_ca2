@@ -46,7 +46,7 @@ export const getPosts = async (dispatch, subForumId, toast) => {
 	axios
 		.request({
 			method: "get",
-			url: `http://localhost:8000/posts/getAllFromSubforum/` + subForumId,
+			url: `https://qlassroombackend.herokuapp.com/posts/getAllFromSubforum/` + subForumId,
 			headers: {
 				"content-type": "application/json; charset=utf-8",
 			},
@@ -66,7 +66,7 @@ export const getPosts = async (dispatch, subForumId, toast) => {
 
 
 export const filterPosts = async (dispatch, ChannelFilterData) => {
-	axios.post("http://localhost:8000/posts/filter/home",
+	axios.post("https://qlassroombackend.herokuapp.com/posts/filter/home",
 		ChannelFilterData)
 		.then(data => {
 			let postArr = data.data;

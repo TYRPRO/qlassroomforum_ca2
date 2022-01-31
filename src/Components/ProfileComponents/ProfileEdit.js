@@ -85,7 +85,7 @@ const ProfileEdit = (props) => {
 		var token = findCookie("token");
 		toast.promise(
 			new Promise((resolve, reject) => {
-				axios.put("http://localhost:8000/user/profile", webFormData, {
+				axios.put("https://qlassroombackend.herokuapp.com/user/profile", webFormData, {
 					headers: { authorization: "Bearer " + token }
 				}).then(function (response) {
 					resolve();

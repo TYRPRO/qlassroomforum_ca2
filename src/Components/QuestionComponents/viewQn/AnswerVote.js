@@ -32,7 +32,7 @@ const AnswerVote = (props) => {
 		if (!acquireData) {
 			return;
 		}
-		axios.get("http://localhost:8000/vote/response_rating?user_id=" +
+		axios.get("https://qlassroombackend.herokuapp.com/vote/response_rating?user_id=" +
 			userDetails.user_id + "&response_id=" + props.response_id)
 			.then(response => {
 				var data = response.data;
@@ -74,7 +74,7 @@ const AnswerVote = (props) => {
 	function VoteCount() {
 		console.log("Counting vote for response_id: " + props.response_id);
 		setVoteCount(0);
-		axios.get("http://localhost:8000/vote/responses/" + props.response_id)
+		axios.get("https://qlassroombackend.herokuapp.com/vote/responses/" + props.response_id)
 			.then(response => {
 				var votenum = 0;
 
@@ -101,7 +101,7 @@ const AnswerVote = (props) => {
 			setUpvote(false);
 			setVoteCount(votecount - 1);
 
-			axios.delete("http://localhost:8000/vote/response_rating",
+			axios.delete("https://qlassroombackend.herokuapp.com/vote/response_rating",
 				{
 					data: {
 						user_id: userDetails.user_id,
@@ -130,7 +130,7 @@ const AnswerVote = (props) => {
 				setVoteCount(votecount + 1);
 			}
 
-			axios.post("http://localhost:8000/vote/response_rating",
+			axios.post("https://qlassroombackend.herokuapp.com/vote/response_rating",
 				{
 					user_id: userDetails.user_id,
 					response_id: props.response_id,
@@ -156,7 +156,7 @@ const AnswerVote = (props) => {
 			setDownvote(false);
 			setVoteCount(votecount + 1);
 
-			axios.delete("http://localhost:8000/vote/response_rating",
+			axios.delete("https://qlassroombackend.herokuapp.com/vote/response_rating",
 				{
 					data: {
 						user_id: userDetails.user_id,
@@ -185,7 +185,7 @@ const AnswerVote = (props) => {
 				setVoteCount(votecount - 1);
 			}
 
-			axios.post("http://localhost:8000/vote/response_rating",
+			axios.post("https://qlassroombackend.herokuapp.com/vote/response_rating",
 				{
 					user_id: userDetails.user_id,
 					response_id: props.response_id,

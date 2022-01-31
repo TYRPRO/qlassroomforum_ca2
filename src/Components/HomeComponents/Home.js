@@ -16,7 +16,7 @@ const override = css`
 `;
 
 const Home = () => {
-	const baseUrl = "http://localhost:8000";
+	const baseUrl = "https://qlassroombackend.herokuapp.com";
 	const [PostsData, setPostsData] = useState([]);
 	const [CurrentPost, setCurrentPost] = useState([]);
 	const [CurrentPage, setCurrentPage] = useState(1);

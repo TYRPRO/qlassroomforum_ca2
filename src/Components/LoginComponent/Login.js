@@ -33,7 +33,7 @@ const Login = () => {
 	const auth = getAuth();
 
 	function login() {
-		const url = `http://localhost:8000/user/api/login`;
+		const url = `https://qlassroombackend.herokuapp.com/user/api/login`;
 		let email = document.getElementById("email").value;
 		let pwd = document.getElementById("pwd").value;
 
@@ -127,14 +127,14 @@ const Login = () => {
 			.then((result) => {
 				const credential = GoogleAuthProvider.credentialFromResult(result);
 				const user = result.user;
-				axios.post("http://localhost:8000/user/checkUserExists", {
+				axios.post("https://qlassroombackend.herokuapp.com/user/checkUserExists", {
 					google_uuid: user.uid
 				}).then(function (response) {
 					toast.promise(new Promise((resolve, reject) => {
 						if (response.data.Results == "User doesn't exist.") {
 							console.log("User doesn't exist");
 							// Register User
-							axios.post("http://localhost:8000/user/signup", {
+							axios.post("https://qlassroombackend.herokuapp.com/user/signup", {
 								first_name: user.displayName,
 								last_name: "",
 								email: user.email,
@@ -142,7 +142,7 @@ const Login = () => {
 								oAuthAddition: "True"
 							}).then(function (response) {
 								// Assign Cookie and bring to home page.
-								axios.post("http://localhost:8000/user/api/login", {
+								axios.post("https://qlassroombackend.herokuapp.com/user/api/login", {
 									OAuthId: user.uid,
 									email: user.email
 								}).then(function (response) {
@@ -163,7 +163,7 @@ const Login = () => {
 						else {
 							// Login User
 							console.log("User exists");
-							axios.post("http://localhost:8000/user/api/login", {
+							axios.post("https://qlassroombackend.herokuapp.com/user/api/login", {
 								OAuthId: user.uid,
 								email: user.email
 							}).then(function (response) {
