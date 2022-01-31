@@ -151,7 +151,7 @@ function Answer(props) {
 
 
 		if (comment_accepted) {
-			props.toast.promise(
+			props.toastify.promise(
 				new Promise((resolve, reject) => {
 
 					axios.post("https://qlassroombackend.herokuapp.com/responses/", {
