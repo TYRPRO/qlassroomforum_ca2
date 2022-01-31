@@ -45,13 +45,13 @@ const SideBar = () => {
 			</div>
 			<div className="d-flex flex-column" id="layer2">
 				<div className="mt-5 mx-auto" id="forum">
-					<span className="material-icons ms-0 me-1 ms-2 text-secondary fs-1">receipt_long <Link to="/myactivity" className="align-top text-dark lh-lg">FORUM</Link></span>
+					<span className="material-icons ms-0 me-1 ms-2 text-secondary fs-1">receipt_long <Link to="/home" className="align-top text-dark lh-lg">FORUM</Link></span>
 				</div>
 				<div className="mt-3 mx-auto" id="chat">
 					<span className="material-icons ms-0 me-1 ms-2 text-secondary fs-1">poll <Link to="/createqn" className="align-top text-dark lh-lg">CHAT</Link></span>
 				</div>
 				<div className="mt-3 mx-auto" id="blog">
-					<span className="material-icons ms-0 me-1 ms-2 text-secondary fs-1">poll <Link to="/posts/c059519c-6793-4ef8-9026-14869d61f28a" className="align-top text-dark lh-lg">BLOG</Link></span>
+					<span className="material-icons ms-0 me-1 ms-2 text-secondary fs-1">poll <Link to="" className="align-top text-dark lh-lg">BLOG</Link></span>
 				</div>
 			</div>
 		</React.Fragment>

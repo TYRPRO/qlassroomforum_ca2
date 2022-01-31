@@ -65,7 +65,7 @@ const KaTexEditorModal = ({ isOpen, setIsOpen, handleConfirm }) => {
 			closeOnEscape={false}
 			closeIcon={
 
-				<div className=' float-end'>
+				<div className=' float-end cursor-pointer modal-close'>
 					<CloseIcon />
 				</div>
 			}

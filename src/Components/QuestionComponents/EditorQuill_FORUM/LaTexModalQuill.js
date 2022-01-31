@@ -42,7 +42,7 @@ const LaTexModalQuill = ({ isOpen, setIsOpen, value = "", handleConfirm }) => {
 			closeOnEscape={false}
 			className={"forum-modal"}
 			closeIcon={
-				<div className=' float-end'>
+				<div className=' float-end cursor-pointer modal-close'>
 					<CloseIcon />
 				</div>
 

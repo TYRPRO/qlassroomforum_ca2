@@ -53,7 +53,6 @@ const ProfileEdit = (props) => {
 		webFormData.append("first_name", first_name);
 		webFormData.append("last_name", last_name);
 		webFormData.append("profile_pic", profile_pic);
-		webFormData.append("password", old_password);
 
 		try{
 			if(file){
@@ -86,7 +85,7 @@ const ProfileEdit = (props) => {
 		var token = findCookie("token");
 		toast.promise(
 			new Promise((resolve, reject) => {
-				axios.put("https://qlassroombackend.herokuapp.com/user/profile", webFormData, {
+				axios.put("http://localhost:8000/user/profile", webFormData, {
 					headers: { authorization: "Bearer " + token }
 				}).then(function (response) {
 					resolve();
@@ -117,8 +116,8 @@ const ProfileEdit = (props) => {
 					<form>
 						<div className="form-group">
 							<div className="row d-flex">
-								<div className="justify-content-center d-flex my-3">
-									<img src={profile_pic} className="profile-pic py-1">
+								<div className="justify-content-center d-flex my-1">
+									<img src={profile_pic} className="profile-pic py-1 rounded-circle">
 									</img>
 								</div>
 								<div className="col-12">
@@ -137,15 +136,11 @@ const ProfileEdit = (props) => {
 									<label className='mt-3 mb-1 fw-bold'>Email</label>
 									<input onChange={(event)=>dispatch(editEmail(event.target.value))} type="text" name='email' className='form-control' defaultValue={email}></input>
 								</div>
-								<div className="col-12">
-									<label className='mt-3 mb-1 fw-bold'>Enter Password To Save Changes</label>
-									<input onChange={(event)=>dispatch(oldPasswordEntry(event.target.value))} type="password" name='old_password' className='form-control'></input>
-								</div>
 							</div>
 						</div>
 					</form>
 					<div className="d-flex flex-row">
-						<button onClick={() => { window.location.reload() }} className="btn btn-primary shadow-sm mt-4">Undo edits</button>
+						<button onClick={() => { location.reload(); }} className="btn btn-primary shadow-sm mt-4">Undo edits</button>
 						<div className="flex-grow-1"></div>
 						<button onClick={()=>{submitProfileEdits();}} className='btn btn-success shadow-sm mt-4'>Save changes</button>
 					</div>

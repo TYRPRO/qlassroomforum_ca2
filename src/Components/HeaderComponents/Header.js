@@ -2,6 +2,8 @@
 //Module Imports
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserDetails } from "../../store/actions/Common";
 
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,41 +13,10 @@ import "./header.css";
 
 //Creating Component
 const Header = () => {
-	const [username, editUsername] = useState("");
-	const [user_id, editUserID] = useState(0);
-	const [fk_user_type_id, editUserType] = useState(0);
 
-	function acquireUserData() {
-		var token = findCookie("token");
-
-		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
-			{
-				headers: { "Authorization": "Bearer " + token }
-			})
-			.then(response => {
-				var data = response.data;
-				console.log(data);
-				editUsername(data.username);
-				editUserID(data.user_id);
-				editUserType(data.fk_user_type_id);
-
-			})
-			.catch((err) => {
-				toast.error(err.response.data.message);
-				console.log(err.response.data.message);
-				window.location.assign("/login");
-			});
-	}
-
-	function findCookie(name) {
-		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-		if (match) {
-			return (match[2]);
-		}
-		else {
-			return ("error");
-		}
-	}
+	const acquireData = useSelector((state) => state.Common.acquireData);
+	const userDetails = useSelector((state) => state.Common.userDetails);
+	const dispatch = useDispatch();
 
 	//Function that redirects to search page
 	let runSearch = (e) => {
@@ -54,7 +25,7 @@ const Header = () => {
 		window.location.href = "/search?query=" + query; //redirecting user to the search page
 	};
 
-	useEffect(() => acquireUserData(), []);
+	useEffect(() => getUserDetails(dispatch), []);
 
 	//Rendering the Header
 	return (

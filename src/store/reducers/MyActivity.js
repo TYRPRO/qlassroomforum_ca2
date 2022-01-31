@@ -23,6 +23,7 @@ const initialState = {
 	savedquestionToDisplay: [],
 	savedquestionTotalPages: 0,
 	savedquestionCurrentPage: 0,
+	bookmarkHover: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -126,6 +127,11 @@ const reducer = (state = initialState, action) => {
 		return {
 			...state,
 			savedquestionCurrentPage: action.savedquestionCurrentPage,
+		};
+	case "SET_BOOKMARK_HOVER":
+		return {
+			...state,
+			bookmarkHover: action.bookmarkHover,
 		};
 	default:
 		return state;

@@ -25,6 +25,9 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { css } from "@emotion/react";
 import HashLoader from "react-spinners/HashLoader";
 
+import { useSelector, useDispatch } from "react-redux";
+import { getUserDetails } from "../../store/actions/Common";
+
 const override = css`
   display: block;
   margin: 0 auto;
@@ -41,6 +44,7 @@ function ViewQn() {
 	const [fk_user_id, set_fk_user_id] = useState("");
 	const [first_name, set_first_name] = useState("");
 	const [last_name, set_last_name] = useState("");
+	const [profile_pic, set_profile_pic] = useState("");
 	const [post_content, set_post_content] = useState("");
 	const [post_created_at, set_post_created_at] = useState(parseTime("2022-01-18 "));
 
@@ -63,16 +67,16 @@ function ViewQn() {
 	const [isBookmarked, setIsBookmarked] = useState(false);
 	const [bookmarkHover, set_bookmarkHover] = useState(false);
 
-	const [loggedInUser, set_loggedInUser] = useState({});
-
-	const [acquireData, setAcquireData] = useState(false);
-
 	const [isLoadingPosts, setIsLoadingPosts] = useState(true);
 	const [isLoadingComments, setIsLoadingComments] = useState(true);
 
+	const acquireData = useSelector((state) => state.Common.acquireData);
+	const userDetails = useSelector((state) => state.Common.userDetails);
+	const dispatch = useDispatch();
+
 	const navigate = useNavigate();
 
-	useEffect(() => acquireUserData(), []);
+	useEffect(() => getUserDetails(dispatch), []);
 
 	useEffect(() => {
 		if (!acquireData) {
@@ -80,10 +84,9 @@ function ViewQn() {
 		}
 		toast.promise(
 			new Promise((resolve, reject) => {
-				axios.get(`https://qlassroombackend.herokuapp.com/posts/${post_id}`)
+				axios.get(`http://localhost:8000/posts/${post_id}`)
 					.then(function (response) {
 						var data = response.data;
-						console.log(data);
 						set_post_title(data.post_title);
 						set_fk_user_id(data.fk_user_id);
 						set_post_content(data.post_content);
@@ -93,6 +96,7 @@ function ViewQn() {
 						});
 						set_first_name(data.User.first_name);
 						set_last_name(data.User.last_name);
+						set_profile_pic(data.User.UserProfile.profile_pic);
 
 						let tempArr = [];
 						tags.map((tag) => tempArr.push(tag));
@@ -107,7 +111,7 @@ function ViewQn() {
 						for (let i = 0; i < data.SavedPosts.length; i++) {
 							var savePostData = data.SavedPosts[i];
 
-							if (savePostData.fk_user_id === loggedInUser.user_id) {
+							if (savePostData.fk_user_id === userDetails.user_id) {
 								setIsBookmarked(true);
 							}
 						}
@@ -117,9 +121,11 @@ function ViewQn() {
 						setIsLoadingPosts(false);
 						resolve();
 
+						if (savePostData.fk_user_id === userDetails.user_id) {
+							setIsBookmarked(true);
+						}
 					}).catch(function (error) {
-						console.log(error);
-						reject(error.response.data.err);
+						reject(error.response);
 					});
 			}),
 			{
@@ -137,11 +143,9 @@ function ViewQn() {
 			return;
 		}
 
-		axios.get(`https://qlassroombackend.herokuapp.com/responses/${post_id}`)
+		axios.get(`http://localhost:8000/responses/${post_id}`)
 			.then(function (response) {
-				console.log("getting answers in axios");
 				var data = response.data;
-				console.log(data);
 				var post_answers = [];
 				var post_comments = [];
 				var post_answer_comments = [];
@@ -197,7 +201,6 @@ function ViewQn() {
 
 					if (post_accepted_response.answer_is_accepted && post_accepted_response.response_id === postAnswer.response_id) {
 						acceptedAnswer = post_answers.splice(i, 1);
-						console.log(acceptedAnswer);
 					}
 				}
 				for (let i = 0; i < post_answers.length; i++) {
@@ -217,7 +220,7 @@ function ViewQn() {
 				}
 
 
-
+				console.log(post_answers);
 				set_answers(post_answers);
 				set_postComments(post_comments);
 				setIsLoadingComments(false);
@@ -254,7 +257,7 @@ function ViewQn() {
 															<div className='flex-grow-1'></div>
 
 															<div>
-																{!(loggedInUser.user_id === fk_user_id) ?
+																{!(userDetails.user_id === fk_user_id) ?
 																	(isBookmarked ? (
 																		<button onMouseEnter={() => { set_bookmarkHover(true); }} onMouseLeave={() => { set_bookmarkHover(false); }} onClick={() => { bookmarkPost(); }} className='text-success anim-enter-active'>
 																			<BookmarkIcon sx={{ fontSize: 26 }} />
@@ -273,7 +276,7 @@ function ViewQn() {
 
 														<div className='d-flex flex-row align-items-center'>
 															<div className='min-profile-pic bg-secondary'>
-
+																<img src={profile_pic} className="rounded-circle"></img>
 															</div>
 															<small className='ms-2 fw-bold'>
 																{first_name} {last_name}
@@ -322,9 +325,9 @@ function ViewQn() {
 																{/* </a> */}
 															</div>
 															<div className='col-6 '>
-																{!(loggedInUser.user_id === fk_user_id) ? (
+																{!(userDetails.user_id === fk_user_id) ? (
 																	<div className=' text-secondary d-flex flex-row-reverse align-items-center h-100'>
-																		<p className='mb-0' style={{ cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal">REPORT</p>
+																		<p className='mb-0' style={{ cursor: "pointer" }} onClick={() => reportPost(post_id)}>REPORT</p>
 																	</div>
 																) : (
 																	<div className=' text-secondary d-flex  flex-row-reverse align-items-center h-100'>
@@ -351,7 +354,8 @@ function ViewQn() {
 													key={index}
 													answer={answer}
 													index={index}
-													setAsAcceptedAnswer={setAsAcceptedAnswer} />)}
+													setAsAcceptedAnswer={setAsAcceptedAnswer}
+													isOwnerOfPost={userDetails.user_id === answer.Post.fk_user_id} />)}
 											</div>
 											<div id="user_input_section">
 												<p>Your Answer</p>
@@ -376,31 +380,6 @@ function ViewQn() {
 			</div >
 		</React.Fragment >
 	);
-
-	function acquireUserData() {
-		var token = findCookie("token");
-
-		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
-			{
-				headers: { "Authorization": "Bearer " + token }
-			})
-			.then(response => {
-				var data = response.data;
-				set_loggedInUser({
-					user_id: data.user_id,
-					first_name: data.first_name,
-					last_name: data.last_name,
-					role: data.roles,
-				});
-
-				setAcquireData(true);
-
-			})
-			.catch((err) => {
-				console.log(err);
-				window.location.assign("/login");
-			});
-	}
 
 	function findCookie(name) {
 		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
@@ -436,8 +415,8 @@ function ViewQn() {
 
 		toast.promise(
 			new Promise((resolve, reject) => {
-				axios.post("https://qlassroombackend.herokuapp.com/responses/", {
-					user_id: loggedInUser.user_id,
+				axios.post("http://localhost:8000/responses/", {
+					user_id: userDetails.user_id,
 					post_id: post_id,
 					response_type: response_type,
 					response: answer_content
@@ -448,7 +427,6 @@ function ViewQn() {
 					set_answer_input("");
 					resolve();
 				}).catch(function (error) {
-					console.log(error);
 					reject(error.response.data.err);
 				});
 			}),
@@ -483,21 +461,19 @@ function ViewQn() {
 
 			toast.promise(
 				new Promise((resolve, reject) => {
-					axios.post("https://qlassroombackend.herokuapp.com/responses/", {
-						user_id: loggedInUser.user_id,
+					axios.post("http://localhost:8000/responses/", {
+						user_id: userDetails.user_id,
 						post_id: post_id,
 						response_type: response_type,
 						response: postComment
 					}, {
 						headers: { authorization: "Bearer " + token }
 					}).then(function (response) {
-						console.log(response);
 						set_postComment("");
 						set_AddComment(false);
 						refreshAnswersFunction();
 						resolve();
 					}).catch(function (error) {
-						console.log(error);
 						reject(error.response.data.err);
 					});
 				}),
@@ -518,16 +494,19 @@ function ViewQn() {
 	}
 
 	function setAsAcceptedAnswer(index, response_id, post_id) {
+		var token = findCookie("token");
 
 		if (!(post_accepted_response.response_id === response_id)) {
 			toast.promise(new Promise((resolve, reject) => {
-				axios.put("https://qlassroombackend.herokuapp.com/posts/correctAnswer",
+				axios.put("http://localhost:8000/posts/correctAnswer",
 					{
 						answer_id: response_id,
 						post_id: post_id
+					},
+					{
+						headers: { authorization: "Bearer " + token }
 					})
 					.then(res => {
-						console.log(res.data);
 
 						setActiveIndex(index);
 						setIsRemoved(false);
@@ -536,11 +515,9 @@ function ViewQn() {
 						resolve(true);
 					})
 					.catch((err) => {
-						console.log(err);
 						reject("Error Setting Answer as Correct Answer");
 					});
-			},
-			{
+			}), {
 				pending: "Setting Answer As Correct Answer...",
 				success: "Answer Set As Correct Answer!",
 				error: {
@@ -549,24 +526,20 @@ function ViewQn() {
 					},
 				},
 			}
-			));
+			);
 		} else {
-			console.log("Already Accepted");
 			toast.error("Answer Already Accepted!");
 		}
 	}
 
 	function formatAnswers() {
 		if (!isAccepted) {
-			console.log("Formatting Answers Nope");
 			return;
 		}
 
 		var answersArray = answers;
 		var acceptedAnswer = answersArray.splice(activeIndex, 1);
 		answersArray.unshift(acceptedAnswer[0]);
-		console.log(acceptedAnswer);
-		console.log(answersArray);
 
 		set_answers(answersArray);
 		setIsAccepted(false);
@@ -575,38 +548,37 @@ function ViewQn() {
 	function bookmarkPost() {
 		// Temp User ID
 		// var user_id = "16f59363-c0a4-406a-ae65-b662c6b070cd";
-		var user_id = loggedInUser.user_id;
-		var answer_content = DOMPurify.sanitize(answer_input);
-		var response_type = "answer";
+		var user_id = userDetails.user_id;
+		var token = findCookie("token");
 
 		if (!isBookmarked) {
 			toast.info("Bookmarking Post...");
 
-			axios.post("https://qlassroombackend.herokuapp.com/posts/save", {
+			axios.post("http://localhost:8000/posts/save", {
 				user_id: user_id,
 				post_id: post_id,
+			}, {
+				headers: { authorization: "Bearer " + token }
 			}).then(function (response) {
-				console.log(response);
 				setIsBookmarked(true);
 				toast.success("Post Bookmarked!");
 			}).catch(function (error) {
-				console.log(error);
 				toast.error("Error Bookmarking Post");
 			});
 		} else {
 			toast.info("Removing Bookmark...");
 
-			axios.delete("https://qlassroombackend.herokuapp.com/posts/remove", {
+			axios.delete("http://localhost:8000/posts/remove", {
 				data: {
 					user_id: user_id,
 					post_id: post_id,
 				}
+			}, {
+				headers: { authorization: "Bearer " + token }
 			}).then(function (response) {
-				console.log(response);
 				setIsBookmarked(false);
 				toast.success("Bookmark Removed!");
 			}).catch(function (error) {
-				console.log(error);
 				toast.error("Error Removing Bookmark");
 			});
 		}
@@ -615,6 +587,10 @@ function ViewQn() {
 	function focusElement(id) {
 		let element = document.getElementById(id);
 		element.focus();
+	}
+
+	function reportPost(post_id) {
+		window.location.assign("/report?post_id=" + post_id);
 	}
 }
 

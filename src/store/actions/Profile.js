@@ -84,7 +84,7 @@ export const getProfile = async (dispatch, toast) => {
 	axios
 		.request({
 			method: "get",
-			url: `https://qlassroombackend.herokuapp.com/user/profile/`,
+			url: `http://localhost:8000/user/profile/`,
 			headers: {
 				"content-type": "application/json; charset=utf-8",
 				"Authorization": "Bearer " + token

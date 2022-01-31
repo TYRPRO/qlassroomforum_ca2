@@ -1,0 +1,149 @@
+.ChatBox{
+	position: fixed;
+	background-color: rgb(243, 243, 243);
+	width: 300px;
+	border-radius: 5px;  
+	box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+	max-width: 300px;
+	height: 400px;
+	right:30px;
+ 	bottom: 0;
+	z-index: 1;
+}
+
+.ChatHeader{
+	background-color: #6997d6;
+ 	height:40px;
+  	border-top-left-radius:5px;
+  	border-top-right-radius:5px; 
+  	color:white;
+  	text-align:center;
+  	font-size:15px;
+  	padding-top:10px;
+	cursor: default;
+}
+
+.CloseIcon{
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	cursor: pointer;
+}
+
+.ChatFooter{
+	background: #f4f7f9;
+  	position:absolute;
+ 	width: 100%;
+  	height:40px;  
+  	bottom: 0;
+  	border:1px;
+}
+
+.MessageInput{
+    outline: 0;
+	font-size:15px;
+	border-width: 0px;
+	height: 100%;
+	width: 73%;
+}
+
+.SubmitMessage{
+	font-size:20px;
+	padding-left: 10px;
+  	transform: scale(1, 1.3);
+}
+
+.Message{
+	font-size: 15px;
+	margin-top: 5px;
+	display: flex;
+	width: auto;
+	height: auto;
+	min-height: 30px;
+	min-width: 50px;
+	max-width: 200px;
+	background-color: #319b36;
+	border-radius: 5px;
+	color: white;
+	align-items: center;
+	margin-right: 5px;
+	margin-left: 5px;
+	margin-bottom: 0px;
+	padding-right: 5px;
+	padding-left: 5px;
+	overflow-wrap: break-word;
+	word-break: break-word;
+}
+
+.MyMessage{
+	font-size: 15px;;
+	margin-top: 5px;
+	display: flex;
+	width: auto;
+	height: auto;
+	min-height: 30px;
+	min-width: 50px;
+	max-width: 200px;
+	background-color: #244b8b;
+	border-radius: 5px;
+	color: white;
+	align-items: center;
+	margin-right: 5px;
+	margin-bottom: 0px;
+	margin-left: 5px;
+	padding-right: 5px;
+	padding-left: 5px;
+	overflow-wrap: break-word;
+	word-break: break-word;
+}
+
+
+.ChatBody{
+	display: flex;
+	flex-direction: column;
+	overflow-y: scroll;
+	height: 300px;
+}
+
+.ChatBody::-webkit-scrollbar {
+	display: none;
+  }
+
+.MyMessageBody{
+	display: flex;
+	justify-content: flex-end;
+}
+
+.MessageInfo{
+	display: flex;
+	justify-content: space-between;
+}
+
+.MessageBody{
+	display: flex;
+	justify-content: flex-start;
+}
+
+.Time{
+	padding-top: 13px;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-size: 8px;
+}
+
+.ChatCircle{
+	position: fixed;
+	bottom: 50px;
+	right: 50px;
+	background: #244b8b;
+	width: 60px;
+	height: 60px;  
+	border-radius: 30px;
+	color: white;
+	cursor: pointer;
+}
+
+.ChatCircleIcon{
+	margin-left: 15px;
+	margin-top: 15px;
+}

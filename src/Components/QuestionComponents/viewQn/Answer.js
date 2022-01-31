@@ -8,17 +8,23 @@ import AnswerComment from "./AnswerComments";
 import AnswerVote from "./AnswerVote";
 import parseTime from "../../../helperFunctions/parseTime";
 
+import { useSelector, useDispatch } from "react-redux";
+import { getUserDetails } from "../../../store/actions/Common";
+
 function Answer(props) {
 
 	const [addComment, set_AddComment] = useState(false);
 	const [answerComment, set_answerComment] = useState("");
-	const [loggedInUser, set_loggedInUser] = useState({});
+
+	const acquireData = useSelector((state) => state.Common.acquireData);
+	const userDetails = useSelector((state) => state.Common.userDetails);
+	const dispatch = useDispatch();
+
 	const [answerComments, set_AnswerComments] = useState([]);
 
 	var answer_info = props.answer;
-	console.log(answer_info);
 
-	useEffect(() => acquireUserData(), []);
+	useEffect(() => getUserDetails(dispatch), []);
 
 	useEffect(() => {
 		if (answer_info.comments) {
@@ -50,22 +56,25 @@ function Answer(props) {
 			<div className="row">
 				<AnswerVote response_id={answer_info.response_id} post_id={answer_info.fk_post_id} />
 				<div className="col-10">
-
-					<button className={
-						props.isAlrdAccepted ?
-							props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
-								: ("btn btn-outline-success btn-sm text-center")
-							: props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
-								: ("btn btn-outline-secondary btn-sm text-center")
-					} onClick={() => props.setAsAcceptedAnswer(props.index, answer_info.response_id, answer_info.fk_post_id)} >
-						<span className="material-icons-outlined">mark_chat_read</span> {
+					{props.isOwnerOfPost ? (
+						<button className={
 							props.isAlrdAccepted ?
-								props.isRemoved ? ("Set as Answer Accepted")
-									: ("Answer Accepted")
-								: props.isRemoved ? ("Set as Answer Accepted")
-									: ("Set as Answer Accepted")
-						}
-					</button>
+								props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
+									: ("btn btn-outline-success btn-sm text-center")
+								: props.isRemoved ? ("btn btn-outline-secondary btn-sm text-center")
+									: ("btn btn-outline-secondary btn-sm text-center")
+						} onClick={() => props.setAsAcceptedAnswer(props.index, answer_info.response_id, answer_info.fk_post_id)} >
+							<span className="material-icons-outlined">mark_chat_read</span> {
+								props.isAlrdAccepted ?
+									props.isRemoved ? ("Set as Answer Accepted")
+										: ("Answer Accepted")
+									: props.isRemoved ? ("Set as Answer Accepted")
+										: ("Set as Answer Accepted")
+							}
+						</button>
+					) : props.isAlrdAccepted ? (<button className="btn btn-outline-success btn-sm text-center" disabled><span className="material-icons-outlined">mark_chat_read</span>Answer Accepted</button>) : ("")
+					}
+
 
 
 					<p className='qn-content mt-2' dangerouslySetInnerHTML={{ __html: answer_info.response }}></p>
@@ -90,7 +99,9 @@ function Answer(props) {
 						</div>
 					</div> */}
 					<div className='d-flex flex-row mt-2 align-items-center'>
-						<div className='min-profile-pic bg-secondary'></div>
+						<div className='min-profile-pic bg-secondary'>
+							<img src={answer_info.User.UserProfile.profile_pic} className="rounded-circle"></img>
+						</div>
 						<small className='ms-2 mb-0 fw-bold'>
 							{answer_info.User.first_name}
 						</small>
@@ -125,28 +136,6 @@ function Answer(props) {
 		}
 	}
 
-	function acquireUserData() {
-
-		var token = findCookie("token");
-		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
-			{
-				headers: { "Authorization": "Bearer " + token }
-			})
-			.then(response => {
-				var data = response.data;
-				set_loggedInUser({
-					user_id: data.user_id,
-					first_name: data.first_name,
-					last_name: data.last_name,
-					role: data.roles,
-				});
-			})
-			.catch((err) => {
-				console.log(err);
-				window.location.assign("/login");
-			});
-	}
-
 	function submitAnswerComment() {
 
 
@@ -165,8 +154,8 @@ function Answer(props) {
 			props.toast.promise(
 				new Promise((resolve, reject) => {
 
-					axios.post("https://qlassroombackend.herokuapp.com/responses/", {
-						user_id: loggedInUser.user_id,
+					axios.post("http://localhost:8000/responses/", {
+						user_id: userDetails.user_id,
 						post_id: answer_info.fk_post_id,
 						parent_response_id: answer_info.response_id,
 						response_type: response_type,
@@ -174,13 +163,11 @@ function Answer(props) {
 					}, {
 						headers: { "Authorization": "Bearer " + token }
 					}).then(function (response) {
-						console.log(response);
 						set_answerComment("");
 						set_AddComment(false);
 						props.refreshAnswers();
 						resolve();
 					}).catch(function (error) {
-						console.log(error);
 						reject(error.response.data.err);
 					});
 				}),

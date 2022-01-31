@@ -1,13 +1,19 @@
 .tag-hover:hover {
-    background-color: #f5f5f5;
+	background-color: #f5f5f5;
 }
 
 .tag-name {
-    background-color: #e1ecf4;
-    color: #39739d;
+	background-color: #e1ecf4;
+	color: #39739d;
 }
 
 .btn-tag-del:hover {
-    background-color: #39739d;
-    color: white;
+	background-color: #39739d;
+	color: white;
+}
+
+
+.tag-cursor {
+	background-color: #e1ecf4;
+	color: #39739d;
 }

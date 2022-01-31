@@ -24,10 +24,14 @@ export const getUserDetails = async (dispatch) => {
 	var match = document.cookie.match(new RegExp("(^| )token=([^;]+)"));
 	if (match) {
 		var token = match[2];
-		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
-			{
-				headers: { "Authorization": "Bearer " + token }
-			})
+		axios.request({
+			method: "get",
+			url: "http://localhost:8000/user/userData",
+			headers: {
+				"content-type": "application/json; charset=utf-8",
+				"Authorization": "Bearer " + token
+			},
+		})
 			.then(response => {
 				var data = response.data;
 				dispatch(populateUserDetails(
@@ -56,7 +60,7 @@ export const getUserProfilePic = async (dispatch) => {
 		axios
 			.request({
 				method: "get",
-				url: `https://qlassroombackend.herokuapp.com/user/profile/`,
+				url: `http://localhost:8000/user/profile/`,
 				headers: {
 					"content-type": "application/json; charset=utf-8",
 					"Authorization": "Bearer " + token

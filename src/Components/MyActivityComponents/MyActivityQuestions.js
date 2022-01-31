@@ -6,13 +6,6 @@ const Question = (props) => {
 	return (
 		<div className="div-shadow rounded mb-2 bg-white" id={"post_" + props.id}>
 			<div className="row g-0">
-				{/* <div className="col-1 upvote-section py-1 justify-content-center align-self-center">
-					<a className="text-center d-block" id="post1-upvote"><i
-						className="fas fa-caret-up text-dark fs-3"></i></a>
-					<p id="post#-val" className="text-center mb-0">{props.votes}</p>
-					<a className="text-center d-block" id="post1-downvote"><i
-						className="fas fa-caret-down text-dark fs-3"></i></a>
-				</div> */}
 				<QnVotes
 					key={"vote_" + props.id}
 					user_id={props.user_id}

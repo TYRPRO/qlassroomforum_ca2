@@ -18,6 +18,12 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import DOMPurify from "dompurify";
 
+import "./createQn/TagDropdown.css";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserDetails } from "../../store/actions/Common";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+
 function EditQn() {
 	const config = {
 		loader: { load: ["input/asciimath"] }
@@ -41,11 +47,13 @@ function EditQn() {
 	const [shown_tags, set_shown_tags] = useState([]);
 	const [selected_tags, set_selected_tags] = useState([]);
 
-	const [acquireData, setAcquireData] = useState(false);
-	const [loggedInUser, set_loggedInUser] = useState({});
+	//login functions
+	const acquireData = useSelector((state) => state.Common.acquireData);
+	const userDetails = useSelector((state) => state.Common.userDetails);
+	const dispatch = useDispatch();
 
 	const [titleError, set_titleError] = useState("");
-
+	const [gradeError, set_gradeError] = useState("");
 
 
 	//  Rich Text Editor Stores selected text.
@@ -55,7 +63,7 @@ function EditQn() {
 	const [openDropdown, set_openDropdown] = useState(false);
 
 
-	useEffect(() => acquireUserData(), []);
+	useEffect(() => getUserDetails(dispatch), []);
 
 	useEffect(() => {
 		if (!acquireData) {
@@ -90,7 +98,6 @@ function EditQn() {
 				set_shown_grades(tempShownGrades);
 			})
 			.catch(function (error) {
-				console.log(error);
 
 			});
 
@@ -101,12 +108,11 @@ function EditQn() {
 			return;
 		}
 
-		axios.get(`https://qlassroombackend.herokuapp.com/posts/${post_id}`)
+		axios.get(`http://localhost:8000/posts/${post_id}`)
 			.then(function (response) {
 				var data = response.data;
 
-				console.log(data);
-				if (data.fk_user_id !== loggedInUser.user_id) {
+				if (data.fk_user_id !== userDetails.user_id) {
 					toast.error("You do not have permission to edit this post.");
 					return;
 				}
@@ -126,7 +132,6 @@ function EditQn() {
 
 
 			}).catch(function (error) {
-				console.log(error);
 			});
 	}, [acquireData]);
 
@@ -150,21 +155,18 @@ function EditQn() {
 
 
 				if (subject_id && grade_id) {
-					var URL = `https://qlassroombackend.herokuapp.com/label/${subject_id}/${grade_id}`;
+					var URL = `http://localhost:8000/label/${subject_id}/${grade_id}`;
 					axios.get(URL).then(function (response) {
 						var data = response.data;
 						if (data[0].label_name === "Topics") {
 							data.splice(0, 1);
 						}
-						console.log(data);
 
 						var temp_shown_tags = [];
 						var temp_selected_tags = [];
 						for (let i = 0; i < data.length; i++) {
 							for (let j = 0; j < tagInPost.length; j++) {
 								if (data[i].label_id === tagInPost[j]) {
-									console.log("index of i ", i);
-									console.log("index of j ", j);
 									temp_selected_tags.push(data[i]);
 								}
 								else {
@@ -176,7 +178,6 @@ function EditQn() {
 						set_shown_tags(temp_shown_tags);
 						set_selected_tags(temp_selected_tags);
 					}).catch(function (error) {
-						console.log(error);
 					});
 				}
 
@@ -211,7 +212,7 @@ function EditQn() {
 	return (
 		<React.Fragment>
 			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
-			<div className="container">
+			<div className="container min-height">
 				<div className='row'>
 					<div className="col-lg-2">
 
@@ -219,9 +220,9 @@ function EditQn() {
 					<div className='col-12 col-lg-8'>
 
 						<h3 className='mt-4 mb-3'>Edit Question</h3>
-						<div className="d-flex align-items-center mt-3">
-							<ArrowBackIosNewIcon sx={{ fontSize: 18 }} />
-							<p className="text-primary mb-0 ms-1 align-middle">Return to Question</p>
+						<div className="d-flex align-items-center mt-3" >
+							<ArrowBackIosNewIcon className="cursor-pointer hue-light-blue" onClick={() => 	window.location.href = `/posts/${post_id}`} sx={{ fontSize: 18}} />
+							<p onClick={() => 	window.location.href = `/posts/${post_id}`} className="hue-light-blue cursor-pointer mb-0 ms-1 align-middle">Return to Question</p>
 						</div>
 						<div className=''>
 							<form>
@@ -261,6 +262,9 @@ function EditQn() {
 													{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
 												</select>
 											</div>
+											<div className="is-invalid text-danger">
+												{gradeError}
+											</div>
 										</div>
 									</div>
 
@@ -277,11 +281,14 @@ function EditQn() {
 									<div className='form-control d-flex flex-wrap' tabIndex={0} onClick={() => set_openDropdown(openDropdown ? false : true)}>
 
 										{selected_tags.map((selected_tags, index) => <Tag key={index} tag={selected_tags} handleRemove={removeTagSelect}></Tag>)}
-										<p contentEditable='true' className='mb-0 px-3 bg-secondary text-white'></p>
-
+										<p contentEditable='true' className='mb-0 px-3 tag-cursor rounded'></p>
+										<div className="flex-grow-1"></div>
+										<div className=" align-self-end">
+											<ExpandMoreIcon sx={{fontSize:22}}></ExpandMoreIcon>
+										</div>
 									</div>
 
-									{openDropdown ? <TagDropdown tags={shown_tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false); }}></TagDropdown> : null}
+									{openDropdown ? <TagDropdown tags={shown_tags} selected_tags={selected_tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false); }}></TagDropdown> : null}
 								</div>
 
 
@@ -289,7 +296,7 @@ function EditQn() {
 							</form>
 						</div>
 						<div className="d-flex flex-row">
-							<button onClick={() => { window.location.reload(); }} className="btn btn-primary shadow-sm">Undo edits</button>
+							<button onClick={() => { location.reload(); }} className="btn btn-primary shadow-sm mt-4">Undo edits</button>
 							<div className="flex-grow-1"></div>
 
 							<button onClick={submitPostEdit} className='btn btn-primary shadow-sm mt-4'>Edit question</button>
@@ -309,11 +316,11 @@ function EditQn() {
 	
 		let title_pattern = /^[a-zA-Z0-9#$.?! ()%,]*$/;
 		let title_accepted = title_pattern.test(qnTitle);
-		console.log(title_accepted);
-		if (qnTitle.length > 85) {
+
+		if (qnTitle.length > 85 || qnTitle.trim().length == 0) {
+
 			title_accepted = false;
 		}
-		console.log(title_accepted);
 
 		let purified_body = DOMPurify.sanitize(qnBody);
 
@@ -332,13 +339,14 @@ function EditQn() {
 
 		var token = findCookie("token");
 
-		if (title_accepted) {
+		
+		if (title_accepted && grade_id != "") {
 			toast.promise(
 				new Promise((resolve, reject) => {
-					axios.put("https://qlassroombackend.herokuapp.com/posts", {
+					axios.put("http://localhost:8000/posts", {
 						title: qnTitle,
 						content: purified_body,
-						user_id: loggedInUser.user_id,
+						user_id: userDetails.user_id,
 						subforum_id: subject_id,
 						grade_id: grade_id,
 						tags: tags,
@@ -350,9 +358,7 @@ function EditQn() {
 							window.location.href = `/posts/${post_id}`;
 						}, 2500);
 						resolve();
-						console.log(response);
 					}).catch(function (error) {
-						console.log(error);
 						reject(error.response.data.err);
 					});
 				}),
@@ -368,7 +374,13 @@ function EditQn() {
 			);
 		}
 		else {
-			set_titleError("Please enter a title that is less than 85 characters and contains only letters, numbers, and the following symbols: #$%.,?!()");
+			if(!title_accepted) {
+				set_titleError("Please enter a title that is less than 85 characters and contains only letters, numbers, and the following symbols: #$%.,?!()");
+			}
+
+			if(grade_id == "" ) {
+				set_gradeError("Please select a grade");
+			}
 		}
 
 
@@ -383,7 +395,6 @@ function EditQn() {
 
 		for (var i = 0; i < shown_tags.length; i++) {
 			if (shown_tags[i].label_name === tag) {
-				console.log(shown_tags[i]);
 				tag_object = shown_tags[i];
 			} else {
 				temp_tags.push(shown_tags[i]);
@@ -416,30 +427,6 @@ function EditQn() {
 		set_selected_tags(temp_selected_tags);
 	}
 
-	function acquireUserData() {
-		var token = findCookie("token");
-
-		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
-			{
-				headers: { "Authorization": "Bearer " + token }
-			})
-			.then(response => {
-				var data = response.data;
-				set_loggedInUser({
-					user_id: data.user_id,
-					first_name: data.first_name,
-					last_name: data.last_name,
-					role: data.roles,
-				});
-
-				setAcquireData(true);
-				console.log("logged in user eing set");
-			})
-			.catch((err) => {
-				console.log(err);
-				window.location.assign("/login");
-			});
-	}
 	function findCookie(name) {
 		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
 		if (match) {
@@ -449,13 +436,6 @@ function EditQn() {
 			return ("error");
 		}
 	}
-
-
-
-
-
-
-
 
 }
 export default EditQn;

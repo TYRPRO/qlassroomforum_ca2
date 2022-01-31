@@ -20,7 +20,7 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 	function uploadMedia(file) {
 		const formData = new FormData();
 		formData.append("file", file, file.name);
-		axios.post("https://qlassroombackend.herokuapp.com/posts/upload_image", formData).then(res => {
+		axios.post("http://localhost:8000/posts/upload_image", formData).then(res => {
 			setFileIsValid(true);
 			set_imageURL(res.data.media_url);
 
@@ -71,7 +71,7 @@ const ImageModalQuill = ({ isOpen, setIsOpen, value = null, handleConfirm }) => 
 				// 	<div className='flex-grow-1'></div>
 				// 	<CloseIcon/>
 				// </div>
-				<div className=' float-end'>
+				<div className=' float-end cursor-pointer modal-close'>
 					<CloseIcon />
 				</div>
 

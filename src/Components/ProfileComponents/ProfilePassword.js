@@ -54,7 +54,7 @@ const ProfilePassword = (props) => {
 			var token = findCookie("token");
 			toast.promise(
 				new Promise((resolve, reject) => {
-					axios.put("https://qlassroombackend.herokuapp.com/user/password", {
+					axios.put("http://localhost:8000/user/password", {
 						new_password,
 						old_password
 					}, {

@@ -53,3 +53,11 @@ button>span{
 .hue-light-blue {
 	color: #39739d
 }
+
+.min-height {
+	min-height: 94vh;
+}
+
+.modal-close:hover {
+	color: #39739d;
+}

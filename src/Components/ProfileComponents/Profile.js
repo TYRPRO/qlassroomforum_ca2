@@ -46,7 +46,7 @@ const Profile = () => {
 		<React.Fragment>
 			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
 			<div className="container">
-				<div className="flex-grow-1 mt-5">
+				<div className="flex-grow-1">
 					<ul id="tabs" className="nav nav-tabs d-flex">
 						<div className="active mx-xl-4 mx-3" id="editprofile">
 							<button href="#home" className="p-2 py-3" onClick={() => handleTabSelection("editprofile")}>Edit Profile</button>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 
 // My Activity Statistics
@@ -137,6 +138,13 @@ export const setLoadingSavedQuestions = (isLoadingSavedQuestions) => {
 	};
 };
 
+export const set_bookmarkHover = (bookmarkHover) => {
+	return {
+		type: "SET_BOOKMARK_HOVER",
+		bookmarkHover,
+	};
+};
+
 // Tab Selection
 export const handleTabsSelection = (tabSelected) => {
 	return {
@@ -150,7 +158,7 @@ export const getUpdatesReceived = async (dispatch, user_id, acquireData) => {
 	if (!acquireData) {
 		return;
 	}
-	axios.get(`https://qlassroombackend.herokuapp.com/responses/user/${user_id}`)
+	axios.get(`http://localhost:8000/responses/user/${user_id}`)
 		.then(function (response) {
 			dispatch(setUpdatesReceived(response.data.length));
 		})
@@ -164,9 +172,8 @@ export const getAnswersAccepted = async (dispatch, user_id, acquireData) => {
 	if (!acquireData) {
 		return;
 	}
-	axios.get(`https://qlassroombackend.herokuapp.com/responses/answersaccepted/${user_id}`)
+	axios.get(`http://localhost:8000/responses/answersaccepted/${user_id}`)
 		.then(function (response) {
-			console.log(response.data);
 			dispatch(setAnswersAccepted(response.data.length));
 		})
 		.catch(function (error) {
@@ -179,9 +186,8 @@ export const getUpvotesGiven = async (dispatch, user_id, acquireData) => {
 	if (!acquireData) {
 		return;
 	}
-	axios.get(`https://qlassroombackend.herokuapp.com/vote/${user_id}`)
+	axios.get(`http://localhost:8000/vote/${user_id}`)
 		.then(function (response) {
-			console.log(response.data);
 			var totalVotes = response.data.post_votes.length + response.data.response_votes.length;
 			dispatch(setUpvotesGiven(totalVotes));
 		})
@@ -196,11 +202,9 @@ export const getQuestions = async (dispatch, toast, user_id, acquireData) => {
 		return;
 	}
 
-
-	// axios.get("https://qlassroombackend.herokuapp.com/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
-	axios.get("https://qlassroombackend.herokuapp.com/posts/user/" + user_id)
+	// axios.get("http://localhost:8000/posts/user/16f59363-c0a4-406a-ae65-b662c6b070cd")
+	axios.get("http://localhost:8000/posts/user/" + user_id)
 		.then((data) => {
-			console.log(data.data);
 			var questions = data.data;
 			var questionDetails = [];
 			var totalQuestions = Math.ceil(questions.length / 4);
@@ -210,8 +214,8 @@ export const getQuestions = async (dispatch, toast, user_id, acquireData) => {
 				var post = questions[i];
 				var post_shortTitle = "";
 
-				if (post.post_title.length > 30) {
-					post_shortTitle = post.post_title.substring(0, 30) + "...";
+				if (post.post_title.length > 50) {
+					post_shortTitle = post.post_title.substring(0, 50) + "...";
 				}
 
 				// Calculates Time
@@ -265,7 +269,7 @@ export const getQuestions = async (dispatch, toast, user_id, acquireData) => {
 					post_shortTitle: post_shortTitle,
 					post_answerCount: answer_count,
 					post_commentCount: comment_count,
-					user_id: post.fk_user_id,
+					user_id: post.User.user_id,
 				});
 
 			}
@@ -276,7 +280,6 @@ export const getQuestions = async (dispatch, toast, user_id, acquireData) => {
 				}
 			}
 
-			console.log(dispQuestions);
 			dispatch(populateQuestions(questionDetails));
 			dispatch(populateDispQuestions(dispQuestions));
 			dispatch(setQuestionsTotalPages(totalQuestions));
@@ -295,10 +298,8 @@ export const getAnswers = async (dispatch, toast, user_id, acquireData) => {
 		return;
 	}
 
-
-	axios.get("https://qlassroombackend.herokuapp.com/answers/user/" + user_id)
+	axios.get("http://localhost:8000/answers/user/" + user_id)
 		.then((data) => {
-			console.log(data.data);
 			var answers = data.data;
 			var answerDetails = [];
 			var totalAnswers = Math.ceil(answers.length / 5);
@@ -325,7 +326,7 @@ export const getAnswers = async (dispatch, toast, user_id, acquireData) => {
 					answer_post_shortTitle: post_shortTitle,
 					answer_value: comment.response,
 					answer_shortValue: comment_shortResponse,
-					post_id : comment.fk_post_id
+					post_id: comment.fk_post_id
 				});
 			}
 
@@ -354,10 +355,8 @@ export const getSavedQuestions = async (dispatch, toast, user_id, acquireData) =
 		return;
 	}
 
-
-	axios.get("https://qlassroombackend.herokuapp.com/posts/save/user/" + user_id)
+	axios.get("http://localhost:8000/posts/save/user/" + user_id)
 		.then((data) => {
-			console.log(data.data);
 			var savedQuestions = data.data;
 			var savedQuestionDetails = [];
 			var totalSavedQuestions = Math.ceil(savedQuestions.length / 4);
@@ -367,8 +366,8 @@ export const getSavedQuestions = async (dispatch, toast, user_id, acquireData) =
 				var post = savedQuestions[i];
 				var post_shortTitle = "";
 
-				if (post.Post.post_title.length > 30) {
-					post_shortTitle = post.Post.post_title.substring(0, 30) + "...";
+				if (post.Post.post_title.length > 50) {
+					post_shortTitle = post.Post.post_title.substring(0, 50) + "...";
 				}
 
 				// Calculates Time
@@ -399,13 +398,30 @@ export const getSavedQuestions = async (dispatch, toast, user_id, acquireData) =
 					post_date_output = `${weeks_between_dates} weeks ago`;
 				}
 
+				var question_responses = post.Post.Responses;
+				var answer_count = 0;
+				var comment_count = 0;
+
+				for (let i = 0; i < question_responses.length; i++) {
+					var response = question_responses[i];
+
+					if (response.ResponseType.response_type == "comment") {
+						comment_count++;
+					} else if (response.ResponseType.response_type == "answer") {
+						answer_count++;
+					}
+				}
+
 				savedQuestionDetails.push({
 					post_id: post.Post.post_id,
 					question_id: post.Post.post_id,
 					post_votes: post.Post.post_rating,
 					post_date: post_date_output,
 					post_title: post.Post.post_title,
-					post_shortTitle: post_shortTitle
+					post_shortTitle: post_shortTitle,
+					post_answerCount: answer_count,
+					post_commentCount: comment_count,
+					user_id: post.User.user_id,
 				});
 			}
 
@@ -425,6 +441,43 @@ export const getSavedQuestions = async (dispatch, toast, user_id, acquireData) =
 			console.log(err);
 			toast.error("Error Retrieving Saved Questions");
 		});
+
+};
+
+export const removeBookmark = async (dispatch, toast, user_id, post_id, savedquestionsArr, savedquestionPage, token) => {
+	axios.delete("http://localhost:8000/posts/remove", {
+		headers: {
+			authorization: "Bearer " + token
+		},
+		data: {
+			user_id: user_id,
+			post_id: post_id,
+		}
+
+	}).then(function (response) {
+		for (let i = 0; i < savedquestionsArr.length; i++) {
+			var savedquestion = savedquestionsArr[i];
+			if (savedquestion.post_id == post_id) {
+				savedquestionsArr.splice(i, 1);
+			}
+		}
+
+		var dispSavedQuestions = [];
+
+		for (let i = 0; i < 4; i++) {
+			if (savedquestionsArr[i + (savedquestionPage * 4)] != undefined) {
+				dispSavedQuestions.push(savedquestionsArr[i + (savedquestionPage * 4)]);
+			}
+		}
+
+		dispatch(populateSavedQuestions(savedquestionsArr));
+		dispatch(populateDispSavedQuestions(dispSavedQuestions));
+
+		toast.success("Bookmark Removed!");
+	}).catch(function (error) {
+		console.log(error);
+		toast.error("Error Removing Bookmark");
+	});
 
 };
 

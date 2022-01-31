@@ -3,41 +3,18 @@
 import React, { useState, useEffect } from "react";
 import "./Post.css";
 import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserDetails } from "../../store/actions/Common";
 
 const PostVotes = (props) => {
 	const [upvoted, setUpvote] = useState(false);
 	const [downvoted, setDownvote] = useState(false);
 	const [votecount, setVoteCount] = useState(0);
-	//login info
-	const [firstname, setFirstname] = useState("");
-	const [lastname, setLastname] = useState("");
-	const [user_id, setUserID] = useState(0);
-	const [role, setRole] = useState("");
 
-	const [acquireData, setAcquireData] = useState(false);
-
-	// login functions
-	function acquireUserData() {
-		var token = findCookie("token");
-
-		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
-			{
-				headers: { "Authorization": "Bearer " + token }
-			})
-			.then(response => {
-				var data = response.data;
-				setFirstname(data.first_name);
-				setLastname(data.last_name);
-				setUserID(data.user_id);
-				setRole(data.roles);
-
-				setAcquireData(true);
-			})
-			.catch((err) => {
-				console.log(err);
-				window.location.assign("/login");
-			});
-	}
+	//login functions
+	const acquireData = useSelector((state) => state.Common.acquireData);
+	const userDetails = useSelector((state) => state.Common.userDetails);
+	const dispatch = useDispatch();
 
 	function findCookie(name) {
 		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
@@ -50,11 +27,11 @@ const PostVotes = (props) => {
 	}
 
 	function setVoteStatus() {
-		if (acquireData != true) {
+		if (!acquireData) {
 			return;
 		}
-		axios.get("https://qlassroombackend.herokuapp.com/vote/post_rating?user_id=" +
-			user_id + "&post_id=" + props.post_id)
+		axios.get("http://localhost:8000/vote/post_rating?user_id=" +
+			userDetails.user_id + "&post_id=" + props.post_id)
 			.then(response => {
 				var data = response.data;
 				if (data.length >= 1) {
@@ -70,7 +47,7 @@ const PostVotes = (props) => {
 				}
 			})
 			.catch((err) => {
-				console.log(err.response.data.message);
+				console.log(err);
 			});
 	}
 
@@ -93,18 +70,22 @@ const PostVotes = (props) => {
 	}
 
 	function VoteCount() {
-		setVoteCount(0);
-		axios.get("https://qlassroombackend.herokuapp.com/vote/posts/" + props.post_id)
+		axios.get("http://localhost:8000/vote/posts/" + props.post_id)
 			.then(response => {
+				var votenum = 0;
+
 				var data = response.data;
 				for (var i = 0; i < data.length; i++) {
-					if (data[0].vote_type == true) {
-						setVoteCount(votecount + 1);
+					
+					if (data[i].vote_type === true) {
+						votenum += 1;
 					}
 					else {
-						setVoteCount(votecount - 1);
+						votenum -= 1;
 					}
 				}
+
+				setVoteCount(votenum);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -117,10 +98,10 @@ const PostVotes = (props) => {
 			setUpvote(false);
 			setVoteCount(votecount - 1);
 
-			axios.delete("https://qlassroombackend.herokuapp.com/vote/post_rating",
+			axios.delete("http://localhost:8000/vote/post_rating",
 				{
-					data:{					
-						user_id: user_id,
+					data: {
+						user_id: userDetails.user_id,
 						post_id: props.post_id
 					}
 				},
@@ -130,7 +111,7 @@ const PostVotes = (props) => {
 					}
 				})
 				.then(response => {
-					console.log(response);
+					console.log("Vote deleted");
 				})
 				.catch((err) => {
 					console.log(err);
@@ -146,9 +127,9 @@ const PostVotes = (props) => {
 				setVoteCount(votecount + 1);
 			}
 
-			axios.post("https://qlassroombackend.herokuapp.com/vote/post_rating",
-				{					
-					user_id: user_id,
+			axios.post("http://localhost:8000/vote/post_rating",
+				{
+					user_id: userDetails.user_id,
 					post_id: props.post_id,
 					vote_type: true
 				},
@@ -172,10 +153,10 @@ const PostVotes = (props) => {
 			setDownvote(false);
 			setVoteCount(votecount + 1);
 
-			axios.delete("https://qlassroombackend.herokuapp.com/vote/post_rating",
+			axios.delete("http://localhost:8000/vote/post_rating",
 				{
-					data:{					
-						user_id: user_id,
+					data: {
+						user_id: userDetails.user_id,
 						post_id: props.post_id
 					}
 				},
@@ -185,7 +166,7 @@ const PostVotes = (props) => {
 					}
 				})
 				.then(response => {
-					console.log(response);
+					console.log("Vote deleted");
 				})
 				.catch((err) => {
 					console.log(err);
@@ -201,9 +182,9 @@ const PostVotes = (props) => {
 				setVoteCount(votecount - 1);
 			}
 
-			axios.post("https://qlassroombackend.herokuapp.com/vote/post_rating",
-				{					
-					user_id: user_id,
+			axios.post("http://localhost:8000/vote/post_rating",
+				{
+					user_id: userDetails.user_id,
 					post_id: props.post_id,
 					vote_type: false
 				},
@@ -221,15 +202,13 @@ const PostVotes = (props) => {
 		}
 	}
 
-	useEffect(() => {
-		acquireUserData();
-	}
-	, []);
+	useEffect(() => getUserDetails(dispatch), []);
+
 	useEffect(() => {
 		setVoteStatus();
 		VoteCount();
-	}
-	, [acquireData]);
+	}, [acquireData]);
+
 	return <div className="col-1 py-2">
 		<a onClick={() => upvote()} className={"text-center d-block post-upvote " + checkUpvote()} id={"post_" + props.post_id + "_upvote"}><i
 			className="fas fa-caret-up text-dark"></i></a>

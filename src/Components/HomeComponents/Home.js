@@ -4,7 +4,7 @@ import axios from "axios";
 import Channel from "../ChannelComponents/Channel";
 import "./Home.css";
 import Post from "../PostComponent/Post";
-
+import Chat from "../ChatComponents/Chat";
 import { css } from "@emotion/react";
 import HashLoader from "react-spinners/HashLoader";
 
@@ -16,7 +16,7 @@ const override = css`
 `;
 
 const Home = () => {
-	const baseUrl = "https://qlassroombackend.herokuapp.com";
+	const baseUrl = "http://localhost:8000";
 	const [PostsData, setPostsData] = useState([]);
 	const [CurrentPost, setCurrentPost] = useState([]);
 	const [CurrentPage, setCurrentPage] = useState(1);
@@ -59,7 +59,7 @@ const Home = () => {
 	}
 	const ChannelDataHandler = (ChannelFilterData) => {
 		setIsLoadingFilteredPosts(true);
-		axios.post("https://qlassroombackend.herokuapp.com/posts/filter/home",
+		axios.post(baseUrl + "/posts/filter/home",
 			ChannelFilterData)
 			.then(res => {
 				// Resetting page to first page
@@ -80,6 +80,7 @@ const Home = () => {
 
 	return (
 		<div className="container-fluid">
+			<Chat />
 			<div className='container'>
 				<div className='row'>
 					{isLoadingPosts ? <HashLoader color={"#a5c1e8"} loading={isLoadingPosts} css={override} size={150} /> :

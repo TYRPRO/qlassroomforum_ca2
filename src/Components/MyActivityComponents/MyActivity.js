@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // Module Imports
 import React, { useState, useEffect } from "react";
-import axios from "axios"; //npm i axios
+// import axios from "axios"; //npm i axios
 import { useSelector, useDispatch } from "react-redux";
 import { getUserDetails } from "../../store/actions/Common";
 import {
@@ -17,7 +17,8 @@ import {
 	getUpvotesGiven,
 	getQuestions,
 	getAnswers,
-	getSavedQuestions
+	getSavedQuestions,
+	removeBookmark
 } from "../../store/actions/MyActivity";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,7 +31,7 @@ import "./activity.css";
 //Child Imports
 import Question from "./MyActivityQuestions";
 import Answer from "./MyActivityAnswers";
-// import SavedQuestion from "./MyActivitySavedQuestions";
+import SavedQuestion from "./MyActivitySavedQuestions";
 
 const override = css`
   display: block;
@@ -42,39 +43,42 @@ const override = css`
 //Component Creation
 const MyActivity = () => {
 
-	// State Creation
+	// Statistics States
 	const updatesReceived = useSelector((state) => state.MyActivity.updatesReceived);
 	const answersPosted = useSelector((state) => state.MyActivity.answersPosted);
 	const answersAccepted = useSelector((state) => state.MyActivity.answersAccepted);
 	const upvotesGiven = useSelector((state) => state.MyActivity.upvotesGiven);
 
+	// Tab States
 	const tabselected = useSelector((state) => state.MyActivity.tabSelected);
 
+	// Question States
 	const questions = useSelector((state) => state.MyActivity.questions);
 	const isLoadingQuestions = useSelector((state) => state.MyActivity.isLoadingQuestions);
 	const questionToDisplay = useSelector((state) => state.MyActivity.questionToDisplay);
 	const questionTotalPages = useSelector((state) => state.MyActivity.questionTotalPages);
 	const questionCurrentPage = useSelector((state) => state.MyActivity.questionCurrentPage);
 
+	// Answer States
 	const answers = useSelector((state) => state.MyActivity.answers);
 	const isLoadingAnswers = useSelector((state) => state.MyActivity.isLoadingAnswers);
 	const answerToDisplay = useSelector((state) => state.MyActivity.answerToDisplay);
 	const answerTotalPages = useSelector((state) => state.MyActivity.answerTotalPages);
 	const answerCurrentPage = useSelector((state) => state.MyActivity.answerCurrentPage);
 
+	// Saved Question States
 	const savedquestions = useSelector((state) => state.MyActivity.savedquestions);
 	const isLoadingSavedQuestions = useSelector((state) => state.MyActivity.isLoadingSavedQuestions);
 	const savedquestionToDisplay = useSelector((state) => state.MyActivity.savedquestionToDisplay);
 	const savedquestionTotalPages = useSelector((state) => state.MyActivity.savedquestionTotalPages);
 	const savedquestionCurrentPage = useSelector((state) => state.MyActivity.savedquestionCurrentPage);
 
-	//login info
+	//Logged In User States
 	const acquireData = useSelector((state) => state.Common.acquireData);
 	const userDetails = useSelector((state) => state.Common.userDetails);
 	const dispatch = useDispatch();
 
 	function handleTabSelection(tab) {
-		console.log("Tab Selected: " + tab);
 		if (tab == "questions") {
 			document.getElementById(tab).classList.add("active");
 			document.getElementById("answers").classList.remove("active");
@@ -129,7 +133,6 @@ const MyActivity = () => {
 	}
 
 	function handlePageNext() {
-		console.log("Next Page");
 		if (tabselected == "questions") {
 			if (questionCurrentPage + 1 < questionTotalPages) {
 				dispatch(setQuestionsCurrentPage(questionCurrentPage + 1));
@@ -148,7 +151,6 @@ const MyActivity = () => {
 	}
 
 	function handlePagePrevious() {
-		console.log("Previous Page");
 		if (tabselected == "questions") {
 			if (questionCurrentPage > 0) {
 				dispatch(setQuestionsCurrentPage(questionCurrentPage - 1));
@@ -163,6 +165,21 @@ const MyActivity = () => {
 				dispatch(setSavedQuestionsCurrentPage(savedquestionCurrentPage - 1));
 			}
 		}
+	}
+
+	function findCookie(name) {
+		var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+		if (match) {
+			return (match[2]);
+		}
+		else {
+			return ("error");
+		}
+	}
+
+	function removeBookmarkSavedQuestion(user_id, post_id) {
+		var token = findCookie("token");
+		removeBookmark(dispatch, toast, user_id, post_id, savedquestions, savedquestionCurrentPage, token);
 	}
 
 	// Retrieves Page Content
@@ -251,7 +268,7 @@ const MyActivity = () => {
 							) : isLoadingSavedQuestions ? <HashLoader color={"#a5c1e8"} loading={isLoadingSavedQuestions} css={override} size={150} /> : tabselected == "savedquestions" ? (
 								savedquestionToDisplay.length > 0 ? (
 									savedquestionToDisplay.map((data) => (
-										<Question
+										<SavedQuestion
 											key={data.question_id}
 											id={data.post_id}
 											votes={data.post_votes}
@@ -260,12 +277,14 @@ const MyActivity = () => {
 											shortTitle={data.post_shortTitle}
 											answerCount={data.post_answerCount}
 											commentCount={data.post_commentCount}
+											user_id={data.user_id}
+											removeBookmarkSavedQuestion={removeBookmarkSavedQuestion}
 										/>
 									))
 								) : (
 									<div className="text-center">No Saved Questions At The Moment</div>
 								)
-							) : isLoadingQuestions ? <HashLoader color={"#a5c1e8"} loading={isLoadingQuestions} css={override} size={150} /> : (
+							) : isLoadingQuestions ? <HashLoader color={"#a5c1e8"} loading={isLoadingQuestions} css={override} size={150} /> : tabselected == "questions" ? (
 								questionToDisplay.length > 0 ? (
 									questionToDisplay.map((data) => (
 										<Question
@@ -277,49 +296,49 @@ const MyActivity = () => {
 											shortTitle={data.post_shortTitle}
 											answerCount={data.post_answerCount}
 											commentCount={data.post_commentCount}
-											user_id={data.post_user_id}
+											user_id={data.user_id}
 										/>
 									))
 								) : (
 									<div className="text-center">No Questions At The Moment</div>
 								)
-							)
+							) : (<div className="text-center">Error Occured When Loading</div>)
 							}
 						</div>
 
 						{(!isLoadingAnswers && tabselected == "answers" || !isLoadingSavedQuestions && tabselected == "savedquestions" || !isLoadingQuestions) &&
-						<div id="pagination" className="w-100 my-3 row">
-							<div className="col-3 text-center">
-								<button className="mx-auto my-2" onClick={() => handlePagePrevious()}><i className='fas fa-arrow-left me-2'></i>BACK</button>
-							</div>
-							<div id="paginationNum" className="col-6 text-center">
-								{!isLoadingAnswers && tabselected == "answers" ? (
-									answerToDisplay.length > 0 ? (
-										<p className="mx-auto my-2 text-dark">{answerCurrentPage + 1} of {answerTotalPages}</p>
-									) : (
-										<p className="mx-auto my-2 text-dark"></p>
-									)
+							<div id="pagination" className="w-100 my-3 row">
+								<div className="col-3 text-center">
+									<button className="mx-auto my-2" onClick={() => handlePagePrevious()}><i className='fas fa-arrow-left me-2'></i>BACK</button>
+								</div>
+								<div id="paginationNum" className="col-6 text-center">
+									{!isLoadingAnswers && tabselected == "answers" ? (
+										answerToDisplay.length > 0 ? (
+											<p className="mx-auto my-2 text-dark">{answerCurrentPage + 1} of {answerTotalPages}</p>
+										) : (
+											<p className="mx-auto my-2 text-dark"></p>
+										)
 
-								) : !isLoadingSavedQuestions && tabselected == "savedquestions" ? (
-									savedquestionToDisplay.length > 0 ? (
-										<p className="mx-auto my-2 text-dark">{savedquestionCurrentPage + 1} of {savedquestionTotalPages}</p>
-									) : (
-										<p className="mx-auto my-2 text-dark"></p>
-									)
+									) : !isLoadingSavedQuestions && tabselected == "savedquestions" ? (
+										savedquestionToDisplay.length > 0 ? (
+											<p className="mx-auto my-2 text-dark">{savedquestionCurrentPage + 1} of {savedquestionTotalPages}</p>
+										) : (
+											<p className="mx-auto my-2 text-dark"></p>
+										)
 
-								) : !isLoadingQuestions && (
-									questionToDisplay.length > 0 ? (
-										<p className="mx-auto my-2 text-dark">{questionCurrentPage + 1} of {questionTotalPages}</p>
-									) : (
-										<p className="mx-auto my-2 text-dark"></p>
+									) : !isLoadingQuestions && (
+										questionToDisplay.length > 0 ? (
+											<p className="mx-auto my-2 text-dark">{questionCurrentPage + 1} of {questionTotalPages}</p>
+										) : (
+											<p className="mx-auto my-2 text-dark"></p>
+										)
 									)
-								)
-								}
+									}
+								</div>
+								<div className="col-3 text-center">
+									<button className="mx-auto my-2" onClick={() => handlePageNext()}>NEXT<i className='fas fa-arrow-right ms-2'></i></button>
+								</div>
 							</div>
-							<div className="col-3 text-center">
-								<button className="mx-auto my-2" onClick={() => handlePageNext()}>NEXT<i className='fas fa-arrow-right ms-2'></i></button>
-							</div>
-						</div>
 						}
 					</div>
 				</div>

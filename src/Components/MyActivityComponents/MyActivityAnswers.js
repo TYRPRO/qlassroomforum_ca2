@@ -20,9 +20,9 @@ const Answer = (props) => {
 				<div className="col-1"></div>
 				<div className="col-11">
 					{props.shortValue == "" ? (
-						<h5>{props.value}</h5>
+						<h5 dangerouslySetInnerHTML={{ __html: props.value }}></h5>
 					) : (
-						<h5>{props.shortValue}</h5>
+						<h5 dangerouslySetInnerHTML={{ __html: props.shortValue }}></h5>
 					)}
 				</div>
 			</div>

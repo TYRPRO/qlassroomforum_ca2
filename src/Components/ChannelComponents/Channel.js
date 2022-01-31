@@ -2,6 +2,7 @@ import "./Channel.css";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 const Channel = (props) => {
 	// Delcaring proptypes for Eslint
@@ -23,8 +24,8 @@ const Channel = (props) => {
 	// Is unaswered checked
 	const [selectUnanswered, setSelectUnanswered] = useState(false);
 
-	function setSubjectId(hideSubject, subforum_id){
-		if (hideSubject == true){
+	function setSubjectId(hideSubject, subforum_id) {
+		if (hideSubject == true) {
 			setSelectedSubject(subforum_id);
 			isSubjectSelected(true);
 		}
@@ -33,7 +34,7 @@ const Channel = (props) => {
 	// Get Subjects/Subforum 
 	function GetSubjects() {
 		// Call backend to get all subjects
-		axios.get("https://qlassroombackend.herokuapp.com/subforum")
+		axios.get("http://localhost:8000/subforum")
 			.then(res => {
 				setSubjects(res.data);
 			})
@@ -45,7 +46,7 @@ const Channel = (props) => {
 	// Get Grades
 	function GetGrades() {
 		// Call backend to get all grades
-		axios.get("https://qlassroombackend.herokuapp.com/grade")
+		axios.get("http://localhost:8000/grade")
 			.then(res => {
 				setGrades(res.data);
 			})
@@ -152,37 +153,43 @@ const Channel = (props) => {
 	return (
 		<div className="col-lg-3">
 			<div className="bg-white body-borders rounded">
-				<div className="form p-2">
-					<h5>Channel</h5>
+				<div className="form px-3 py-3">
+					<div className="d-flex">
+						<FilterAltIcon></FilterAltIcon>
+						<h5 className="ms-2">Channel</h5>
+					</div>
+					<hr className="mt-2"></hr>
 					<form>
 						<div className="form-padding">
 							{!props.hideSubject &&
 								<React.Fragment>
-									<label>Subject</label>
-									<div>
-										<select className="SelectSubject" id="SelectSubject" defaultValue={props.subforum_id} onChange={SubjectChange}>
-											<option value="default">Select All Subjects</option>
+									<label className="fw-bold">Subject</label>
+									<div className="dropdown">
+										<select className="SelectSubject form-select" id="SelectSubject" defaultValue={props.subforum_id} onChange={SubjectChange}>
+											<option value="default" className="dropdown-item">Select All Subjects</option>
 											{Subjects.map((data) => (
-												<option key={data.subforum_id} value={data.subforum_id}>{data.subforum_name}</option>
+												<option key={data.subforum_id} className="dropdown-item" value={data.subforum_id}>{data.subforum_name}</option>
 											))}
 										</select>
 									</div>
 								</React.Fragment>
 							}
 							<br />
-							<label>Grade</label>
-							<div>
-								<select className="SelectGrade" value={HasSubject == false ? "default" : SelectedGrade} id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event) => GradeChange(event)}>
-									<option value="default">Select All Grades</option>
+							<label className="fw-bold">Grade</label>
+							<div className="dropdown">
+								<select className="SelectGrade form-select" value={HasSubject == false ? "default" : SelectedGrade} id="SelectGrade" disabled={HasSubject == false ? true : false} onChange={(event) => GradeChange(event)}>
+									<option value="default" className="dropdown-item">Select All Grades</option>
 									{Grades.map((data) => (
-										<option key={data.grade_id} value={data.grade_id} >{data.grade_name}</option>
+										<option key={data.grade_id} className="dropdown-item" value={data.grade_id} >{data.grade_name}</option>
 									))}
 								</select>
 							</div>
-							<p>{HasSubject == false ? "Select a subject" : ""} </p>
+							<p className="form-text">{HasSubject == false ? "Select a subject" : ""} </p>
 							<br />
-							<input type="checkbox" id="Unanswered" value="unanswered" onClick={UnansweredChange}></input>
-							<label>Unanswered</label>
+							<div className="form-check form-check-inline">
+								<input className="form-check-input" type="checkbox" id="Unanswered" value="unanswered" onClick={UnansweredChange} />
+								<label className="form-check-label" htmlFor="inlineRadio3">Unanswered</label>
+							</div>
 						</div>
 					</form>
 				</div>

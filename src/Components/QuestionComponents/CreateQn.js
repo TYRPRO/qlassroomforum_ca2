@@ -17,6 +17,11 @@ import { MathJax, MathJaxContext } from "better-react-mathjax";
 import DOMPurify from "dompurify";
 import axios from "axios";
 
+import "./createQn/TagDropdown.css";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserDetails } from "../../store/actions/Common";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 function CreateQn() {
 	const config = {
 		loader: { load: ["input/asciimath"] }
@@ -38,16 +43,19 @@ function CreateQn() {
 	const [shown_tags, set_shown_tags] = useState([]);
 	const [selected_tags, set_selected_tags] = useState([]);
 
-	const [loggedInUser, set_loggedInUser] = useState({});
-
 	//  Rich Text Editor Stores selected text.
 	const [selected, set_selected] = useState(null);
 
 	// Handles displaying of tag dropdown.
 	const [openDropdown, set_openDropdown] = useState(false);
 
+	//login functions
+	const acquireData = useSelector((state) => state.Common.acquireData);
+	const userDetails = useSelector((state) => state.Common.userDetails);
+	const dispatch = useDispatch();
 
 	const [titleError, set_titleError] = useState("");
+	const [gradeError, set_gradeError] = useState("");
 
 
 	useEffect(() => {
@@ -80,19 +88,14 @@ function CreateQn() {
 				set_shown_grades(tempShownGrades);
 			})
 			.catch(function (error) {
-				console.log(error);
 
 			});
-		acquireUserData();
+		getUserDetails(dispatch);
 	}, []);
-
-
-
 
 	function handleChange_qnTitle(event) {
 		set_qnTitle(event.target.value);
 	}
-
 
 	// for gradedropdown
 	function handleSelectedSubjectChange(subject) {
@@ -127,13 +130,11 @@ function CreateQn() {
 				}
 
 				if (subject_id && grade_id) {
-					axios.get(`https://qlassroombackend.herokuapp.com/label/${subject_id}/${grade_id}`).then(function (response) {
+					axios.get(`http://localhost:8000/label/${subject_id}/${grade_id}`).then(function (response) {
 						var data = response.data;
 						if (data[0].label_name === "Topics") {
 							data.splice(0, 1);
 						}
-
-						console.log(data);
 						var temp_shown_tags = [];
 						for (let i = 0; i < data.length; i++) {
 							temp_shown_tags.push(data[i]);
@@ -152,12 +153,10 @@ function CreateQn() {
 
 	}, [selected_subject, selected_grade]);
 
-
-
 	return (
-		<React.Fragment>
+		<React.Fragment >
 			<ToastContainer position="top-center" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick limit={3} transition={Slide} rtl={false} theme="light" pauseOnFocusLoss draggable pauseOnHover />
-			<div className="container">
+			<div className="container min-height">
 				<div className='row'>
 					<div className="col-lg-2"></div>
 					<div className='col-12 col-lg-8'>
@@ -199,6 +198,9 @@ function CreateQn() {
 													{shown_grades.map((shown_grade, index) => <option key={index} value={shown_grade}>{shown_grade}</option>)}
 												</select>
 											</div>
+											<div className="is-invalid text-danger">
+												{gradeError}
+											</div>
 										</div>
 									</div>
 
@@ -208,12 +210,16 @@ function CreateQn() {
 									</div>
 									<div className='form-control d-flex flex-wrap' tabIndex={0} onClick={() => set_openDropdown(openDropdown ? false : true)}>
 
-										{selected_tags.map((selected_tags) => <Tag tag={selected_tags} handleRemove={removeTagSelect}></Tag>)}
-										<p contentEditable='true' className='mb-0 px-3 bg-secondary text-white'></p>
 
+										{selected_tags.map((selected_tags) => <Tag tag={selected_tags} handleRemove={removeTagSelect}></Tag>)}
+										<p contentEditable='true' className='mb-0 px-3 tag-cursor rounded'></p>
+										<div className="flex-grow-1"></div>
+										<div className=" align-self-end">
+											<ExpandMoreIcon sx={{ fontSize: 22 }}></ExpandMoreIcon>
+										</div>
 									</div>
 
-									{openDropdown ? <TagDropdown tags={shown_tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false); }}></TagDropdown> : null}
+									{openDropdown ? <TagDropdown tags={shown_tags} selectedTags={selected_tags} handleSelect={addTagSelect} handleDropdown={() => { set_openDropdown(false); }}></TagDropdown> : null}
 								</div>
 
 
@@ -238,7 +244,9 @@ function CreateQn() {
 
 		let title_pattern = /^[a-zA-Z0-9#$.?! ()%,]*$/;
 		let title_accepted = title_pattern.test(qnTitle);
-		if (qnTitle.length > 85) {
+
+		if (qnTitle.length > 85 || qnTitle.trim().length == 0) {
+
 			title_accepted = false;
 		}
 
@@ -257,14 +265,16 @@ function CreateQn() {
 				break;
 			}
 		}
-		if (title_accepted) {
+
+
+		if (title_accepted && grade_id != "") {
 			var token = findCookie("token");
 			toast.promise(
 				new Promise((resolve, reject) => {
-					axios.post("https://qlassroombackend.herokuapp.com/posts", {
+					axios.post("http://localhost:8000/posts", {
 						title: qnTitle,
 						content: purified_body,
-						user_id: loggedInUser.user_id,
+						user_id: userDetails.user_id,
 						subforum_id: subject_id,
 						grade_id: grade_id,
 						tags: tags
@@ -275,7 +285,6 @@ function CreateQn() {
 							window.location.href = `/posts/${response.data.post_id}`;
 						}, 2500);
 						resolve();
-						console.log(response);
 					}).catch(function (error) {
 						reject(error.response.data.err);
 					});
@@ -291,7 +300,14 @@ function CreateQn() {
 				}
 			);
 		} else {
-			set_titleError("Please enter a title that is less than 85 characters and contains only letters, numbers, and the following symbols: #$%.,?!()");
+			if (!title_accepted) {
+				set_titleError("Please enter a title that is less than 85 characters and contains only letters, numbers, and the following symbols: #$%.,?!()");
+			}
+
+			if (grade_id == "") {
+				set_gradeError("Please select a grade");
+			}
+
 		}
 
 	}
@@ -304,27 +320,6 @@ function CreateQn() {
 		else {
 			return ("error");
 		}
-	}
-	function acquireUserData() {
-		var token = findCookie("token");
-
-		axios.get("https://qlassroombackend.herokuapp.com/user/userData",
-			{
-				headers: { "Authorization": "Bearer " + token }
-			})
-			.then(response => {
-				var data = response.data;
-				set_loggedInUser({
-					user_id: data.user_id,
-					first_name: data.first_name,
-					last_name: data.last_name,
-					role: data.roles,
-				});
-			})
-			.catch((err) => {
-				console.log(err);
-				window.location.assign("/login");
-			});
 	}
 
 	function addTagSelect(tag) {
@@ -365,79 +360,6 @@ function CreateQn() {
 		set_shown_tags(temp_tags);
 		set_selected_tags(temp_selected_tags);
 	}
-
-	function onlyInEditor() {
-		var current_selection_id = window.getSelection().anchorNode.parentElement.id;
-		if (current_selection_id === "qn_body_textarea") {
-			return true;
-
-		}
-		else {
-			return false;
-
-		}
-	}
-
-	function saveSelection() {
-		if (window.getSelection()) {
-			var selection = window.getSelection();
-
-			if (selection.getRangeAt && selection.rangeCount) {
-				var range = [];
-				for (var i = 0; i < selection.rangeCount; i++) {
-					range.push(selection.getRangeAt(i));
-				}
-				return set_selected(range);
-			}
-		} else if (document.selection && document.selection.createRange) {
-			return set_selected(document.selection.createRange());
-		}
-		return null;
-	}
-
-	function modifyDesign(action) {
-
-		if (action === "createLink") {
-			saveSelection();
-			var link_modal = new Modal(document.getElementById("add_url"), { backdrop: "static", keyboard: false });
-			document.getElementById("wysiwyg_link").value = "";
-			link_modal.toggle();
-		}
-		else {
-			console.log("seting", action);
-			document.execCommand(action, false);
-		}
-
-	}
-
-	function restoreSelection() {
-		if (selected) {
-			var selection = window.getSelection();
-			selection.removeAllRanges();
-			for (var i = 0, len = selected.length; i < len; i++) {
-				selection.addRange(selected[i]);
-			}
-		} else if (document.selection && selected.select) {
-			selected.select();
-		}
-	}
-
-
-
-
-	function clearFormatting(removeLink) {
-		if (removeLink) {
-			restoreSelection();
-			document.execCommand("unlink", false);
-		}
-
-		console.log("removing format");
-		document.execCommand("removeFormat", false);
-	}
-
-
-
-
 
 
 }
