@@ -151,7 +151,7 @@ function Answer(props) {
 
 
 		if (comment_accepted) {
-			props.toastify.promise(
+			props.toast.promise(
 				new Promise((resolve, reject) => {
 
 					axios.post("https://qlassroombackend.herokuapp.com/responses/", {
@@ -183,7 +183,7 @@ function Answer(props) {
 			);
 		}
 		else {
-			props.toastify.error("Comment must be less than 85 characters long and contain only letters, numbers, and the following symbols: $#.?! ()%,");
+			props.toast.error("Comment must be less than 85 characters long and contain only letters, numbers, and the following symbols: $#.?! ()%,");
 
 		}
 

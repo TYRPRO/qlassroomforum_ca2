@@ -347,7 +347,7 @@ function ViewQn() {
 											<p className='mb-3'>{answers.length} Answers</p>
 											<div>
 												{answers.map((answer, index) => <Answer
-													toastify={toast}
+													toast={toast}
 													refreshAnswers={refreshAnswersFunction}
 													isRemoved={isRemoved}
 													isAlrdAccepted={post_accepted_response.answer_is_accepted && post_accepted_response.response_id === answer.response_id ? true : false}
